@@ -1,0 +1,16 @@
+.ctable {
+    width: 100%;
+    margin-top: 5px;
+}
+.ctable tr {
+    padding-top: 3px;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-bottom: 0px;
+}
+.ctable th {
+    vertical-align: middle;
+}
+.ctable td {
+    vertical-align: middle;
+}

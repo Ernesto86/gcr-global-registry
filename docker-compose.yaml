@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+  django:
+    build: .
+    container_name: dev-global-registry-django
+    restart: always
+    ports:
+      - 0.0.0.0:8001:8000
+    env_file:
+      - ./.env
+    volumes:
+      - .:/app
+      - ./docker/nginx.conf:/etc/nginx/sites-enabled/nginx.conf
+      - ./docker/supervisord.conf:/etc/supervisord.conf
+      - ./gcp:/app/gcp
+      - static_volume:/app/staticfiles
+      - media_volume:/app/mediafiles
+    deploy:
+      resources:
+        limits:
+          memory: $DOCKER_LIMITS_MEMORY
+          cpus: $DOCKER_LIMITS_CPUS
+    networks:
+      - backend
+
+volumes:
+  static_volume:
+  media_volume:
+
+networks:
+    backend:
+      external: true
+      name: network-docker-local
