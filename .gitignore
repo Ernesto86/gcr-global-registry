@@ -11,7 +11,6 @@ local_dir/
 venv/
 staticfiles/
 mediafiles/
-nginx/
 service-account.json
 gcp/
 supervisord.log
