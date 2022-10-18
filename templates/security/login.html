@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% block header %}
+    {% include 'header.html' %}
+{% endblock %}
+
+{% block main %}
+    <div class="container-fluid" style="margin-top: 5rem">
+        <div class="row">
+            <article class="col-lg-8 col-md">
+                <div class="card shadow">
+                    <div class="card-body center">
+                        <!--img src="/static/img/logo/logo-400px.png"-->
+                        <div class="embed-responsive">
+                            <!--iframe width="560" height="315" src="https://www.youtube.com/embed/afEQ940nAbU?controls=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe-->
+                            <img src="/static/img/fondo/info.jpg" class="img-fluid"-->
+                        </div>
+                    </div>
+                </div>
+            </article>
+            <aside class="col-lg-4 col-md">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <form id="id-form-login" class="form-signin p-4">
+                            {% csrf_token %}
+                            <div class="text-center">
+                                <!--i class="{{ logo_in }} text-primary"></i-->
+                                <img src="/static/img/logo/gr-logo.png" height="120">
+                            </div>
+                            <div class="divider-text"></div>
+
+                            <div class="p-1" style="min-height: 1.5rem">
+                                <div id="id-alert" class="alert alert-danger p-1 text-center d-none" role="alert">
+                                    This is a danger alert—check it out!
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-xs-6">
+                                    <label for="id-usuario"><b>Email :</b></label>
+                                     {{ form.username }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-6">
+                                    <label for="id-password"><b>Contraseña :</b></label>
+                                    {{ form.password }}
+                                </div>
+                            </div>
+                            <div class="checkbox mb-2">
+                                <label>
+                                    <input type="checkbox" name="norobot" required> No soy un Robot
+                                </label>
+                            </div>
+
+                            <button id="id-btnlogin" class="btn btn-lg btn-primary btn-block p-1">
+                                <i class="fa fa-sign-in-alt"></i> Iniciar Sesión
+                            </button>
+                            <br>
+                            <p class="text-muted">
+                                <a href="#" id="id-btn-show-form-consulta"><b>Consulta tu cuenta institucional aquí.</b> </a>
+                                <br>
+                                <a href="#" id="id-btn-show-form-email"><b>¿Olvidaste tu contraseña?</b></a>
+                            </p>
+                        </form>
+                        <form id="id-form-consulta" class="form-signin p-4" style="display: none">
+                            <div class="text-center">
+                                <!--i class="{{ logo_in }} text-primary"></i-->
+                                <img src="/static/img/logo/logo-150px.png">
+                            </div>
+                            <div class="divider-text"></div>
+
+                            <div style="min-height: 2rem">
+                                <div id="id-error-consulta" class="alert alert-danger p-1 text-center d-none"
+                                     role="alert">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-6">
+                                    <label for="id-cedula"><b>Cédula :</b></label>
+                                    <input type="text" id="id-cedula-consulta" name="cedula" class="form-control"
+                                           placeholder="Ingrese número de cédula" required
+                                           autofocus="">
+                                </div>
+                            </div>
+
+                            <div class="checkbox mb-3 mt-1">
+                                <label>
+                                    <input type="checkbox" name="norobot" required> No soy un Robot
+                                </label>
+                            </div>
+                            <button id="id-btnlogin-consulta" class="btn btn-success">
+                                <i class="fa fa-search"></i> Consultar cuenta institucional
+                            </button>
+                            <button id="id-btn-cancelar-consulta" type="button" class="btn btn-secondary btn-cancel">
+                                <i class="fa fa-reply"></i> Cancelar
+                            </button>
+                        </form>
+                        <form id="id-form-email" class="form-signin p-4" style="display: none">
+                           <div class="text-center">
+                                <!--i class="{{ logo_in }} text-primary"></i-->
+                                <img src="/static/img/logo/logo-150px.png">
+                            </div>
+                            <div class="divider-text"></div>
+                            <div style="min-height: 2rem">
+                                <div id="id-error-email" class="alert alert-danger p-1 text-center d-none" role="alert">
+
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-6">
+                                    <label for="id-cedula"><b>Cédula :</b></label>
+                                    <input type="text" id="id-cedula-email" name="cedula" class="form-control"
+                                           placeholder="Ingrese número de cédula" required
+                                           autofocus="">
+                                </div>
+                            </div>
+                            <div class="checkbox mb-3 mt-1">
+                                <label>
+                                    <input type="checkbox" name="norobot" required> No soy un Robot
+                                </label>
+                            </div>
+                            <button id="id-btnlogin-email" class="btn btn-success">
+                                <i class="fa fa-mail-bulk"></i> Solicitar cambio de contraseña
+                            </button>
+                            <button id="id-btn-cancelar-email" type="button" class="btn btn-secondary btn-cancel">
+                                <i class="fa fa-reply"></i> Cancelar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+{% endblock %}
+{% block jscript %}
+    <script>
+        const loginForm = document.getElementById('id-form-login');
+        const btnLogin = document.getElementById('id-btnlogin');
+        const alert = document.getElementById('id-alert');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (loginForm.checkValidity() === false) {
+                loginForm.classList.add("was-validated");
+            }
+            else
+            {
+               btnLogin.disabled = true;
+               const formData = new FormData(loginForm);
+               const [status, json] = await mFetch('{{ request.path }}', formData);
+               if(status === 200){
+                   window.location = '/';
+               }else{
+                   alert.innerText = json.errors.join(',');
+                   alert.classList.remove('d-none');
+               }
+               btnLogin.disabled = false;
+            }
+            return false;
+        });
+    </script>
+{% endblock %}

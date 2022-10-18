@@ -19,7 +19,7 @@ $.ajaxSetup({
         $('#load-content').fadeOut('fat');
     },
     error: function (jqXHR, textStatus, error) {
-        console.log('Error:Problemas de conexion con el servidor ' + textStatus);
+        console.log(jqXHR.responseJSON);
     }
 });
 

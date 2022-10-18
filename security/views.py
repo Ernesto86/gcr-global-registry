@@ -1,6 +1,13 @@
-from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import CustomTokenObtainPairSerializer
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render
+from django.views import View
+from security.functions import addUserData
 
-class CustomTokenObtainPairView(TokenObtainPairView):
-    # Replace the serializer with your custom
-    serializer_class = CustomTokenObtainPairSerializer
+class HomeView(LoginRequiredMixin,View):
+    login_url = '/security/login'
+    redirect_field_name = 'redirect_to'
+
+    def get(self, request, *args, **kwargs):
+        data = {}
+        addUserData(request, data)
+        return render(request, 'security/index.html', data)

@@ -24,7 +24,7 @@ SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY", "hg*1+-v#*^-s!r*jg@^w+23r@9=k(2l")
 
 # .env.
-DEBUG = int(os.environ.get("DJANGO_DEBUG", 0))
+DEBUG = int(os.environ.get("DJANGO_DEBUG", 1))
 
 # .env.
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", '*').split(" ")
@@ -102,10 +102,10 @@ WSGI_APPLICATION = "api.wsgi.application"
 DATABASES = {
     "default": {
         'ENGINE': os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
-        'NAME': os.environ.get("SQL_DATABASE", "central-global-registry-prod"),
-        'USER': os.environ.get("SQL_USER", "postgres"),
-        'PASSWORD': os.environ.get("SQL_PASSWORD", "2@22-neo-devs-psql"),
-        'HOST': os.environ.get("SQL_HOST", "/cloudsql/neo-senior-devs:us-central1:central-devs-psql"),
+        'NAME': os.environ.get("SQL_DATABASE", "central-global-registry-local"),
+        'USER': os.environ.get("SQL_USER", "local_db_usr"),
+        'PASSWORD': os.environ.get("SQL_PASSWORD", "local_db_pass"),
+        'HOST': os.environ.get("SQL_HOST", "localhost"),
         'PORT': os.environ.get("SQL_PORT", "5432"),
         'ATOMIC_REQUESTS': True
     }

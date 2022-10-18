@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework_simplejwt import views as jwt_views
-from .views import CustomTokenObtainPairView
+from security.login import logout_user, LoginAuthView
 
 urlpatterns = [
     path(
@@ -13,5 +13,8 @@ urlpatterns = [
         jwt_views.TokenRefreshView.as_view(),
         name='token-refresh'
     ),
-    path('users/login/', CustomTokenObtainPairView.as_view(), name='login'),
+    # path('token/auth', CustomTokenObtainPairView.as_view(), name='token-auth'),
+    # modulo de seguridad frontend
+    path('login', LoginAuthView.as_view(), name='login'),
+    path('logout', logout_user),
 ]
