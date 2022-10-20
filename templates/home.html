@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ title }}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link rel="shortcut icon" href="{{ dshboard.get_image }}"/>
+
+    <!--ROBOTO-->
+    {#    <link rel="preconnect" href="https://fonts.googleapis.com">#}
+    {#    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>#}
+    {#    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet">#}
+    <!--LATO-->
+    {#    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">#}
+    <!--LATO-->
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap" rel="stylesheet">
+
+    <!--CSS-->
+    <link rel="stylesheet" href="{% static 'lib/bootstrap-4.6.0/css/bootstrap.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'lib/fontawesome-5.15.3/css/all.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'lib/jquery-ui-1.12.1/jquery-ui.css' %}"/>
+
+    <!--Javascript-->
+    <script src="{% static 'lib/bootstrap-4.6.0/js/jquery.min.js' %}"></script>
+    <script src="{% static 'lib/jquery-ui-1.12.1/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-4.6.0/js/popper.min.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-4.6.0/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'lib/adminlte-3.1.0/js/adminlte.min.js' %}"></script>
+
+    <!--Template-->
+    <link rel="stylesheet" href="{% static 'lib/adminlte-3.1.0/css/adminlte.css' %}"/>
+
+    <!--Styles-->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"/>
+
+    <!--Libs-->
+
+    {#    DATATABLE #}
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.25/css/dataTables.bootstrap4.min.css' %}"/>
+    <link rel="stylesheet" href="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/css/responsive.bootstrap4.min.css' %}"/>
+    <script src="{% static 'lib/datatables-1.10.25/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.25/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'lib/datatables-1.10.25/plugins/responsive-2.2.9/js/responsive.bootstrap4.min.js' %}"></script>
+
+    {#    FORM VALIDATION #}
+    <link rel="stylesheet" href="{% static 'lib/formvalidation-1.8.0/css/formValidation.min.css' %}">
+    <script src="{% static 'lib/formvalidation-1.8.0/js/es6-shim.min.js' %}"></script>
+    <script src="{% static 'lib/formvalidation-1.8.0/js/FormValidation.min.js' %}"></script>
+    <script src="{% static 'lib/formvalidation-1.8.0/js/plugins/Bootstrap.min.js' %}"></script>
+    <script src="{% static 'lib/formvalidation-1.8.0/js/locales/es_ES.min.js' %}"></script>
+
+    {#    SELECT 2#}
+    <script src="{% static 'lib/select2-4.0.13/js/select2.min.js' %}"></script>
+    <script src="{% static 'lib/select2-4.0.13/js/i18n/es.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'lib/select2-4.0.13/css/select2-bootstrap4.min.css' %}">
+
+    {#    DATE RANGE #}
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment-with-locales.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/moment.min.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/spanish.js' %}"></script>
+    <script src="{% static 'lib/bootstrap-daterangepicker-3.1/js/daterangepicker.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/bootstrap-daterangepicker-3.1/css/daterangepicker.css' %}"/>
+
+    {#    BOOTSTRAP SWITCH #}
+    <link rel="stylesheet" href="{% static 'lib/bootstrap-switch/css/bootstrap3/bootstrap-switch.min.css' %}">
+    <script src="{% static 'lib/bootstrap-switch/js/bootstrap-switch.min.js' %}"></script>
+
+    {#    iCheck BOOTSTRAP #}
+    <link rel="stylesheet" href="{% static 'lib/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+
+    {#    JQUERY COMFIRM #}
+    <script src="{% static 'lib/jquery-confirm-3.3.4/js/jquery-confirm.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/jquery-confirm-3.3.4/css/jquery-confirm.min.css' %}"/>
+
+    {#    SWEETALERT2 #}
+    <script src="{% static 'lib/sweetalert2-11.0.16/sweetalert2.all.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'lib/sweetalert2-11.0.16/sweetalert2.min.css' %}"/>
+
+    {#    LOADING OVERFLOW #}
+    <script src="{% static 'lib/jquery-loading-overlay-2.1.7/loadingoverlay.min.js' %}"></script>
+
+    {#    BOOTSTRAP SWITCH #}
+    <link rel="stylesheet" href="{% static 'lib/bootstrap-switch/css/bootstrap3/bootstrap-switch.min.css' %}">
+    <script src="{% static 'lib/bootstrap-switch/js/bootstrap-switch.min.js' %}"></script>
+
+    <!--Libs CUSTOM BASE-->
+    <script src="{% static 'js/util.js' %}"></script>
+    <script src="{% static 'js/functions.js' %}"></script>
+    <script src="{% static 'js/function_date.js' %}"></script>
+    <script src="{% static 'js/function_search_term_especific.js' %}"></script>
+    <script src="{% static 'js/function_decimal.js' %}"></script>
+    <script src="{% static 'js/function_form_validation.js' %}"></script>
+    <script src="{% static 'js/function_datatable.js' %}"></script>
+    <script src="{% static 'js/function_partial.js' %}"></script>
+    <script src="{% static 'js/common/function_approve_review_etc.js' %}"></script>
+    <script src="{% static 'js/common/function_general.js' %}"></script>
+
+
+    <!--Block head-->
+    {% block head %}{% endblock %}
+
+    <!-- EXTRA CABECERA -->
+    {% block head-js %}
+    {% endblock %}
+
+    {% block head-js-extra %}
+    {% endblock %}
+
+</head>
+
+<!--Block body-->
+{% block body %}
+
+{% endblock %}
+
+<!--Javascript-->
+<script src="{% static 'js/main.js' %}"></script>
+<script>
+    $(function () {
+
+        $('.select2').select2({theme: 'bootstrap4', language: "es"});
+
+        {# CAMBIO DE MAYOR SELECCIONADO #}
+        $('.cls_home_a_select_mayor').on('click', function () {
+            $.ajax({
+                ...M_get_repeat_alwais_ajax_with_function({}),
+                url: '/',
+                data: {'action': 'change_mayor', id_mayor: $(this).data('idmayor')},
+                success: function (request) {
+                    $.LoadingOverlay("hide");
+                    if (!request.result) return M_messageError({message: request.message})
+                    location.reload();
+                }
+            });
+        })
+    });
+</script>
+{% block body-js-extra %}
+{% endblock %}
+
+{% block body-js-extra-2 %}
+{% endblock %}
+
+{% block body-js-for-vertical-header %}
+{% endblock %}
+
+</html>

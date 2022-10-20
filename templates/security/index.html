@@ -2,186 +2,106 @@
 {% block header %}
     {% include 'header.html' %}
 {% endblock %}
-{% block main %}
-    <div id="wrapper">
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" style="margin-top: 2.3rem" id="accordionSidebar">
-
-                        <!-- Divider -->
-            <hr class="sidebar-divider my-0">
-
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
-                <a class="nav-link" href="index.html">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <b>Dashboard</b></a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-            PANEL
-            </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <b>Institución</b>
-                </a>
-                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="buttons.html">Configuración de Datos</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Heading -->
-            <div class="sidebar-heading">
-
-            </div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <b>Registros</b>
-                </a>
-                <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                    <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="login.html">Ingresos de Registros</a>
-                        <div class="collapse-divider"></div>
-                        <a class="collapse-item" href="404.html">Organizador de Registros</a>
-                    </div>
-                </div>
-            </li>
-
-            <!-- Nav Item - Charts -->
-            <li class="nav-item">
-                <a class="nav-link" href="charts.html">
-                    <i class="fas fa-fw fa-cart-plus"></i>
-                    <b>Obtén más Registros</b></a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
-
-            <!-- Sidebar Toggler (Sidebar) -->
-            <div class="text-center d-none d-md-inline">
-                <button class="rounded-circle border-0" id="sidebarToggle"></button>
-            </div>
-
-            <!-- Sidebar Message -->
-
-
-        </ul>
-
-        <!-- Begin Page Content -->
-        <div class="container-fluid" style="margin-top: 3.1rem">
-            <div class="row">
-                <!-- Area Chart -->
-                <div class="col-md">
-                    <div class="list-group filter-wrap">
-                        {% if recordatorio %}
-                            <div class="alert alert-info mt-1 ms-recordatorio">
-                                <a href="javascript:;" class="close" data-dismiss="alert">×</a>
-                                <h6><strong>AVISO IMPORTANTE</strong></h6>
-                                Estimado/a {{ persona }} se informa que el proceso <b>{{ encuesta.nombre_encuesta }}</b>
-                                se encuentra habilitado hasta el día <b>{{ encuesta.fecha_fin|date:"d-m-Y H:i" }}</b>
-                            </div>
-                        {% elif ingreso_notas %}
-                            <div class="alert alert-info mt-1 ms-recordatorio">
-                                <a href="javascript:;" class="close" data-dismiss="alert">×</a>
-                                <h6><strong>AVISO IMPORTANTE</strong></h6>
-                                Estimado/a {{ persona }} se informa que el cronograma de ingreso de notas es el
-                                siguiente:<br>
-                                {% for m in apertura_notas %}
-                                    <li><b>{{ m.parcial }} del </b> {{ m.inicio|date:"d-m-Y H:i" }}
-                                        <b>hasta</b> {{ m.fin|date:"d-m-Y H:i" }}</li>
-                                {% endfor %}
-                            </div>
-                        {% elif certificado_gratuidad %}
-                            <div class="alert alert-info mt-1 ms-recordatorio">
-                                <a href="javascript:;" class="close" data-dismiss="alert">×</a>
-                                <h6><strong>AVISO IMPORTANTE</strong></h6>
-                                Estimado/a {{ persona }}, se informa que el documento de constancia de gratuidad (SIAU) debe ser cargado en Saya hasta el: <b>{{ periodo.cierre_matricula|date:"d-m-Y" }}</b><br>
-
-                            </div>
-                        {% endif %}
-                        {% if recordatorio_par %}
-                            <div class="alert alert-info mt-1 ms-recordatorio">
-                                <a href="javascript:;" class="close" data-dismiss="alert">×</a>
-                                <h6><strong>AVISO IMPORTANTE</strong></h6>
-                                Estimado/a {{ persona }} se informa que el proceso <b>{{ eval_par.nombre_encuesta }}</b>
-                                se encuentra habilitado hasta el día <b>{{ eval_par.fecha_fin|date:"d-m-Y H:i" }}</b>
-                            </div>
-                        {% endif %}
-
-                        {% if encuestas %}
-                            {% for eval_encuesta in encuestas %}
-                                <div class="alert alert-info mt-1 ms-recordatorio">
-                                    <a href="javascript:;" class="close" data-dismiss="alert">×</a>
-                                    <h6><strong>AVISO IMPORTANTE</strong></h6>
-                                    Estimado/a {{ persona }} dirigirse al módulo <b><a href="{% url "listado_encuesta" %}">Encuestas</a></b> y responder <b>{{ eval_encuesta.nombre_encuesta }}</b>
-                                    estará habilitado hasta el día <b>{{ eval_encuesta.fecha_fin|date:"d-m-Y H:i" }}</b>
-                                </div>
+{% block container-main %}
+    <div class="container-fluid" style="margin-top: 3.1rem">
+        <div class="row">
+            <!-- Area Chart -->
+            <div class="col-md">
+                <div class="list-group filter-wrap">
+                    {% if recordatorio %}
+                        <div class="alert alert-info mt-1 ms-recordatorio">
+                            <a href="javascript:;" class="close" data-dismiss="alert">×</a>
+                            <h6><strong>AVISO IMPORTANTE</strong></h6>
+                            Estimado/a {{ persona }} se informa que el proceso <b>{{ encuesta.nombre_encuesta }}</b>
+                            se encuentra habilitado hasta el día <b>{{ encuesta.fecha_fin|date:"d-m-Y H:i" }}</b>
+                        </div>
+                    {% elif ingreso_notas %}
+                        <div class="alert alert-info mt-1 ms-recordatorio">
+                            <a href="javascript:;" class="close" data-dismiss="alert">×</a>
+                            <h6><strong>AVISO IMPORTANTE</strong></h6>
+                            Estimado/a {{ persona }} se informa que el cronograma de ingreso de notas es el
+                            siguiente:<br>
+                            {% for m in apertura_notas %}
+                                <li><b>{{ m.parcial }} del </b> {{ m.inicio|date:"d-m-Y H:i" }}
+                                    <b>hasta</b> {{ m.fin|date:"d-m-Y H:i" }}</li>
                             {% endfor %}
-                        {% endif %}
+                        </div>
+                    {% elif certificado_gratuidad %}
+                        <div class="alert alert-info mt-1 ms-recordatorio">
+                            <a href="javascript:;" class="close" data-dismiss="alert">×</a>
+                            <h6><strong>AVISO IMPORTANTE</strong></h6>
+                            Estimado/a {{ persona }}, se informa que el documento de constancia de gratuidad (SIAU) debe ser cargado en Saya hasta el: <b>{{ periodo.cierre_matricula|date:"d-m-Y" }}</b><br>
 
-                        <article class="list-group-item p-0">
-                            {% for modulo_grupo in modulos_grupos %}
-                                <header class="filter-header card-header">
-                                    <a href="#" data-toggle="collapse"
-                                       data-target="#collap-{{ modulo_grupo.id }}"
-                                       aria-expanded="true" class="">
-                                        <i class="icon-action fa fa-chevron-down"></i>
-                                        <h6 class="title text-primary">
-                                            <i class="fa fa-bars"></i>
-                                            {{ modulo_grupo.nombre }} </h6>
-                                    </a>
-                                </header>
-                                <div class="filter-content collapse show p-2" id="collap-{{ modulo_grupo.id }}"
-                                     style="background: #eeeeee;">
-                                    <div class="row">
-                                        {% for modulo in modulo_grupo.modulos_activos %}
-                                            {% if modulo.habilitado %}
-                                                <div class="col-6 col-sm-6 col-md-6 col-lg-2">
-                                                    <a href="{{ modulo.url }}">
-                                                        <figure class="card card-sm card-product text-center">
-                                                                <span class="mt-1 text-info" style="font-size: 13px;">
-                                                                 <em>{{ modulo.tipo }}</em>
-                                                                </span>
-                                                            <div class="p-1" style="height: 5rem">
-                                                                <img src="/static/img/menu/{{ modulo.icono }}"
-                                                                     height="66">
-                                                            </div>
-                                                            <div class="title mb-0 text-primary text-truncate">
-                                                                <b>{{ modulo.nombre }}</b>
-                                                            </div>
-                                                            <figcaption
-                                                                    class="info-wrap text-center text-dark bg-light"
-                                                                    style="height: 3rem;line-height: 12px;font-size: 11px;font-weight: bolder">
-                                                                <em>{{ modulo.descripcion }}</em>
-                                                            </figcaption>
-                                                        </figure>
-                                                    </a>
-                                                </div>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
+                        </div>
+                    {% endif %}
+                    {% if recordatorio_par %}
+                        <div class="alert alert-info mt-1 ms-recordatorio">
+                            <a href="javascript:;" class="close" data-dismiss="alert">×</a>
+                            <h6><strong>AVISO IMPORTANTE</strong></h6>
+                            Estimado/a {{ persona }} se informa que el proceso <b>{{ eval_par.nombre_encuesta }}</b>
+                            se encuentra habilitado hasta el día <b>{{ eval_par.fecha_fin|date:"d-m-Y H:i" }}</b>
+                        </div>
+                    {% endif %}
+
+                    {% if encuestas %}
+                        {% for eval_encuesta in encuestas %}
+                            <div class="alert alert-info mt-1 ms-recordatorio">
+                                <a href="javascript:;" class="close" data-dismiss="alert">×</a>
+                                <h6><strong>AVISO IMPORTANTE</strong></h6>
+                                Estimado/a {{ persona }} dirigirse al módulo <b><a href="{% url "listado_encuesta" %}">Encuestas</a></b> y responder <b>{{ eval_encuesta.nombre_encuesta }}</b>
+                                estará habilitado hasta el día <b>{{ eval_encuesta.fecha_fin|date:"d-m-Y H:i" }}</b>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <article class="list-group-item p-0">
+                        {% for modulo_grupo in modulos_grupos %}
+                            <header class="filter-header card-header">
+                                <a href="#" data-toggle="collapse"
+                                    data-target="#collap-{{ modulo_grupo.id }}"
+                                    aria-expanded="true" class="">
+                                    <i class="icon-action fa fa-chevron-down"></i>
+                                    <h6 class="title text-primary">
+                                        <i class="fa fa-bars"></i>
+                                        {{ modulo_grupo.nombre }} </h6>
+                                </a>
+                            </header>
+                            <div class="filter-content collapse show p-2" id="collap-{{ modulo_grupo.id }}"
+                                    style="background: #eeeeee;">
+                                <div class="row">
+                                    {% for modulo in modulo_grupo.modulos_activos %}
+                                        {% if modulo.habilitado %}
+                                            <div class="col-6 col-sm-6 col-md-6 col-lg-2">
+                                                <a href="{{ modulo.url }}">
+                                                    <figure class="card card-sm card-product text-center">
+                                                            <span class="mt-1 text-info" style="font-size: 13px;">
+                                                                <em>{{ modulo.tipo }}</em>
+                                                            </span>
+                                                        <div class="p-1" style="height: 5rem">
+                                                            <img src="/static/img/menu/{{ modulo.icono }}"
+                                                                    height="66">
+                                                        </div>
+                                                        <div class="title mb-0 text-primary text-truncate">
+                                                            <b>{{ modulo.nombre }}</b>
+                                                        </div>
+                                                        <figcaption
+                                                                class="info-wrap text-center text-dark bg-light"
+                                                                style="height: 3rem;line-height: 12px;font-size: 11px;font-weight: bolder">
+                                                            <em>{{ modulo.descripcion }}</em>
+                                                        </figcaption>
+                                                    </figure>
+                                                </a>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
                                 </div>
-                            {% endfor %}
-                        </article>
-                    </div>
+                            </div>
+                        {% endfor %}
+                    </article>
                 </div>
             </div>
-            <!-- Content Row -->
         </div>
-        <!-- /.container-fluid -->
+        <!-- Content Row -->
     </div>
     <!-- Modal -->
     {% if messages %}
@@ -213,23 +133,4 @@
 {% endblock %}
 
 {% block jscript %}
-    <script>
-        $(function () {
-            setTimeout(function () {
-                $(".ms-recordatorio").fadeOut("slow");
-            }, 300000);
-
-            {% if messages %}
-                {% for message in messages %}
-                    {% if message.tags.lower == 'info' %}
-                        $('#id-modal-mensaje').html('{{ message }}');
-                        $('#id-form-modal-mensaje').modal('show');
-                    {% else %}
-                        fnToast("{{ message }}", 4);
-                    {% endif %}
-                {% endfor %}
-            {% endif %}
-        });
-
-    </script>
 {% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'list.html' %}
+{% block table-header-columns %}
+    <th>Codigo</th>
+    <th>DNI</th>
+    <th>Nombre</th>
+    <th>Representante</th>
+    <th class="text-center">Opciones</th>
+{% endblock %}
+
+{% block url_create %}{% url "institution_create" %}{% endblock %}
+
+{% block table-body-rows %}
+    {% for i in institutions %}
+        <tr>
+            <td class="text-center">{{ i.code }}</td>
+            <td class="text-center">{{ i.identification }}</td>
+            <td>{{ i.name }}</td>
+            <td>{{ i.representative }}</td>
+            <td class="text-center">
+                <div class="btn-group" role="group">
+                    <a href="{% url 'institution_update' i.id %}" class="btn btn-primary btn-sm"
+                       data-toggle="tooltip" title="" data-original-title="">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    <a href="#" rel="action-delete" class="btn btn-danger btn-sm" data-id="{{ i.id }}"
+                       data-toggle="tooltip" title="" data-original-title="">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block jscript %}
+    <script>
+        const table = document.querySelector('#id-table-data > tbody');
+        table.addEventListener('click', async (event) => {
+          const target = event.target.closest('a[rel="action-delete"]');
+          if (target) {
+              event.preventDefault();
+              const id = target.dataset.id
+              const [status, json] = await mFetch(`{{ request.path }}delete/${id}`, {}, 'DELETE');
+              if(status === 200){
+                  target.closest('tr').remove()
+              }else{
+                  console.log(json)
+              }
+          }
+        });
+
+    </script>
+{% endblock %}

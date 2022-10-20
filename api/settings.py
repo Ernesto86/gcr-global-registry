@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'django.contrib.humanize'
+    'django.contrib.humanize',
+    'crispy_forms',
 ]
 
 
@@ -191,3 +192,4 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
 
 CORS_ALLOW_ALL_ORIGINS = True
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

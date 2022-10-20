@@ -1,3 +1,4 @@
+'use strict';
 const loadingUi = document.getElementById('load-content');
 document.addEventListener("DOMContentLoaded", function (e) {
     e.preventDefault();
