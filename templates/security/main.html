@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block header %}
+    {% include 'header.html' %}
+{% endblock %}
+
+{% block sidebar-navbar %}{% endblock %}
+
+{% block container-main %}
+    <div class="container-fluid card min-vh-100" style="margin-top: 3rem;">
+        <div class="row">
+            <aside class="col-lg-12 col-md">
+                <div>
+                    <div class="card-body">
+                        <div class="text-center" style="margin-top: 2rem">
+                            <!--i class="{{ logo_in }} text-primary"></i-->
+                            <img src="/static/img/logo/gr-logo.png" height="120">
+                        </div>
+
+
+                        <div style="padding-left: 8rem; padding-right: 8rem; margin-top: 3rem">
+                            <h4 class="font-weight-bold">
+                                Bienvenido a <b style="color: black">Global Registry</b>. Somos una comunidad internacional que busca impulsar el desarrollo educativo y profesional
+                                de todas las personas a nivel global, permitiendo el registro y verificación de sus conocimientos adquiridos a través de
+                                nuestra plataforma con sistema Blockchain que permite manejar la información de la manera más segura posible.
+                            </h4>
+
+                            <h4 class="pt-4 font-weight-bold">
+                                Si es una institución de educación puede proceder a ingresar a su usuario o crear uno. Si es un particular, puede proceder a
+                                consultar los registros de títulos y certificaciones internacionalmente reconocidos.
+                            </h4>
+                        </div>
+
+                        <div class="text-center" style="margin-top: 5rem">
+                            <a id="id-btnlogin" href="{% url 'login' %}" class="btn btn-lg btn-primary mr-5" style="font-size: 26px; border-radius: 20px; width: 25rem; padding-top: 30px; padding-bottom: 30px" >
+                                <b>Login or Sign up</b>
+                            </a>
+
+                            <button id="id-btn-go-query" class="btn btn-lg btn-success"style="font-size: 26px; border-radius: 20px; width: 25rem ; padding-top: 11px; padding-bottom: 10px" >
+                                <b>Consulta de Títulos y Certificados</b>
+                            </button>
+                        </div>
+
+                        <br>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+{% endblock %}
+{% block jscript %}
+    <script>
+        const loginForm = document.getElementById('id-form-login');
+        const btnLogin = document.getElementById('id-btnlogin');
+        const alert = document.getElementById('id-alert');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (loginForm.checkValidity() === false) {
+                loginForm.classList.add("was-validated");
+            } else {
+
+                btnLogin.disabled = true;
+                const formData = new FormData(loginForm);
+                const [status, json] = await mFetch('{{ request.path }}', formData);
+                if (status === 200) {
+                    window.location = '/';
+                } else {
+                    alert.innerText = json.errors.join(',');
+                    alert.classList.remove('d-none');
+                }
+                btnLogin.disabled = false;
+            }
+            return false;
+        });
+    </script>
+{% endblock %}

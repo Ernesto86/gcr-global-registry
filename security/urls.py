@@ -1,6 +1,8 @@
 from django.urls import path
 from rest_framework_simplejwt import views as jwt_views
+
 from security.login import logout_user, LoginAuthView
+from security.main import MainView
 
 urlpatterns = [
     path(
@@ -17,4 +19,5 @@ urlpatterns = [
     # modulo de seguridad frontend
     path('login', LoginAuthView.as_view(), name='login'),
     path('logout', logout_user),
+    path('main', MainView.as_view(), name='main'),
 ]
