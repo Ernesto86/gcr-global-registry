@@ -1,28 +1,42 @@
-from django.views.generic.base import TemplateView
+from django.shortcuts import render
+from django.views.generic.base import View
 
 from institutions.models import InsTypeRegistries
 from students.models import StudentRegisters, Students
 from system.constants import LOGO_SISTEMA, SISTEMA_PAGINA_WEB, NOMBRE_SISTEMA
-from system.models import SysCountries, SysNationality
+from system.models import SysNationality
 
 
-class QueryGeneralView(TemplateView):
+class QueryGeneralView(View):
     template_name = 'security/query_general/view.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def context_common(self):
+        context = {}
+        context['autor'] = ''
+        context['sistema_logo'] = LOGO_SISTEMA
+        context['sistema_web'] = SISTEMA_PAGINA_WEB
+        context['sistema_nombre'] = NOMBRE_SISTEMA
+        context['sys_nationality_list'] = SysNationality.objects.all()
+        return context
+
+    def get(self, request):
+        context = self.context_common()
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        context = self.context_common()
         context['autor'] = ''
         context['sistema_logo'] = LOGO_SISTEMA
         context['sistema_web'] = SISTEMA_PAGINA_WEB
         context['sistema_nombre'] = NOMBRE_SISTEMA
         context['sys_nationality_list'] = SysNationality.objects.all()
 
-        nationality = self.request.GET.get("nationality", None)
+        nationality = self.request.POST.get("nationality", None)
         context['nationality'] = int(nationality) if nationality else nationality
 
-        dni = self.request.GET.get("identification", "")
+        dni = self.request.POST.get("identification", "")
         context['identification'] = dni
-        context['character'] = self.request.GET.get("character", "")
+        context['character'] = self.request.POST.get("character", "")
 
         context['student_registers_list'] = []
         context['student'] = None
@@ -69,4 +83,4 @@ class QueryGeneralView(TemplateView):
                             }
                         )
 
-        return context
+        return render(request, self.template_name, context)
