@@ -1,3 +1,28 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 .env
 *.pyc
 __pycache__/
@@ -13,5 +38,13 @@ staticfiles/
 mediafiles/
 service-account.json
 gcp/
-supervisord.log
-supervisord.pid
+*.log
+*.db
+*.pid
+
+# Ignore Django Migrations in Development if you are working on team
+
+# Only for Development only
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
