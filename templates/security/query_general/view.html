@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block header %}
+    {% include 'header.html' %}
+{% endblock %}
+
+{% block sidebar-navbar %}{% endblock %}
+
+{% block container-main %}
+    <div class="container-fluid" style="margin: 5rem;  ">
+        <div class="row">
+            <aside class="col-lg-12 col-md">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="text-center" style="margin-top: 2rem">
+                            <img src="/static/img/logo/gr-logo.png" height="120">
+                        </div>
+                        <div class="pt-5">
+                            <form id="id-form-buscar" action="" method="GET">
+                                <div id="div_id_nationality" class="form-group">
+                                    <label for="id_nationality" class=""> Nacionalidad </label>
+                                    <div>
+                                        <select name="nationality" class="select form-control" id="id-nationality" required>
+                                            <option value="" {% if not nationality %} selected="" {% endif %}>
+                                                ---------------
+                                            </option>
+
+                                            {% for sys_nationality in sys_nationality_list %}
+                                                <option value="{{ sys_nationality.id }}" {% if sys_nationality.id == nationality %} selected="" {% endif %}>
+                                                    {{ sys_nationality.name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div id="div_id_identification" class="form-group">
+                                    <label for="id_identification" class=" requiredField">
+                                        Identificacion <span class="asteriskField">*</span>
+                                    </label>
+                                    <div>
+                                        <input type="text" name="identification" maxlength="100" class="textinput textInput form-control" required="" value="{{ identification }}" id="id_identification">
+                                    </div>
+                                </div>
+
+                                <div id="div_id_character" class="form-group">
+                                    <label for="id_character" class=" requiredField">
+                                        Caracteres de seguridad <span class="asteriskField">*</span>
+                                    </label>
+                                    <div>
+                                        <input type="text" name="character" maxlength="100" class="textinput textInput form-control" required="" value="{{ character }}" id="id_character">
+                                    </div>
+                                </div>
+
+                                <div class="text-center" style="margin-top: 5rem">
+                                    <button type="submit" class="btn btn-lg btn-success" style="font-size: 26px; border-radius: 20px; width: 25rem ; padding-top: 11px; padding-bottom: 10px">
+                                        <b>Buscar</b>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </aside>
+
+            {% if student %}
+                <aside class="col-lg-12 col-md">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="text-center">
+
+                                <h2>Informaciòn del usuario</h2>
+                                <table style="width: 100%">
+                                    <tbody>
+                                    <tr>
+                                        <td class="text-right pr-3" style="width: 50%">Identificacion:</td>
+                                        <td class="text-left">{{ student.dni }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right pr-3" style="width: 50%">Nombres:</td>
+                                        <td class="text-left">{{ student.names }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right pr-3" style="width: 50%">Gènero:</td>
+                                        <td class="text-left">{{ student.get_gender_display }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-right pr-3" style="width: 50%">Nacionalidad:</td>
+                                        <td class="text-left">{{ student.nationality }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                </aside>
+            {% endif %}
+
+            <aside class="col-lg-12 col-md">
+                <div class="card">
+                    <div class="card-body">
+
+                        {% for type_registries in type_registries_list %}
+
+                            <div class="alert alert-{{ type_registries.color }} mb-0 mt-5" role="alert">
+                                <h4>Registros de {{ type_registries.name }}</h4>
+                            </div>
+
+                            <table class="table">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Titulo o Certificado</th>
+                                    <th scope="col">Institucion</th>
+                                    <th scope="col">Pais</th>
+                                    <th scope="col">Fecha de Emisión</th>
+                                    <th scope="col">Código Internacionla de Registro</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for student_registers  in type_registries.student_registers_list %}
+                                    <tr>
+                                        <td>{{ student_registers.certificate }}</td>
+                                        <td>{{ student_registers.institution }}</td>
+                                        <td>{{ student_registers.country }}</td>
+                                        <td>{{ student_registers.date_issue }}</td>
+                                        <td>{{ student_registers.code_international_register }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                        {% endfor %}
+                        <br>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+{% endblock %}
+{% block jscript %}
+{% endblock %}

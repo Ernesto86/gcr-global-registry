@@ -10,6 +10,7 @@ class InsTypeRegistries(ModelBase):
     type = models.CharField(max_length=10, verbose_name="Tipo", blank=True, null=True, choices=TYPE_LIST)
     route = models.CharField(max_length=1024, blank=True, null=True, editable=False)
     order = models.CharField(max_length=1024, blank=True, null=True, editable=False)
+    color = models.CharField(max_length=15, verbose_name="Color", blank=True, null=True)
 
     def __str__(self):
         return "{}".format(self.name)
