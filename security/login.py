@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from system.constants import LOGO_SISTEMA, SISTEMA_PAGINA_WEB, NOMBRE_SISTEMA
+from security.functions import addUserData
 
 class LoginAuthView(LoginView):
     form_class = AuthenticationForm
@@ -33,11 +33,8 @@ class LoginAuthView(LoginView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['autor'] = ''
-        context['titulo'] = 'Inicio de Sesión'
-        context['sistema_logo'] = LOGO_SISTEMA
-        context['sistema_web'] = SISTEMA_PAGINA_WEB
-        context['sistema_nombre'] = NOMBRE_SISTEMA
+        context['title'] = 'Inicio de Sesión'
+        addUserData(self.request, context)
         return context
 
     def post(self, request, *args, **kwargs):
