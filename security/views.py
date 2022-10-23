@@ -8,6 +8,8 @@ class HomeView(LoginRequiredMixin,View):
     redirect_field_name = 'redirect_to'
 
     def get(self, request, *args, **kwargs):
-        data = {}
+        data = {
+            'title': "Home Global Registry"
+        }
         addUserData(request, data)
         return render(request, 'security/index.html', data)

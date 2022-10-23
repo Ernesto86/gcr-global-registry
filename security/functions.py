@@ -6,12 +6,12 @@ from system.constants import LOGO_SISTEMA, NOMBRE_SISTEMA, SISTEMA_PAGINA_WEB
 
 def addUserData(request, data):
     if request.method == 'GET':
+        data['hoy'] = datetime.datetime.now()
+        data['system_logo'] = LOGO_SISTEMA
+        data['system_web'] = SISTEMA_PAGINA_WEB
+        data['system_name'] = NOMBRE_SISTEMA
         try:
-            data['hoy'] = datetime.datetime.now()
-            data['usuario'] = request.user
-            data['sistema_logo'] = LOGO_SISTEMA
-            data['sistema_web'] = SISTEMA_PAGINA_WEB
-            data['sistema_nombre'] = NOMBRE_SISTEMA
+            data['user'] = request.user
             data['user_grupos'] = request.user.groups.all()
         except:
             pass
