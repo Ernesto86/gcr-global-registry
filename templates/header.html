@@ -14,7 +14,7 @@
                     <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {% if user.get_foto_url is not None %}
-                         <img src="{{ usuario.get_foto_url }}" style="border-radius: 50%;box-shadow: 0 0 2px rgba(10, 10, 10, 0.3);width: 32px;height: 32px;position: relative;background: #fff;">
+                         <img src="{{ user.get_foto_url }}" style="border-radius: 50%;box-shadow: 0 0 2px rgba(10, 10, 10, 0.3);width: 32px;height: 32px;position: relative;background: #fff;">
                             {% else %}
                             <i class="fa fa-user-circle fa fa-1x"></i>
                         {% endif %}
