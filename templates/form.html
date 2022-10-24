@@ -1,8 +1,12 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
 {% block headcss %}
    <link rel="stylesheet" href="/static/css/select2.min.css">
    <link rel="stylesheet" href="/static/css/select2-bootstrap4.min.css">
+   <style>
+        .has-error .select2-selection {
+            border-color: rgb(185, 74, 72) !important;
+        }
+    </style>
 {% endblock %}
 
 {% block header %}
@@ -10,59 +14,6 @@
 {% endblock %}
 
 {% block container-main %}
-    <article class="container-fluid" style="margin-top: 3.5rem">
-        <div class="row">
-            <div class="col">
-                <nav id="siteBreadcrumb" aria-label="breadcrumb">
-                    <ol class="breadcrumb p-2">
-                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
-                        <li class="breadcrumb-item" aria-current="page"><a
-                                href="/institutions/">Instituciones</a></li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <form method="POST" action="" enctype="multipart/form-data">
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            Fichero de ...
-                        </div>
-                        <div class="card-body">
-                            {% csrf_token %}
-                            <ul id="tabsJustified" class="nav nav-tabs">
-                                <li class="nav-item">
-                                    <a href="" data-target="#datos_personales" data-toggle="tab"
-                                       class="nav-link small text-uppercase active">
-                                        <i class="far fa-address-card"></i> Datos de Institucion
-                                    </a>
-                                </li>
-                            </ul>
-                            <br>
-                            <div id="tabsJustifiedContent" class="tab-content">
-                                <div id="datos_personales" class="tab-pane fade active show">
-                                    {% csrf_token %}
-                                    {{ form|crispy }}
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="card-footer">
-                            <button class="btn btn-success float-right ml-2">
-                                <i class="fa fa-save"></i> Guardar Registro
-                            </button>
-
-                            <button type="button" class="btn btn-danger float-right" onclick="window.location='{{ back_url }}'">
-                                <i class="fa fa-arrow-left"></i> Atras
-                            </button>
-
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </article>
 {% endblock %}
 
 {% block js %}

@@ -1,1 +1,226 @@
 {% extends 'form.html' %}
+{% load crispy_forms_tags %}
+{% block container-main %}
+    <article class="container-fluid" style="margin-top: 3.5rem">
+        <div class="row">
+            <div class="col">
+                <nav id="siteBreadcrumb" aria-label="breadcrumb">
+                    <ol class="breadcrumb p-2">
+                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                        <li class="breadcrumb-item" aria-current="page"><a
+                                href="/institutions/">Instituciones</a></li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <form method="POST" action="" enctype="multipart/form-data" id="formConfigurateData">
+                    {% csrf_token %}
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Configuracion de datos : {{ form_action }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-row">
+                               <div class="form-group col-6 mb-0">
+                                    <label>Logotipo de Institucion (Formato PNG)
+                                        <span style="color: red">*</span></label>
+                                    <div class="custom-file">
+                                        <input type="file" name="logo" class="custom-file-input"
+                                               accept=".png" id="id_logo">
+                                        <label class="custom-file-label text-primary"
+                                               for="{{ form.logo.id_for_label }}">
+                                            {% if form.logo.value %}
+                                                {{ form.logo.value }}
+                                                {% else %}
+                                                Seleccione imagen
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                </div>
+                                 <div class="form-group col-6 mb-0">
+                                    {{ form.code|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md mb-0">
+                                    {{ form.name|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-6 mb-0">
+                                    {{ form.type_registration|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-6 mb-0">
+                                    <label>Cargar constitucion (Formato PDF)
+                                        <span style="color: red">*</span></label>
+                                    <div class="custom-file">
+                                        <input type="file" name="file_constitution" class="custom-file-input"
+                                               accept=".pdf" id="id_file_constitution">
+                                         <label class="custom-file-label text-primary"
+                                               for="{{ form.file_constitution.id_for_label }}">
+                                            {% if form.file_constitution.value %}
+                                                {{ form.file_constitution.value }}
+                                                {% else %}
+                                                Seleccione archivo
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-6 mb-0">
+                                    {{ form.representative|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-6 mb-0">
+                                    <label>Cargar nominacion (Formato PDF)
+                                        <span style="color: red">*</span></label>
+                                    <div class="custom-file">
+                                        <input type="file" name="file_nomination" class="custom-file-input"
+                                               accept=".pdf" id="id_file_nomination">
+                                        <label class="custom-file-label text-primary"
+                                               for="{{ form.file_nomination.id_for_label }}">
+                                            {% if form.file_nomination.value %}
+                                                {{ form.file_nomination.value }}
+                                                {% else %}
+                                                Seleccione archivo
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-6 mb-0">
+                                    {{ form.type_registration|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-6 mb-0">
+                                    <label>Grado Academico (Formato PDF)
+                                        <span style="color: red">*</span></label>
+                                    <div class="custom-file">
+                                        <input type="file" name="file_title_academic" class="custom-file-input"
+                                               accept=".pdf" id="id_file_title_academic">
+                                        <label class="custom-file-label text-primary"
+                                               for="{{ form.file_title_academic.id_for_label }}">
+                                            {% if form.file_title_academic.value %}
+                                                {{ form.file_title_academic.value }}
+                                                {% else %}
+                                                Seleccione archivo
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-6 mb-0">
+                                    {{ form.identification|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-6 mb-0">
+                                    {{ form.email|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-success float-right ml-2">
+                                <i class="fa fa-save"></i> Guardar Registro
+                            </button>
+
+                            <button type="button" class="btn btn-secondary float-right" onclick="window.location='{{ back_url }}'">
+                                <i class="fa fa-arrow-left"></i> Atras
+                            </button>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </article>
+{% endblock %}
+{% block jscript %}
+    <script>
+        const MAXIMOSIZE = 5;//2097152;
+        const formFields = document.querySelector('#formConfigurateData')
+        const customFileInput = document.querySelectorAll('input[type=file]')
+
+        formFields.addEventListener('submit', (e)=>{
+            e.preventDefault();
+            formFields.classList.add('was-validated');
+            if (formFields.checkValidity() === false) {
+                e.preventDefault();
+                e.stopPropagation();
+            }else{
+
+                let validate = false;
+                let inputValidate = null
+                customFileInput.forEach((elem) =>{
+                    const file = elem.files[0]
+                    if(file && (file.size > MAXIMOSIZE || file.fileSize > MAXIMOSIZE)){
+                        inputValidate = elem
+                        validate = true
+                    }
+                })
+
+                if(validate){
+                    inputValidate.focus()
+                    inputValidate.classList.add('invalid');
+                    return false
+                }
+
+                //formFields.submit();
+            }
+        })
+
+        customFileInput.forEach((elem) => elem.addEventListener('change',(e) => {
+            const element = e.target
+            if(element){
+                const fileName = element.value.split("\\").pop();
+                let fileSize = element.files[0].size;
+                fileSize = niceBytes(fileSize);
+                const inputLabel = element.nextElementSibling
+                inputLabel.classList.add("selected")
+                inputLabel.innerText = `${fileName} Tamaño: ${fileSize.toString()}`
+            }
+        }))
+
+        /*$(function () {
+
+
+            $('#id-form-persona-documentos').addClass('was-validated');
+            $('#btn-guardar').on('click', function (e) {
+                $('#id-form-persona-documentos').addClass('was-validated');
+                let element = null;
+                let validate = false;
+                $("#id-form-persona-documentos").find("input[type=file]").each(function (index, field) {
+                    for (var i = 0; i < field.files.length; i++) {
+                        const file = field.files[i];
+                        if (file.size > MAXIMOSIZE || file.fileSize > MAXIMOSIZE) {
+                            element = field;
+                            validate = true;
+                        }
+                    }
+                });
+                if (validate) {
+                    element.focus();
+                    fnToast('Tamaño permitido para los archivos maximo 2MB.', 3);
+                    return false;
+                }
+            });
+            $('#id-form-persona-documentos').on({
+                submit: function (e) {
+                    this.submit();
+                }
+            });
+
+            $(".custom-file-input").on("change", function () {
+                let fileName = $(this).val().split("\\").pop();
+                let file_size = $(this)[0].files[0].size;
+                file_size = niceBytes(file_size);
+                $(this).siblings(".custom-file-label").addClass("selected").html(fileName.toString() + '  Tamaño: ' + file_size.toString());
+            });
+
+        });*/
+
+    </script>
+{% endblock %}

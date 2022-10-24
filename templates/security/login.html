@@ -48,10 +48,11 @@
                                     {{ form.password }}
                                 </div>
                             </div>
-                            <div class="checkbox mb-2">
-                                <label>
-                                    <input type="checkbox" name="norobot" required> No soy un Robot
-                                </label>
+                            <div class="checkbox mb-3">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" name="norobot" class="custom-control-input" id="switch1" required>
+                                    <label class="custom-control-label" for="switch1">No soy un Robot</label>
+                                </div>
                             </div>
 
                             <button id="id-btnlogin" class="btn btn-lg btn-primary btn-block p-1">

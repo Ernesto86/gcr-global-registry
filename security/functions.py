@@ -1,7 +1,7 @@
 import datetime
 from django.shortcuts import redirect
 from django.http import Http404
-from system.constants import LOGO_SISTEMA, NOMBRE_SISTEMA, SISTEMA_PAGINA_WEB
+from core.constants import LOGO_SISTEMA, NOMBRE_SISTEMA, SISTEMA_PAGINA_WEB
 
 
 def addUserData(request, data):
