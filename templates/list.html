@@ -93,7 +93,9 @@
                             </form>
                         {% endblock %}
                     </div>
+
                     <div class="card-body table-responsive p-0">
+                        {% block title-list %} {% endblock %}
                         {% block table-list-details %}
                             <table id="id-table-data"
                                 class="table table-striped table-bordered table-sm sm-0 dataTable no-footer"

@@ -1,0 +1,29 @@
+{% extends 'list.html' %}
+{% block title-list %}
+<div class="alert alert-danger mb-0 mt-5" role="alert">
+     <h4>Registros de {{ nameregister.name|title }} - {{ nameregister.detail|title }}</h4>
+</div> 
+{% endblock %}
+{% block table-header-columns %}
+    <th scope="col">Identificación</th>
+    <th scope="col">Estudiante</th>
+    <th scope="col">Titulo o Certificado</th>
+    <th scope="col">Pais</th>
+    <th scope="col">Fecha de Emisión</th>
+    <th scope="col">Código Internacional de Registro</th>
+    <th scope="col">Correo Electrónico</th>
+{% endblock %}
+
+{% block table-body-rows %}
+     {% for student_registers  in StudentRegisters %}
+        <tr>
+            <td>{{ student_registers.student.dni }}</td>
+            <td>{{ student_registers.student }}</td>
+            <td>{{ student_registers.certificate }}</td>
+            <td>{{ student_registers.country }}</td>
+            <td>{{ student_registers.date_issue }}</td>
+            <td>{{ student_registers.code_international_register }}</td>
+            <td>{{ student_registers.student.email }}</td>
+        </tr>
+    {% endfor %}
+{% endblock %}
