@@ -1,4 +1,4 @@
-Django==3.2.16
+Django==4.1.2
 django-cors-headers==3.10.0
 djangorestframework==3.12.4
 djangorestframework-simplejwt==4.8.0
@@ -12,5 +12,4 @@ django-crum==0.7.9
 django-filter==21.1
 debugpy==1.6.2
 supervisor
-tzdata
 uwsgi

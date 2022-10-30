@@ -1,37 +1,14 @@
-import datetime
 from urllib.parse import urlencode
-
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, CreateView, UpdateView
-
 from institutions.forms import InstitutionForm
 from institutions.models import Institutions
 from security.functions import addUserData
-
-class ListViewFilter(object):
-    query_filter = {}
-    def filter_date(self, date_key):
-        if 'start_date' in self.request.GET:
-            start_date = self.request.GET.get('start_date', '')
-            end_date = self.request.GET.get('final', '')
-            if start_date and end_date:
-                try:
-                    start_date = datetime.datetime.strptime(start_date, '%Y-%m-%d').date()
-                    end_date = datetime.datetime.strptime(end_date, '%Y-%m-%d').date()
-                    date_range = (
-                        datetime.datetime.combine(start_date, datetime.datetime.min.time()),
-                        datetime.datetime.combine(end_date, datetime.datetime.max.time())
-                    )
-                    self.query_filter[f'{date_key}__range'] = date_range
-                except:
-                    pass
-
-    def queries(self):
-        return [Q(**{k: v}) for k, v in self.query_filter.items() if v]
+from core.util_functions import ListViewFilter
 
 class InstitutionsListView(ListViewFilter, LoginRequiredMixin, ListView):
     login_url = '/security/login'
@@ -74,6 +51,7 @@ class InstitutionCreateView(CreateView):
         context = super().get_context_data()
         addUserData(self.request, context)
         context['back_url'] = reverse_lazy('institution_list')
+        context['form_action'] = 'Crear'
         return context
 
 class InstitutionUpdateView(UpdateView):
@@ -87,6 +65,7 @@ class InstitutionUpdateView(UpdateView):
         context = super().get_context_data()
         addUserData(self.request, context)
         context['back_url'] = reverse_lazy('institution_list')
+        context['form_action'] = 'Actualizar'
         return context
 
 class InstitutionDelete(View):

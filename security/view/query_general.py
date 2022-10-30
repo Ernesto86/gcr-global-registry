@@ -3,8 +3,8 @@ from django.views.generic.base import View
 
 from institutions.models import InsTypeRegistries
 from students.models import StudentRegisters, Students
-from system.constants import LOGO_SISTEMA, SISTEMA_PAGINA_WEB, NOMBRE_SISTEMA
-from system.models import SysNationality
+from core.constants import LOGO_SISTEMA, SISTEMA_PAGINA_WEB, NOMBRE_SISTEMA
+from system.models import SysCountries, SysNationality
 
 
 class QueryGeneralView(View):
