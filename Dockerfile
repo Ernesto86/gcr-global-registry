@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.10.8
 EXPOSE 8000
 # Nginx
 RUN apt-get update
@@ -14,7 +14,7 @@ RUN mkdir /app
 WORKDIR /app
 COPY docker/requirements.txt /app/
 RUN pip install --upgrade pip
-RUN pip install --upgrade Pillow
+RUN pip install --upgrade Pillow tzdata pytz
 RUN pip install -r requirements.txt
 COPY . /app/
 # Timezone sync
