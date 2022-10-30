@@ -1,21 +1,10 @@
 from django.shortcuts import render
 from django.views.generic.base import View
-
-from institutions.models import InsTypeRegistries, Institutions
+from institutions.models import InsTypeRegistries
 from security.functions import addUserData
-from students.models import StudentRegisters, Students
-from system.constants import LOGO_SISTEMA, SISTEMA_PAGINA_WEB, NOMBRE_SISTEMA
-
+from students.models import StudentRegisters
 class OrganizadorRegistrosView(View):
     template_name = 'security/organizador_registros/view.html'
-
-    def context_common(self):
-        context = {}
-        context['autor'] = ''
-        context['sistema_logo'] = LOGO_SISTEMA
-        context['sistema_web'] = SISTEMA_PAGINA_WEB
-        context['sistema_nombre'] = NOMBRE_SISTEMA
-        return context
 
     def get(self, request):
         context = {}
@@ -25,7 +14,7 @@ class OrganizadorRegistrosView(View):
         for ins_type_registries in InsTypeRegistries.objects.all():
             registers_level = StudentRegisters.objects.filter(
                 type_register_id=ins_type_registries.id,
-                institution__created_by=context['usuario'].username
+                institution__created_by=context['user'].username
             ).count()
 
             if registers_level:
@@ -39,5 +28,3 @@ class OrganizadorRegistrosView(View):
                     }
                 )
         return render(request, self.template_name, context)
-
-    

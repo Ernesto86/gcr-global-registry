@@ -1,22 +1,17 @@
 from django.shortcuts import render
 from django.views.generic.base import View
-
 from institutions.models import InsTypeRegistries
 from students.models import StudentRegisters, Students
-from core.constants import LOGO_SISTEMA, SISTEMA_PAGINA_WEB, NOMBRE_SISTEMA
-from system.models import SysCountries, SysNationality
-
+from security.functions import addUserData
+from system.models import SysNationality
 
 class QueryGeneralView(View):
     template_name = 'security/query_general/view.html'
 
     def context_common(self):
         context = {}
-        context['autor'] = ''
-        context['sistema_logo'] = LOGO_SISTEMA
-        context['sistema_web'] = SISTEMA_PAGINA_WEB
-        context['sistema_nombre'] = NOMBRE_SISTEMA
-        context['sys_nationality_list'] = SysNationality.objects.all()
+        addUserData(self.request, context)
+        context['sys_nationality_list'] = SysNationality.objects.filter(deleted=False)
         return context
 
     def get(self, request):
@@ -25,12 +20,6 @@ class QueryGeneralView(View):
 
     def post(self, request):
         context = self.context_common()
-        context['autor'] = ''
-        context['sistema_logo'] = LOGO_SISTEMA
-        context['sistema_web'] = SISTEMA_PAGINA_WEB
-        context['sistema_nombre'] = NOMBRE_SISTEMA
-        context['sys_nationality_list'] = SysNationality.objects.all()
-
         nationality = self.request.POST.get("nationality", None)
         context['nationality'] = int(nationality) if nationality else nationality
 
