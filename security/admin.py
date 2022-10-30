@@ -1,10 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
-
 from .forms import CustomUserChangeForm, CustomUserCreationForm
-from .models import User
-
+from .models import *
 
 class UserAdmin(BaseUserAdmin):
     ordering = ["email"]
@@ -82,5 +80,45 @@ class UserAdmin(BaseUserAdmin):
     )
     search_fields = ["email", "username", "first_name", "last_name"]
 
-
 admin.site.register(User, UserAdmin)
+
+class SecurityModuleAdmin(admin.ModelAdmin):
+    list_display = (
+        'code',
+        'url',
+        'name',
+        'type_module',
+        'order',
+        'status'
+    )
+    list_per_page = 20
+    ordering = ('type_module','name')
+    search_fields = ('code','name')
+    list_filter = (
+        'type_module',
+        'deleted',
+    )
+    def status(self, obj):
+        return not obj.deleted
+    status.boolean = True
+
+admin.site.register(SecurityModule, SecurityModuleAdmin)
+
+class SecurityModuloGrupoAdmin(admin.ModelAdmin):
+    list_display = (
+        'name',
+        'description',
+        'priority',
+        'status',
+    )
+    list_per_page = 20
+    ordering = ('priority','name',)
+    search_fields = ('name',)
+    list_filter = (
+        'deleted',
+    )
+    def status(self, obj):
+        return not obj.deleted
+    status.boolean = True
+
+admin.site.register(SecurityModuloGrupo, SecurityModuloGrupoAdmin)

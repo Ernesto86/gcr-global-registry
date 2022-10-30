@@ -2,7 +2,6 @@ from django.db import models
 from core.models import ModelBase, ModelBaseAudited
 from core.constants import Gender
 
-
 class Certificates(ModelBase):
     code = models.CharField(max_length=10, verbose_name="Código", blank=True, null=True)
     name = models.CharField(max_length=100, verbose_name="Nombre")
@@ -26,12 +25,13 @@ class Certificates(ModelBase):
         if self.description:
             self.description = self.description.upper()
 
-        super(Certificates, self).save(*args, **kwargs)
+        ModelBase.save(self)
 
 class Students(ModelBaseAudited):
     country = models.ForeignKey("system.SysCountries", verbose_name="Pais", on_delete=models.CASCADE, blank=True, null=True)
+    nationality = models.ForeignKey("system.SysNationality", verbose_name="Nacionalidad", on_delete=models.CASCADE, blank=True, null=True)
+    user = models.OneToOneField("security.User", verbose_name="Usuario", on_delete=models.CASCADE, blank=True, null=True)
     code = models.CharField(max_length=20, verbose_name="Código", blank=True, null=True)
-    number = models.CharField(max_length=10, blank=True, null=True,editable=False)
     names = models.CharField(max_length=100, verbose_name="Apellidos y nombres", blank=True, null=True, editable=False)
     last_name = models.CharField(max_length=100, verbose_name="Apellidos")
     first_name = models.CharField(max_length=100, verbose_name="Nombres")
@@ -42,12 +42,11 @@ class Students(ModelBaseAudited):
         max_length=10,
     )
     dni = models.CharField(max_length=20, blank=True, null=True)
-    nationality = models.ForeignKey("system.SysNationality", verbose_name="Nacionalidad", on_delete=models.CASCADE, blank=True, null=True)
-    address = models.CharField(max_length=1024, verbose_name="Dirección", blank=True, null=True)
+    address = models.CharField(max_length=191, verbose_name="Dirección", blank=True, null=True)
     code_postal = models.CharField(max_length=10, verbose_name="Cod. postal", blank=True, null=True)
     telephone = models.CharField(max_length=20, verbose_name="Teléfono", blank=True, null=True)
     cell_phone = models.CharField(max_length=20, verbose_name="Celular", blank=True, null=True)
-    email = models.CharField(max_length=150, verbose_name="Email", blank=True, null=True)
+    email = models.CharField(max_length=191, verbose_name="Email", blank=True, null=True)
     email_alternate = models.CharField(max_length=150, verbose_name="Email alterno", blank=True, null=True)
 
     def __str__(self):
@@ -64,26 +63,23 @@ class Students(ModelBaseAudited):
             self.code = self.code.upper()
 
         if self.last_name:
-            self.last_name = self.last_name.upper()
+            self.last_name = self.last_name.strip().upper()
+            self.names = self.last_name
 
         if self.first_name:
-            self.first_name = self.first_name.upper()
+            self.first_name = self.first_name.strip().upper()
+            self.names = self.names + ' ' + self.first_name if self.names else self.first_name
 
         if self.address:
-            self.address = self.address.upper()
+            self.address = self.address.strip().upper()
 
         if self.email:
-            self.email = self.email.lower()
+            self.email = self.email.strip().lower()
 
         if self.email_alternate:
-            self.email_alternate = self.email_alternate.lower()
+            self.email_alternate = self.email_alternate.strip().lower()
 
-        self.names = self.last_name + ' ' + self.first_name
-
-        super(Students, self).save(*args, **kwargs)
-
-        self.number = str(self.id).zfill(10)
-        super(Students, self).save(*args, **kwargs)
+        ModelBaseAudited.save(self)
 
 class StudentRegisters(ModelBaseAudited):
     institution = models.ForeignKey(
@@ -134,6 +130,6 @@ class StudentRegisters(ModelBaseAudited):
 
 
     def save(self, *args, **kwargs):
-        super(StudentRegisters, self).save(*args, **kwargs)
+        ModelBaseAudited.save(self)
         self.number = str(self.id).zfill(10)
-        super(StudentRegisters, self).save(*args, **kwargs)
+        ModelBaseAudited.save(self)

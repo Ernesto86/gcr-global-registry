@@ -5,22 +5,22 @@ class InsTypeRegistriesAdmin(admin.ModelAdmin):
     list_display = (
         'code',
         'name',
-        'created_at',
-        'deleted_at'
+        'status'
     )
     list_per_page = 20
     ordering = ('-created_at',)
     search_fields = ('code','name')
     list_filter = (
-        'type',
         'deleted',
     )
+    def status(self, obj):
+        return not obj.deleted
+    status.boolean = True
 
 admin.site.register(InsTypeRegistries,InsTypeRegistriesAdmin)
 
 class InstitutionsAdmin(admin.ModelAdmin):
     list_display = (
-        'number',
         'name',
         'identification',
         'representative',
@@ -28,7 +28,7 @@ class InstitutionsAdmin(admin.ModelAdmin):
         'type_registration',
         'telephone',
         'created_at',
-        'deleted_at'
+        'status'
     )
     list_per_page = 20
     ordering = ('-created_at',)
@@ -39,5 +39,8 @@ class InstitutionsAdmin(admin.ModelAdmin):
         'adviser',
         'deleted'
     )
+    def status(self, obj):
+        return not obj.deleted
+    status.boolean = True
 
 admin.site.register(Institutions,InstitutionsAdmin)

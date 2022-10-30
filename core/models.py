@@ -1,8 +1,5 @@
 from crum import get_current_user
 from django.db import models
-# from django.db.models import FileField
-# from django.forms import forms
-# from django.template.defaultfilters import filesizeformat
 # from django.utils.translation import ugettext_lazy as _
 
 class ModelBase(models.Model):
@@ -38,7 +35,7 @@ class ModelBaseAudited(models.Model):
     deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(blank=True, null=True, editable=False)
     deleted_by = models.CharField(max_length=100, blank=True, null=True, editable=False)
-    deleted_reason = models.CharField(max_length=250, blank=True, null=True, editable=False)
+    deleted_reason = models.CharField(max_length=191, blank=True, null=True, editable=False)
 
     def save(self, *args, **kwargs):
         try:

@@ -1,15 +1,9 @@
 from django.db import models
 from core.models import ModelBase, ModelBaseAudited
-from core.constants import TYPE_LIST
-
 class InsTypeRegistries(ModelBase):
-    parent = models.ForeignKey('self', verbose_name="Principal", on_delete=models.CASCADE, blank=True, null=True)
-    code = models.CharField(max_length=50, verbose_name="Código", blank=True, null=True)
+    code = models.CharField(max_length=20, verbose_name="Código", blank=True, null=True)
     name = models.CharField(max_length=100, verbose_name="Nombre")
-    detail = models.CharField(max_length=100, verbose_name="Detalle", blank=True, null=True)
-    type = models.CharField(max_length=10, verbose_name="Tipo", blank=True, null=True, choices=TYPE_LIST)
-    route = models.CharField(max_length=1024, blank=True, null=True, editable=False)
-    order = models.CharField(max_length=1024, blank=True, null=True, editable=False)
+    detail = models.CharField(max_length=191, verbose_name="Detalle", blank=True, null=True)
     color = models.CharField(max_length=15, verbose_name="Color", blank=True, null=True)
 
     def __str__(self):
@@ -27,29 +21,13 @@ class InsTypeRegistries(ModelBase):
         if self.name:
             self.name = self.name.upper()
 
-        super(InsTypeRegistries, self).save(*args, **kwargs)
-
-        codid = str(self.id).zfill(6)
-
-        if self.code is None:
-            self.codid = codid
-
-        if not self.parent is None:
-            self.route = self.parent.route + '/' + codid
-            self.order = self.parent.order + '/' + str(self.name)
-        else:
-            self.route = 'ROOT/' + codid
-            self.order = 'General/' + str(self.name)
-
-        super(InsTypeRegistries, self).save(*args, **kwargs)
-
+        ModelBase.save(self)
 
 class Institutions(ModelBaseAudited):
     adviser = models.ForeignKey("advisers.Advisers", verbose_name="Asesor", on_delete=models.CASCADE, blank=True, null=True)
     type_registration = models.ForeignKey(InsTypeRegistries, verbose_name="Tipo de registro", on_delete=models.CASCADE, blank=True, null=True)
     country = models.ForeignKey("system.SysCountries", verbose_name="Pais", on_delete=models.CASCADE, blank=True, null=True)
     code = models.CharField(max_length=3, verbose_name="Código", blank=True, null=True)
-    number = models.CharField(max_length=10, blank=True, null=True, editable=False)
     name = models.CharField(max_length=100, verbose_name="Nombre")
     alias = models.CharField(max_length=20, verbose_name="Alias", blank=True, null=True)
     representative = models.CharField(max_length=200, verbose_name="Representante", blank=True, null=True)
@@ -99,7 +77,4 @@ class Institutions(ModelBaseAudited):
         if self.web:
             self.web = self.web.lower()
 
-        super(Institutions, self).save(*args, **kwargs)
-
-        self.number = str(self.id).zfill(10)
-        super(Institutions, self).save(*args, **kwargs)
+        ModelBaseAudited.save(self)

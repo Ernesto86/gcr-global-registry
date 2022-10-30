@@ -3,7 +3,6 @@ from .models import *
 
 class StudentsAdmin(admin.ModelAdmin):
     list_display = (
-        'number',
         'code',
         'names',
         'dni',
@@ -11,7 +10,7 @@ class StudentsAdmin(admin.ModelAdmin):
         'country',
         'telephone',
         'created_at',
-        'estado'
+        'status'
     )
     list_per_page = 20
     ordering = ('-created_at',)
@@ -22,10 +21,9 @@ class StudentsAdmin(admin.ModelAdmin):
         'deleted'
     )
 
-    def estado(self, obj):
+    def status(self, obj):
         return not obj.deleted
-    estado.boolean = True
-
+    status.boolean = True
 
 admin.site.register(Students,StudentsAdmin)
 admin.site.register(Certificates)
@@ -40,7 +38,7 @@ class StudentRegistersAdmin(admin.ModelAdmin):
         'date_issue',
         'code_international_register',
         'created_at',
-        'deleted_at'
+        'status'
     )
     list_per_page = 20
     ordering = ('-created_at',)
@@ -51,6 +49,8 @@ class StudentRegistersAdmin(admin.ModelAdmin):
         'type_register',
         'deleted'
     )
-
+    def status(self, obj):
+        return not obj.deleted
+    status.boolean = True
 
 admin.site.register(StudentRegisters,StudentRegistersAdmin)

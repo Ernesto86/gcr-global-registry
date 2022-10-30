@@ -89,10 +89,7 @@ class TypeDocument(models.TextChoices):
 #     (12,"DICIEMBRE")
 # )
 
-LOGO_SISTEMA = 'fas fa-globe-americas fa-2x'
-NOMBRE_SISTEMA = 'Global | Registry '
-SISTEMA_SGA = 'SAyA'
+SYSTEM_LOGO = 'fas fa-globe-americas fa-2x'
+SYSTEM_NAME = 'Global | Registry '
 SISTEMA_AUTOR = 'Ing. Ernesto Guamán U.'
-SISTEMA_PAGINA_WEB = 'www.globalregistry.com'
-CODIGO_INSTITUCION = '01'
-LOGO_INFORME_CABECERA = 'logo-informe-cabecera.png'
+SYSTEM_WEB = 'www.globalregistry.com'

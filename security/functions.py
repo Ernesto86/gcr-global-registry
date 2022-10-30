@@ -1,14 +1,14 @@
 import datetime
 from django.shortcuts import redirect
 from django.http import Http404
-from core.constants import LOGO_SISTEMA, NOMBRE_SISTEMA, SISTEMA_PAGINA_WEB
+from core.constants import SYSTEM_LOGO, SYSTEM_NAME, SYSTEM_WEB
 
 def addUserData(request, data):
 
     data['hoy'] = datetime.datetime.now()
-    data['system_logo'] = LOGO_SISTEMA
-    data['system_web'] = SISTEMA_PAGINA_WEB
-    data['system_name'] = NOMBRE_SISTEMA
+    data['system_logo'] = SYSTEM_LOGO
+    data['system_name'] = SYSTEM_NAME
+    data['system_web'] = SYSTEM_WEB
 
     if request.user.is_authenticated:
         try:
