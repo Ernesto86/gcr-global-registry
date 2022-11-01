@@ -5,6 +5,7 @@ class InsTypeRegistries(ModelBase):
     name = models.CharField(max_length=100, verbose_name="Nombre")
     detail = models.CharField(max_length=191, verbose_name="Detalle", blank=True, null=True)
     color = models.CharField(max_length=15, verbose_name="Color", blank=True, null=True)
+    price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Precio", blank=True, null=True)
 
     def __str__(self):
         return "{}".format(self.name)
@@ -42,6 +43,7 @@ class Institutions(ModelBaseAudited):
     file_nomination = models.FileField(upload_to='institutions/nomination/%Y/%m/%d', verbose_name="Archivo Nominación", max_length=1024, blank=True, null=True)
     file_title_academic = models.FileField(upload_to='institutions/title_academic/%Y/%m/%d', verbose_name="Titulo académico", max_length=1024, blank=True, null=True)
     logo = models.ImageField(upload_to='institutions/logo/%Y/%m/%d', max_length=1024, blank=True, null=True)
+    discount = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Descuento %", blank=True, null=True)
 
     def __str__(self):
         return '{}'.format(self.name)

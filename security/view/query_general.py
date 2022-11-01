@@ -3,7 +3,7 @@ from django.views.generic.base import View
 from institutions.models import InsTypeRegistries
 from students.models import StudentRegisters, Students
 from security.functions import addUserData
-from system.models import SysNationality
+from system.models import SysCountries
 
 class QueryGeneralView(View):
     template_name = 'security/query_general/view.html'
@@ -11,7 +11,7 @@ class QueryGeneralView(View):
     def context_common(self):
         context = {}
         addUserData(self.request, context)
-        context['sys_nationality_list'] = SysNationality.objects.filter(deleted=False)
+        context['sys_nationality_list'] = SysCountries.objects.filter(deleted=False)
         return context
 
     def get(self, request):

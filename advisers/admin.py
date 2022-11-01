@@ -1,7 +1,6 @@
 from django.contrib import admin
 from .models import *
 
-
 class AdvisersAdmin(admin.ModelAdmin):
     list_display = (
         'number',
@@ -86,3 +85,5 @@ class PaymentAdviserCommissionsAdmin(admin.ModelAdmin):
 
 
 admin.site.register(PaymentAdviserCommissions, PaymentAdviserCommissionsAdmin)
+
+admin.site.register(Functionary)

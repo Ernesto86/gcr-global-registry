@@ -5,6 +5,7 @@ from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from security.functions import addUserData
+from django.views.generic import RedirectView
 
 class LoginAuthView(LoginView):
     form_class = AuthenticationForm
@@ -73,6 +74,9 @@ class LoginAuthView(LoginView):
 
         return JsonResponse(data, status=status)
 
-def logout_user(request):
-    logout(request)
-    return redirect('/security/login')
+class LogoutRedirectView(RedirectView):
+    pattern_name = 'login'
+
+    def dispatch(self, request, *args, **kwargs):
+        logout(request)
+        return super().dispatch(request, *args, **kwargs)

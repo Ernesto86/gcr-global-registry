@@ -1,7 +1,7 @@
 
 import datetime
 from django.db.models import Q
-
+from decimal import Decimal
 class ListViewFilter(object):
     query_filter = {}
     def filter_date(self, date_key):
@@ -22,3 +22,11 @@ class ListViewFilter(object):
 
     def queries(self):
         return [Q(**{k: v}) for k, v in self.query_filter.items() if v]
+
+def util_null_to_decimal(value, decimal=None):
+    if False:
+        pass
+    try:
+        return Decimal(value).quantize(Decimal(10) ** -2) if value else Decimal('0.00')
+    except Exception as ex:
+        return Decimal('0.00')

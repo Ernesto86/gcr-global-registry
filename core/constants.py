@@ -1,11 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-TYPE_LIST = (
-    ('GRUPO', 'GRUPO'),
-    ('ITEM', 'ITEM'),
-)
-
 class Gender(models.TextChoices):
     MALE = "Male", _("Masculino")
     FEMALE = "Female", _("Femenino")
@@ -16,10 +11,10 @@ class Sex(models.TextChoices):
     FEMALE = "Woman", _("Mujer")
     OTHER = "Other", _("Otro")
 
-
-class TypeDocument(models.TextChoices):
-    MALE = "Identification", _("Cedula")
-    FEMALE = "Passport", _("Pasaporte")
+class TypePost(models.TextChoices):
+    PRESIDENT = "President", _("Presidente")
+    ADMINISTRATOR = "Administrator", _("Administrador")
+    MANAGER = "Manager", _("Gerente")
     OTHER = "Other", _("Otro")
 
 

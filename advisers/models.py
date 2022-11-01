@@ -1,8 +1,9 @@
 from django.db import models
 from core.models import ModelBaseAudited
-
+from core.constants import TypePost
 class Advisers(ModelBaseAudited):
     country = models.ForeignKey("system.SysCountries", verbose_name="Pais", on_delete=models.CASCADE, blank=True, null=True)
+    user = models.OneToOneField("security.User", verbose_name="Usuario", on_delete=models.CASCADE, blank=True, null=True)
     code = models.CharField(max_length=20, verbose_name="Código", blank=True, null=True)
     number = models.CharField(max_length=10,blank=True, null=True,editable=False)
     names = models.CharField(max_length=100, verbose_name="Apellidos y nombres", blank=True, null=True, editable=False)
@@ -51,7 +52,6 @@ class Advisers(ModelBaseAudited):
         self.number = str(self.id).zfill(10)
         super(Advisers, self).save(*args, **kwargs)
 
-
 class AdvisersCommissions(ModelBaseAudited):
     institution = models.ForeignKey(
         "institutions.Institutions",
@@ -83,7 +83,6 @@ class AdvisersCommissions(ModelBaseAudited):
         self.number = str(self.id).zfill(10)
         super(AdvisersCommissions, self).save(*args, **kwargs)
 
-
 class PaymentAdviserCommissions(ModelBaseAudited):
     adviser = models.ForeignKey(Advisers, on_delete=models.CASCADE, verbose_name="Asesor")
     number = models.CharField(max_length=10, blank=True, null=True, editable=False)
@@ -104,7 +103,6 @@ class PaymentAdviserCommissions(ModelBaseAudited):
         super(PaymentAdviserCommissions, self).save(*args, **kwargs)
         self.number = str(self.id).zfill(10)
         super(PaymentAdviserCommissions, self).save(*args, **kwargs)
-
 
 class PaymentAdviserCommissionsDetails(ModelBaseAudited):
     payment_adviser_commissions = models.ForeignKey(
@@ -132,3 +130,55 @@ class PaymentAdviserCommissionsDetails(ModelBaseAudited):
 
     def __str__(self):
         return '{}'.format(self.value)
+
+class Functionary(ModelBaseAudited):
+    country = models.ForeignKey("system.SysCountries", verbose_name="Pais", on_delete=models.CASCADE, blank=True, null=True)
+    user = models.OneToOneField("security.User", verbose_name="Usuario", on_delete=models.CASCADE, blank=True, null=True)
+    type_post = models.CharField(
+        verbose_name="Tipo Cargo",
+        choices=TypePost.choices,
+        max_length=15,
+    )
+    code = models.CharField(max_length=20, verbose_name="Código", blank=True, null=True)
+    names = models.CharField(max_length=100, verbose_name="Apellidos y nombres", blank=True, null=True, editable=False)
+    last_name = models.CharField(max_length=100, verbose_name="Apellidos")
+    first_name = models.CharField(max_length=100, verbose_name="Nombres")
+    dni = models.CharField(max_length=20, blank=True, null=True)
+    address = models.CharField(max_length=1024, verbose_name="Dirección", blank=True, null=True)
+    code_postal = models.CharField(max_length=10, verbose_name="Cod. postal", blank=True, null=True)
+    telephone = models.CharField(max_length=20, verbose_name="Teléfono", blank=True, null=True)
+    cell_phone = models.CharField(max_length=20, verbose_name="Celular", blank=True, null=True)
+    email = models.CharField(max_length=150, verbose_name="Email", blank=True, null=True)
+    email_alternate = models.CharField(max_length=150, verbose_name="Email alterno", blank=True, null=True)
+
+    def __str__(self):
+        return '{}'.format(self.names)
+
+    class Meta:
+        verbose_name = 'Funcionario'
+        verbose_name_plural = 'Funcionarios'
+        ordering = ('created_at',)
+
+    def save(self, *args, **kwargs):
+
+        if self.code:
+            self.code = self.code.upper()
+
+        if self.last_name:
+            self.last_name = self.last_name.upper()
+
+        if self.first_name:
+            self.first_name = self.first_name.upper()
+
+        if self.address:
+            self.address = self.address.upper()
+
+        if self.email:
+            self.email = self.email.lower()
+
+        if self.email_alternate:
+            self.email_alternate = self.email_alternate.lower()
+
+        self.names = self.last_name + ' ' + self.first_name
+
+        ModelBaseAudited.save(self)

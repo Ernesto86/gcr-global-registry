@@ -29,7 +29,6 @@ class Certificates(ModelBase):
 
 class Students(ModelBaseAudited):
     country = models.ForeignKey("system.SysCountries", verbose_name="Pais", on_delete=models.CASCADE, blank=True, null=True)
-    nationality = models.ForeignKey("system.SysNationality", verbose_name="Nacionalidad", on_delete=models.CASCADE, blank=True, null=True)
     user = models.OneToOneField("security.User", verbose_name="Usuario", on_delete=models.CASCADE, blank=True, null=True)
     code = models.CharField(max_length=20, verbose_name="Código", blank=True, null=True)
     names = models.CharField(max_length=100, verbose_name="Apellidos y nombres", blank=True, null=True, editable=False)

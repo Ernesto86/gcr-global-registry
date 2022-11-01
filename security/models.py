@@ -63,7 +63,7 @@ class SecurityModule(ModelBase):
     image = models.ImageField(upload_to='module/%Y/%m/%d', verbose_name='Imagen', null=True, blank=True)
     description = models.CharField(max_length=100, verbose_name="Descripción", blank=True, null=True)
     order = models.IntegerField(default=0, verbose_name="Orden", blank=True, null=True)
-    permits = models.ManyToManyField(Permission, verbose_name='Permisos', blank=True, null=True)
+    permits = models.ManyToManyField(Permission, verbose_name='Permisos')
 
     def __str__(self):
         return '{} (/{})'.format(self.name, self.url)

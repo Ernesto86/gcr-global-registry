@@ -89,3 +89,15 @@ class ModelBaseAudited(models.Model):
 #             pass
 #
 #         return data
+
+
+class CommissionPorcentage(ModelBaseAudited):
+    values = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Valor", blank=True, null=True)
+
+    def __str__(self):
+        return '{} (/{})'.format(self.name, self.url)
+
+    class Meta:
+        verbose_name = 'Comiison porcentaje'
+        verbose_name_plural = 'Comiisones porcentaje'
+        ordering = ['created_at',]
