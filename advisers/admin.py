@@ -77,4 +77,8 @@ class PaymentAdviserCommissionsAdmin(admin.ModelAdmin):
 
 admin.site.register(PaymentAdviserCommissions, PaymentAdviserCommissionsAdmin)
 
-# admin.site.register(Functionary)
+admin.site.register(Managers)
+
+admin.site.register(PeriodCommissions)
+
+admin.site.register(ManagersCommissions)

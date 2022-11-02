@@ -188,11 +188,11 @@ class PeriodCommissions(ModelBaseAudited):
         (2, 'Periodo 2'),
         (3, 'Periodo 3'),
     )
-    manager_percentage = models.DecimalField(max_digits=12, decimal_places=12, default=Decimal("0.00"), verbose_name='Porcentaje gerente %')
-    advisers_percentage = models.DecimalField(max_digits=12, decimal_places=12, default=Decimal("0.00"), verbose_name='Porcentaje asesor %')
+    manager_percentage = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0), verbose_name='Porcentaje gerente %')
+    advisers_percentage = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0), verbose_name='Porcentaje asesor %')
     days_commissions = models.IntegerField(default=0, verbose_name="Dias comison")
-    manager_percentage_max = models.DecimalField(max_digits=12, decimal_places=12, default=Decimal("0.00"), verbose_name='Porcentaje gerente maximo %')
-    advisers_percentage_max = models.DecimalField(max_digits=12, decimal_places=12, default=Decimal("0.00"), verbose_name='Porcentaje asesor maximo %')
+    manager_percentage_max = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0), verbose_name='Porcentaje gerente maximo %')
+    advisers_percentage_max = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0), verbose_name='Porcentaje asesor maximo %')
     type_period = models.IntegerField(verbose_name="Tipo periodo", choices=TYPE_PERIOD, default=TYPE_PERIOD[0][0])
 
     def __str__(self):
@@ -201,6 +201,7 @@ class PeriodCommissions(ModelBaseAudited):
     class Meta:
         verbose_name = 'Perido comision'
         verbose_name_plural = 'Periodos comisiones'
+        ordering = ('type_period',)
 
 
 class AdvisersCommissions(ModelBaseAudited):
@@ -214,7 +215,7 @@ class AdvisersCommissions(ModelBaseAudited):
         on_delete=models.CASCADE,
         verbose_name="Asesor"
     )
-    value = models.DecimalField(max_digits=12, decimal_places=12, default=Decimal("0.00"), verbose_name='Porcentaje %')
+    value = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0), verbose_name='Porcentaje %')
     is_exclude = models.BooleanField(default=False)
 
     def __str__(self):
@@ -236,7 +237,7 @@ class ManagersCommissions(ModelBaseAudited):
         on_delete=models.CASCADE,
         verbose_name="Manager"
     )
-    value = models.DecimalField(max_digits=12, decimal_places=12, default=Decimal("0.00"), verbose_name='Porcentaje %')
+    value = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0), verbose_name='Porcentaje %')
     is_exclude = models.BooleanField(default=False)
 
     def __str__(self):
