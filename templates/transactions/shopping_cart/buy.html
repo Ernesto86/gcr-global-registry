@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% block header %}
+    {% include 'header.html' %}
+{% endblock %}
+
+{% block container-main %}
+    <div class="container-fluid" style="margin: 5rem;  ">
+        <div class="row">
+            <div class="col-lg-10 col-md">
+                <h4 class="border-bottom-3"><b>CARRITO</b></h4>
+            </div>
+            <div class="col-lg-2 col-md">
+                <h4 class="border-bottom-3"><b>Precio total</b></h4>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center align-items-center">
+            {% for dicc in type_registries_list %}
+                <div class="col-lg-12">
+                    <hr style="background: black"/>
+                </div>
+                <div class="col-lg-4 col-md">
+                    <div style="border-radius:25px" class="alert alert-{{ dicc.type_registries.color }} mb-0 mt-5 text-center register " role="alert">
+                        <p class="display-3 text-center"><b class="circle">{{ dicc.type_registries.registers_level_count }}</b></p>
+                        <p><b>REGISTROS {{ dicc.type_registries.name }}</b></p>
+                        <p><b> $ {{ dicc.type_registries.price }}</b></p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md">
+                    <p style="color: black">
+                        <b>{{ dicc.type_registries.detail|upper }}</b>
+                    </p>
+                    <p>
+                        Actualmente tiene disponible {{ dicc.quota_balance }} registros. Adquiera más
+                        registros para seguir ingresando sus certificados.
+                    </p>
+                    <div class="row">
+                        <div class="col-lg-3 col-md">
+                            <input
+                                    type="number"
+                                    class="form-control"
+                                    id="id-{{ dicc.institution_id }}{{ dicc.type_registries.id }}"
+                                    value="{{ dicc.quotes }}"
+                                    min="1"
+                                    {% if not dicc.has_type_register_assigned %} readonly {% endif %}
+
+                            >
+                        </div>
+                        <div class="col-lg-5 col-md">
+                            <button type="button" class="btn btn-warning btn-lg btn-block" style="border-radius:25px; font-size: 1rem; color: black">
+                                Precio Unitario Final: US $ {{ dicc.price_discount }}
+                            </button>
+                        </div>
+                        <div class="col-lg-3 col-md">
+                            <button
+                                    type="button"
+                                    class="btn btn-danger btn-lg btn-block cls-btn-delete-item"
+                                    style="border-radius:25px; font-size: 1rem; color: black"
+                                    data-institutionid="{{ dicc.institution_id }}"
+                                    data-typeregisterid="{{ dicc.type_registries.id }}"
+                            >
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md" style="color: black">
+                    <p class="text-center">$ {{ dicc.price }}</p>
+                </div>
+            {% endfor %}
+            <div class="col-lg-12">
+                <hr style="background: black"/>
+            </div>
+            <div class="col-lg-2 offset-10 pt-3">
+                <p style="color: black">Subtotal <b>$ {{ subtotal }}</b></p>
+            </div>
+            <div>
+                {% if show_bottom_pay %}
+                    <button id="id-btn-pay" type="button" class="btn btn-warning btn-lg btn-block pl-5 pr-5" style="border-radius:25px; font-size: 2rem; color: black">
+                        <b>Proceder al pago</b>
+                    </button>
+                {% endif %}
+            </div>
+            <br>
+        </div>
+    </div>
+{% endblock %}
+{% block jscript %}
+    <script>
+        document.addEventListener("DOMContentLoaded", e => {
+            var objD = {
+                elems: {},
+                attr: {},
+                CONSTANT: {},
+                model: {},
+                fun: {
+                    deleteItemCart: async function (typeRegisterId) {
+
+                        const formData = new FormData();
+                        formData.append("action", 'delete_item')
+                        formData.append("typeRegisterId", typeRegisterId)
+
+                        const [status, json] = await mFetch('{{ request.path }}', formData, 'POST');
+
+                        if (status === 200) {
+                            window.location.reload()
+                        } else {
+                            alert.innerText = json.errors.join(',');
+                            alert.classList.remove('d-none');
+                        }
+
+                    },
+                    pay: async function () {
+                        const formData = new FormData();
+                        formData.append("action", 'pay')
+
+                        const [status, json] = await mFetch('{{ request.path }}', formData, 'POST');
+
+                        if (status === 200) {
+                            window.location.reload()
+                        } else {
+                            alert.innerText = json.errors.join(',');
+                            alert.classList.remove('d-none');
+                        }
+                    }
+                }
+            }
+
+            document.getElementById('id-btn-pay').addEventListener('click', function () {
+                objD.fun.pay()
+            })
+
+            document.addEventListener('click', (e) => {
+                if (e.target.matches(".cls-btn-delete-item")) {
+                    const typeRegisterId = e.target.dataset.typeregisterid
+                    objD.fun.deleteItemCart(typeRegisterId)
+                }
+            })
+        });
+    </script>
+{% endblock %}

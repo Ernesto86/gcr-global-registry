@@ -1,5 +1,8 @@
 from django.db import models
 from core.models import ModelBase, ModelBaseAudited
+from core.util_functions import util_null_to_decimal
+
+
 class InsTypeRegistries(ModelBase):
     code = models.CharField(max_length=20, verbose_name="Código", blank=True, null=True)
     name = models.CharField(max_length=100, verbose_name="Nombre")
@@ -9,6 +12,9 @@ class InsTypeRegistries(ModelBase):
 
     def __str__(self):
         return "{}".format(self.name)
+
+    def get_price_with_discount(self, discount_decimal):
+        return util_null_to_decimal(self.price - (self.price * discount_decimal))
 
     class Meta:
         verbose_name = 'Tipo de Registro'
@@ -23,6 +29,7 @@ class InsTypeRegistries(ModelBase):
             self.name = self.name.upper()
 
         ModelBase.save(self)
+
 
 class Institutions(ModelBaseAudited):
     adviser = models.ForeignKey("advisers.Advisers", verbose_name="Asesor", on_delete=models.CASCADE, blank=True, null=True)
@@ -44,9 +51,14 @@ class Institutions(ModelBaseAudited):
     file_title_academic = models.FileField(upload_to='institutions/title_academic/%Y/%m/%d', verbose_name="Titulo académico", max_length=1024, blank=True, null=True)
     logo = models.ImageField(upload_to='institutions/logo/%Y/%m/%d', max_length=1024, blank=True, null=True)
     discount = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Descuento %", blank=True, null=True)
+    date_approval = models.DateField(blank=True, null=True, verbose_name="Fecha de aprobacion")
+    status = models.BooleanField(default=False)
 
     def __str__(self):
         return '{}'.format(self.name)
+
+    def get_discount_decimal(self):
+        return self.discount / 100
 
     class Meta:
         verbose_name = 'Institución'

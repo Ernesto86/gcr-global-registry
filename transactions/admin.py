@@ -13,7 +13,6 @@ class OrderInstitutionQuotasAdmin(admin.ModelAdmin):
         'institution',
         'date_issue',
         'subtotal',
-        'discount',
         'taxes',
         'total',
         'created_at',
