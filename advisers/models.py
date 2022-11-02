@@ -1,11 +1,32 @@
+from decimal import Decimal
+
 from django.db import models
 from core.models import ModelBaseAudited
-from core.constants import TypePost
+
+
 class Advisers(ModelBaseAudited):
-    country = models.ForeignKey("system.SysCountries", verbose_name="Pais", on_delete=models.CASCADE, blank=True, null=True)
+    country_origin = models.ForeignKey(
+        "system.SysCountries",
+        verbose_name="Pais de origin",
+        on_delete=models.PROTECT,
+        related_name='country_origin_advisers_set',
+        blank=True, null=True
+    )
+    country_residence = models.ForeignKey(
+        "system.SysCountries",
+        verbose_name="Pais de residencia",
+        on_delete=models.PROTECT,
+        related_name='country_residence_advisers_set',
+        blank=True, null=True
+    )
+    manager = models.ForeignKey(
+        "advisers.Managers",
+        verbose_name="Gerente",
+        on_delete=models.PROTECT,
+        blank = True, null = True
+    )
     user = models.OneToOneField("security.User", verbose_name="Usuario", on_delete=models.CASCADE, blank=True, null=True)
     code = models.CharField(max_length=20, verbose_name="Código", blank=True, null=True)
-    number = models.CharField(max_length=10,blank=True, null=True,editable=False)
     names = models.CharField(max_length=100, verbose_name="Apellidos y nombres", blank=True, null=True, editable=False)
     last_name = models.CharField(max_length=100, verbose_name="Apellidos")
     first_name = models.CharField(max_length=100, verbose_name="Nombres")
@@ -23,7 +44,7 @@ class Advisers(ModelBaseAudited):
     class Meta:
         verbose_name = 'Asesor'
         verbose_name_plural = 'Asesores'
-        ordering = ('number',)
+        ordering = ('code',)
 
     def save(self, *args, **kwargs):
 
@@ -52,36 +73,6 @@ class Advisers(ModelBaseAudited):
         self.number = str(self.id).zfill(10)
         super(Advisers, self).save(*args, **kwargs)
 
-class AdvisersCommissions(ModelBaseAudited):
-    institution = models.ForeignKey(
-        "institutions.Institutions",
-        on_delete=models.CASCADE,
-        verbose_name="Institución"
-    )
-    adviser = models.ForeignKey(
-        Advisers,
-        on_delete=models.CASCADE,
-        verbose_name="Asesor"
-    )
-    number = models.CharField(max_length=10, blank=True, null=True, editable=False)
-    date_current = models.DateTimeField(blank=True, null=True, verbose_name="Fecha")
-    date_issue = models.DateTimeField(blank=True, null=True, verbose_name="Fecha de Emisión")
-    date_expiration = models.DateTimeField(blank=True, null=True, verbose_name="Fecha de Vencimiento")
-    commission = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Comisión", blank=True, null=True)
-
-    class Meta:
-        verbose_name = 'Asesor Comisión'
-        verbose_name_plural = 'Asesor Comisiones'
-        ordering = ('number',)
-
-    def __str__(self):
-        return '{}'.format(self.number)
-
-
-    def save(self, *args, **kwargs):
-        super(AdvisersCommissions, self).save(*args, **kwargs)
-        self.number = str(self.id).zfill(10)
-        super(AdvisersCommissions, self).save(*args, **kwargs)
 
 class PaymentAdviserCommissions(ModelBaseAudited):
     adviser = models.ForeignKey(Advisers, on_delete=models.CASCADE, verbose_name="Asesor")
@@ -103,6 +94,7 @@ class PaymentAdviserCommissions(ModelBaseAudited):
         super(PaymentAdviserCommissions, self).save(*args, **kwargs)
         self.number = str(self.id).zfill(10)
         super(PaymentAdviserCommissions, self).save(*args, **kwargs)
+
 
 class PaymentAdviserCommissionsDetails(ModelBaseAudited):
     payment_adviser_commissions = models.ForeignKey(
@@ -131,14 +123,20 @@ class PaymentAdviserCommissionsDetails(ModelBaseAudited):
     def __str__(self):
         return '{}'.format(self.value)
 
-class Functionary(ModelBaseAudited):
-    country = models.ForeignKey("system.SysCountries", verbose_name="Pais", on_delete=models.CASCADE, blank=True, null=True)
-    user = models.OneToOneField("security.User", verbose_name="Usuario", on_delete=models.CASCADE, blank=True, null=True)
-    type_post = models.CharField(
-        verbose_name="Tipo Cargo",
-        choices=TypePost.choices,
-        max_length=15,
+
+class Managers(ModelBaseAudited):
+    country_origin = models.ForeignKey(
+        "system.SysCountries",
+        verbose_name="Pais de origin",
+        on_delete=models.PROTECT
     )
+    country_residence = models.ForeignKey(
+        "system.SysCountries",
+        verbose_name="Pais de residencia",
+        on_delete=models.PROTECT,
+        related_name='country_residence_advisers'
+    )
+    user = models.OneToOneField("security.User", verbose_name="Usuario", on_delete=models.CASCADE, blank=True, null=True)
     code = models.CharField(max_length=20, verbose_name="Código", blank=True, null=True)
     names = models.CharField(max_length=100, verbose_name="Apellidos y nombres", blank=True, null=True, editable=False)
     last_name = models.CharField(max_length=100, verbose_name="Apellidos")
@@ -155,8 +153,8 @@ class Functionary(ModelBaseAudited):
         return '{}'.format(self.names)
 
     class Meta:
-        verbose_name = 'Funcionario'
-        verbose_name_plural = 'Funcionarios'
+        verbose_name = 'Gerente'
+        verbose_name_plural = 'Gerentes'
         ordering = ('created_at',)
 
     def save(self, *args, **kwargs):
@@ -182,3 +180,68 @@ class Functionary(ModelBaseAudited):
         self.names = self.last_name + ' ' + self.first_name
 
         ModelBaseAudited.save(self)
+
+
+class PeriodCommissions(ModelBaseAudited):
+    TYPE_PERIOD = (
+        (1, 'Periodo 1'),
+        (2, 'Periodo 2'),
+        (3, 'Periodo 3'),
+    )
+    manager_percentage = models.DecimalField(max_digits=12, decimal_places=12, default=Decimal("0.00"), verbose_name='Porcentaje gerente %')
+    advisers_percentage = models.DecimalField(max_digits=12, decimal_places=12, default=Decimal("0.00"), verbose_name='Porcentaje asesor %')
+    days_commissions = models.IntegerField(default=0, verbose_name="Dias comison")
+    manager_percentage_max = models.DecimalField(max_digits=12, decimal_places=12, default=Decimal("0.00"), verbose_name='Porcentaje gerente maximo %')
+    advisers_percentage_max = models.DecimalField(max_digits=12, decimal_places=12, default=Decimal("0.00"), verbose_name='Porcentaje asesor maximo %')
+    type_period = models.IntegerField(verbose_name="Tipo periodo", choices=TYPE_PERIOD, default=TYPE_PERIOD[0][0])
+
+    def __str__(self):
+        return '{}'.format(self.get_type_period_display())
+
+    class Meta:
+        verbose_name = 'Perido comision'
+        verbose_name_plural = 'Periodos comisiones'
+
+
+class AdvisersCommissions(ModelBaseAudited):
+    period_commissions = models.ForeignKey(
+        PeriodCommissions,
+        on_delete=models.PROTECT,
+        verbose_name="Periodo"
+    )
+    adviser = models.ForeignKey(
+        Advisers,
+        on_delete=models.CASCADE,
+        verbose_name="Asesor"
+    )
+    value = models.DecimalField(max_digits=12, decimal_places=12, default=Decimal("0.00"), verbose_name='Porcentaje %')
+    is_exclude = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '{}'.format(self.value)
+
+    class Meta:
+        verbose_name = 'Asesor Comisión'
+        verbose_name_plural = 'Asesor Comisiones'
+
+
+class ManagersCommissions(ModelBaseAudited):
+    period_commissions = models.ForeignKey(
+        PeriodCommissions,
+        on_delete=models.PROTECT,
+        verbose_name="Periodo"
+    )
+    manager = models.ForeignKey(
+        Managers,
+        on_delete=models.CASCADE,
+        verbose_name="Manager"
+    )
+    value = models.DecimalField(max_digits=12, decimal_places=12, default=Decimal("0.00"), verbose_name='Porcentaje %')
+    is_exclude = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '{}'.format(self.value)
+
+    class Meta:
+        verbose_name = 'Gerente Comisión'
+        verbose_name_plural = 'Gerente Comisiones'

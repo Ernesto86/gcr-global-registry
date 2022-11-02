@@ -3,10 +3,8 @@ from .models import *
 
 class AdvisersAdmin(admin.ModelAdmin):
     list_display = (
-        'number',
         'code',
         'dni',
-        'country',
         'names',
         'telephone',
         'email',
@@ -15,10 +13,9 @@ class AdvisersAdmin(admin.ModelAdmin):
     )
     list_per_page = 20
     ordering = ('-created_at',)
-    search_fields = ('number', 'code', 'dni', 'names')
+    search_fields = ('code', 'dni', 'names')
     list_filter = (
-        'country',
-        'deleted'
+        'deleted',
     )
 
     def estado(self, obj):
@@ -31,21 +28,15 @@ admin.site.register(Advisers, AdvisersAdmin)
 
 class AdvisersCommissionsAdmin(admin.ModelAdmin):
     list_display = (
-        'number',
         'adviser',
-        'date_current',
-        'date_issue',
-        'date_expiration',
-        'commission',
         'created_at',
         'estado'
     )
     list_per_page = 20
     ordering = ('-created_at',)
-    search_fields = ('number', 'adviser')
+    search_fields = ('code', 'adviser')
     list_filter = (
-        'institution',
-        'deleted'
+        'deleted',
     )
 
     def estado(self, obj):
@@ -86,4 +77,4 @@ class PaymentAdviserCommissionsAdmin(admin.ModelAdmin):
 
 admin.site.register(PaymentAdviserCommissions, PaymentAdviserCommissionsAdmin)
 
-admin.site.register(Functionary)
+# admin.site.register(Functionary)
