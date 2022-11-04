@@ -5,13 +5,14 @@ from students.models import StudentRegisters, Students
 from security.functions import addUserData
 from system.models import SysCountries
 
+
 class QueryGeneralView(View):
     template_name = 'security/query_general/view.html'
 
     def context_common(self):
         context = {}
         addUserData(self.request, context)
-        context['sys_nationality_list'] = SysCountries.objects.filter(deleted=False)
+        context['sys_country_list'] = SysCountries.objects.filter(deleted=False)
         return context
 
     def get(self, request):
@@ -20,8 +21,8 @@ class QueryGeneralView(View):
 
     def post(self, request):
         context = self.context_common()
-        nationality = self.request.POST.get("nationality", None)
-        context['nationality'] = int(nationality) if nationality else nationality
+        country = self.request.POST.get("country", None)
+        context['country'] = int(country) if country else country
 
         dni = self.request.POST.get("identification", "")
         context['identification'] = dni
@@ -30,13 +31,14 @@ class QueryGeneralView(View):
         context['student_registers_list'] = []
         context['student'] = None
 
-        if nationality is not None and dni != "":
+        if country is not None and dni != "":
 
             try:
                 student = Students.objects.select_related(
-                    "nationality"
+                    'country'
                 ).get(
-                    dni=dni, nationality_id=nationality
+                    dni=dni,
+                    country_id=country
                 )
             except Exception as ex:
                 student = None
@@ -67,6 +69,7 @@ class QueryGeneralView(View):
                         context['type_registries_list'].append(
                             {
                                 "name": ins_type_registries.name,
+                                "detail": ins_type_registries.detail,
                                 "color": ins_type_registries.color,
                                 "student_registers_list": student_registers_level_list,
                             }

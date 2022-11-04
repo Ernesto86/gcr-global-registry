@@ -11,8 +11,11 @@
     <title>{{ title }}</title>
     <style>
         @import url('https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900,900i');
-        html, body { font-family: 'Roboto', sans-serif;}</style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css" integrity="sha256-46r060N2LrChLLb5zowXQ72/iKKNiw/lAmygmHExk/o=" crossorigin="anonymous" />
+
+        html, body {
+            font-family: 'Roboto', sans-serif;
+        }</style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css" integrity="sha256-46r060N2LrChLLb5zowXQ72/iKKNiw/lAmygmHExk/o=" crossorigin="anonymous"/>
     <link href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.0.7/css/sb-admin-2.min.css" rel="stylesheet">
     <link href="/static/css/uikit.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/responsive.css" media="only screen and (max-width: 1200px)">
@@ -24,7 +27,8 @@
 <body>
 <div id="load-content" class="loader-wrapper text-center">
     <div class="spinner-border text-primary" role="status" style="margin: auto;margin-top: calc(40vh);width: 3rem; height: 3rem;">
-    </div><br>
+    </div>
+    <br>
     <span class="text-white">Cargando..</span>
 </div>
 <header id="id-header">
@@ -35,10 +39,18 @@
 <main id="id-main">
     <div id="wrapper">
         {% block sidebar-navbar %}
-            <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" style="margin-top: 2.3rem" id="accordionSidebar">
+            <ul class="navbar-nav bg-gradient-secondary sidebar sidebar-dark accordion" style="margin-top: 2.3rem" id="accordionSidebar">
                 <hr class="sidebar-divider my-0">
+                <li class="nav-item mt-4 d-flex justify-content-center align-items-center flex-column text-center">
+                    {% if user.get_foto_url is not None %}
+                        <img src="{{ user.get_foto_url }}" class="brand-image img-circle elevation-2" width="150px">
+                    {% else %}
+                        <img src="/static/img/logo/empty.png" class="brand-image img-circle elevation-2" width="150px">
+                    {% endif %}
+                    <p class="white"><b>{{ user.last_name | upper }} {{ user.first_name | upper }}</b></p>
+                </li>
                 <!-- Nav Item - Dashboard -->
-                <li class="nav-item active">
+                <li class="nav-item active mt-4">
                     <a class="nav-link" href="index.html">
                         <i class="fas fa-fw fa-tachometer-alt"></i>
                         <b>Dashboard</b></a>
@@ -49,7 +61,7 @@
 
                 <!-- Heading -->
                 <div class="sidebar-heading">
-                PANEL
+                    PANEL
                 </div>
 
                 <!-- Nav Item - Pages Collapse Menu -->

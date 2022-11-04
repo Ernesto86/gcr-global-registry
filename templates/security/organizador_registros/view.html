@@ -7,53 +7,32 @@
 
 {% block container-main %}
     <div class="container-fluid" style="margin: 5rem;  ">
-        <h4 class="border-bottom-3" ><b>ORGANIZADOR DE REGISTROS INGRESADOS</b></h4>
+        <h4 class="border-bottom-3 font-weight-bold"><b>ORGANIZADOR DE REGISTROS INGRESADOS</b></h4>
         <hr>
-        <p><b>A continuación podrás revisar todos los registros ingresados en orden por tipo, nombre y fecha de emisión.</b> </p>
+        <p class="font-weight-bold"><b>A continuación podrás revisar todos los registros ingresados en orden por tipo, nombre y fecha de emisión.</b></p>
         <div class="row d-flex justify-content-center align-items-center">
-             
-              {% for type_registries in type_registries_list %}
-                <div class="col-lg-6 col-md">
-                   <a href="{% url 'organizador_detalle' type_registries.id %}"> 
-                    <div  style="border-radius:25px" class="alert alert-{{ type_registries.color }} mb-0 mt-5 text-center register " role="alert">
-                        <p class="display-3 text-center"><b class="circle">{{ type_registries.registers_level_count }}</b> </p>
-                        <p><b>REGISTROS {{ type_registries.name }} - {{ type_registries.detail|upper }}</b>  </p>
-                    </div>
-                   </a> 
+
+            {% for type_registries in type_registries_list %}
+                <div class="col-lg-5 col-md">
+                    <a href="{% url 'organizador_detalle' type_registries.id %}">
+                        <div
+                                style="border-radius:25px; background: {{ type_registries.color }}"
+                                class="alert alert-light mb-0 mt-5 text-center register shadow-lg"
+                                role="alert"
+                        >
+                            <p class="display-4 text-center white">
+                                <b class="circle">
+                                    <span class="badge badge-light rounded-pill">{{ type_registries.registers_level_count }}</span>
+                                </b>
+                            </p>
+                            <p class="white"><b>REGISTROS {{ type_registries.name }} - {{ type_registries.detail|upper }}</b></p>
+                        </div>
+                    </a>
                 </div>
-                
-             {%endfor%}
+
+            {% endfor %}
         </div>
-       
-       
+
+
     </div>
-{% endblock %}
-{% block jscript %}
- <script>
-        const loginForm = document.getElementById('id-form-login');
-        const btnLogin = document.getElementById('id-btnlogin');
-        const alert = document.getElementById('id-alert');
-
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (loginForm.checkValidity() === false) {
-                loginForm.classList.add("was-validated");
-            }
-            else
-            {
-
-               btnLogin.disabled = true;
-               const formData = new FormData(loginForm);
-               const [status, json] = await mFetch('{{ request.path }}', formData);
-               if(status === 200){
-                   window.location = '/';
-               }else{
-                   alert.innerText = json.errors.join(',');
-                   alert.classList.remove('d-none');
-               }
-               btnLogin.disabled = false;
-            }
-            return false;
-        });
-    </script>
 {% endblock %}

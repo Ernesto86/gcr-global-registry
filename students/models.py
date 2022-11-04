@@ -40,7 +40,7 @@ class Students(ModelBaseAudited):
         default=Gender.OTHER,
         max_length=10,
     )
-    dni = models.CharField(max_length=20, blank=True, null=True)
+    dni = models.CharField(max_length=20, blank=True, null=True, unique=True)
     address = models.CharField(max_length=191, verbose_name="Dirección", blank=True, null=True)
     code_postal = models.CharField(max_length=10, verbose_name="Cod. postal", blank=True, null=True)
     telephone = models.CharField(max_length=20, verbose_name="Teléfono", blank=True, null=True)
