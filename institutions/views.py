@@ -9,8 +9,9 @@ from institutions.forms import InstitutionForm
 from institutions.models import Institutions
 from security.functions import addUserData
 from core.util_functions import ListViewFilter
+from security.mixins import *
 
-class InstitutionsListView(ListViewFilter, LoginRequiredMixin, ListView):
+class InstitutionsListView(ModuleMixin, ListViewFilter, LoginRequiredMixin, ListView):
     login_url = '/security/login'
     redirect_field_name = 'redirect_to'
     template_name = 'institutions/list.html'
@@ -40,7 +41,7 @@ class InstitutionsListView(ListViewFilter, LoginRequiredMixin, ListView):
             '-created_at'
         )
 
-class InstitutionCreateView(CreateView):
+class InstitutionCreateView(PermissionMixin, CreateView):
     model = Institutions
     template_name = 'institutions/create.html'
     form_class = InstitutionForm
@@ -54,12 +55,12 @@ class InstitutionCreateView(CreateView):
         context['form_action'] = 'Crear'
         return context
 
-class InstitutionUpdateView(UpdateView):
+class InstitutionUpdateView(PermissionMixin, UpdateView):
     model = Institutions
     template_name = 'institutions/create.html'
     form_class = InstitutionForm
     success_url = reverse_lazy('institution_list')
-    permission_required = 'add_institutions'
+    permission_required = 'change_institutions'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
@@ -68,7 +69,7 @@ class InstitutionUpdateView(UpdateView):
         context['form_action'] = 'Actualizar'
         return context
 
-class InstitutionDelete(View):
+class InstitutionDelete(PermissionMixin, View):
     def delete(self, request, *args, **kwargs):
         id = kwargs.get('pk')
         Institutions.objects.get(pk=id).delete()

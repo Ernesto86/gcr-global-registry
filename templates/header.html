@@ -20,13 +20,13 @@
                             <i class="fa fa-user-circle fa fa-1x"></i>
                         {% endif %}
 
-                        | {{ user.last_name }} {{ user.first_name }} (<em>{{ grupo.name }}</em>)
+                        | {{ user.last_name }} {{ user.first_name }} (<em>{{ grup.name }}</em>)
                     </a>
-                    {% if user_grupos %}
+                    {% if user_grups %}
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 13px">
-                            {% for g in user_grupos %}
+                            {% for g in user_grups %}
                                 <a class="dropdown-item {% if g.id == grupo.id %} active {% endif %}" href="{% if g.id == grupo.id %}#{% else %}/?gpid={{ g.id }} {% endif %}">
-                                        {% if g.id == grupo.id %}<i class="fa fa-check"></i>{% endif %}
+                                        {% if g.id == grup.id %}<i class="fa fa-check"></i>{% endif %}
                                         {{ user.last_name }} {{ user.first_name }} (<em>{{ g.name }}</em>)
                                 </a>
                             {% endfor %}

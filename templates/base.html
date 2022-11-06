@@ -61,62 +61,33 @@
 
                 <!-- Heading -->
                 <div class="sidebar-heading">
-                    PANEL
+                    MENU DE OPCIONES
                 </div>
 
                 <!-- Nav Item - Pages Collapse Menu -->
+
+                {% for gc in module_grup_categories %}
                 <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse-{{ gc.main_category.id }}" aria-expanded="true" aria-controls="collapseTwo">
                         <i class="fas fa-fw fa-cog"></i>
-                        <b>Institución</b>
+                        <b>{{ gc.main_category.name }}</b>
                     </a>
-                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div id="collapse-{{ gc.main_category.id }}" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
-                            <a class="collapse-item" href="/institutions/create">Configuración de Datos</a>
+                        {% for cm in gc.get_grup_category_modules %}
+                            <a class="collapse-item" href="{{ cm.module.url }}">{{ cm.module.name }}</a>
+                         {% endfor %}
                         </div>
                     </div>
                 </li>
+                 <hr class="sidebar-divider d-none d-md-block">
+                {% empty %}
+                    <br><b class="text-white">No se encontro modulos</b><br>
+                {% endfor %}
 
-                <!-- Divider -->
-                <hr class="sidebar-divider">
-
-                <!-- Heading -->
-                <div class="sidebar-heading">
-
-                </div>
-
-                <!-- Nav Item - Pages Collapse Menu -->
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-                        <i class="fas fa-fw fa-folder"></i>
-                        <b>Registros</b>
-                    </a>
-                    <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                            <a class="collapse-item" href="login.html">Ingresos de Registros</a>
-                            <div class="collapse-divider"></div>
-                            <a class="collapse-item" href="/security/organizador-registros">Organizador de Registros</a>
-                        </div>
-                    </div>
-                </li>
-
-                <!-- Nav Item - Charts -->
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'transactions:shopping_cart' %}">
-                        <i class="fas fa-fw fa-cart-plus"></i>
-                        <b>Obtén más Registros</b></a>
-                </li>
-
-                <!-- Divider -->
-                <hr class="sidebar-divider d-none d-md-block">
-
-                <!-- Sidebar Toggler (Sidebar) -->
                 <div class="text-center d-none d-md-inline">
                     <button class="rounded-circle border-0" id="sidebarToggle"></button>
                 </div>
-
-                <!-- Sidebar Message -->
-
 
             </ul>
         {% endblock %}

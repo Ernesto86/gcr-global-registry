@@ -27,6 +27,7 @@ class ModelBase(models.Model):
         abstract = True
 
 class ModelBaseAudited(models.Model):
+    institution_id = models.IntegerField(verbose_name="Institución Code", blank=True, null=True, editable=False)
     detail = models.CharField(max_length=1024, verbose_name="Detalle", blank=True, null=True, editable=False)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.CharField(max_length=100, blank=True, null=True, editable=False)
