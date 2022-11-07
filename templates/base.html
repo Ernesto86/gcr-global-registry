@@ -17,6 +17,14 @@
         }</style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css" integrity="sha256-46r060N2LrChLLb5zowXQ72/iKKNiw/lAmygmHExk/o=" crossorigin="anonymous"/>
     <link href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.0.7/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/vendor/datatables/dataTables.bootstrap4.min.css"/>
+
+    {#    DATATABLE #}
+    {#    <link rel="stylesheet" href="lib/datatables-1.10.25/plugins/responsive-2.2.9/css/responsive.bootstrap4.min.css"/>#}
+    {#    <script src="lib/datatables-1.10.25/js/jquery.dataTables.js"></script>#}
+    {#    <script src="lib/datatables-1.10.25/js/dataTables.bootstrap4.min.js"></script>#}
+    {#    <script src="lib/datatables-1.10.25/plugins/responsive-2.2.9/js/dataTables.responsive.min.js"></script>#}
     <link href="/static/css/uikit.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/responsive.css" media="only screen and (max-width: 1200px)">
     <link rel="stylesheet" href="/static/css/style.css">
@@ -87,6 +95,61 @@
                     <br><b class="text-white">No se encontro modulos</b><br>
                 {% endfor %}
 
+                <!-- Divider -->
+                <hr class="sidebar-divider">
+
+                <!-- Heading -->
+                <div class="sidebar-heading">
+
+                </div>
+
+                <!-- Nav Item - Pages Collapse Menu -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <b>Registros</b>
+                    </a>
+                    <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" href="login.html">Ingresos de Registros</a>
+                            <div class="collapse-divider"></div>
+                            <a class="collapse-item" href="/security/organizador-registros">Organizador de Registros</a>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- Nav Item - Charts -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'transactions:shopping_cart' %}">
+                        <i class="fas fa-fw fa-cart-plus"></i>
+                        <b>Obtén más Registros</b></a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'advisers:payment_adviser_commissions_list' %}">
+                        <i class="fas fa-fw fa-cart-plus"></i>
+                        <b>Pagos de comisiones</b></a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePagesComisiones" aria-expanded="true" aria-controls="collapsePagesComisiones">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <b>Comisiones</b>
+                    </a>
+                    <div id="collapsePagesComisiones" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" href="{% url 'advisers:advisers_commissions_list' %}">Asesores</a>
+                            <div class="collapse-divider"></div>
+                            <a class="collapse-item" href="/security/organizador-registros">Gerentes</a>
+                        </div>
+                    </div>
+                </li>
+
+
+                <!-- Divider -->
+                <hr class="sidebar-divider d-none d-md-block">
+
+                <!-- Sidebar Toggler (Sidebar) -->
                 <div class="text-center d-none d-md-inline">
                     <button class="rounded-circle border-0" id="sidebarToggle"></button>
                 </div>
@@ -111,6 +174,8 @@
 <script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.0.7/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!--script src="/static/js/sb-admin-2.min.js"></script-->
 <script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.0.7/js/sb-admin-2.min.js"></script>
+{#<script src="/static/vendor/datatables/dataTables.bootstrap4.min.js"></script>#}
+<script src="/static/vendor/datatables/jquery.dataTables.min.js"></script>
 <script src="/static/lib/js.cookie.min.js"></script>
 <script src="/static/js/toast.js"></script>
 <script src="/static/js/app.js"></script>
@@ -118,4 +183,7 @@
 {% endblock %}
 {% block jscript %}
 {% endblock %}
+{% block jscript-2 %}
+{% endblock %}
+
 </body>

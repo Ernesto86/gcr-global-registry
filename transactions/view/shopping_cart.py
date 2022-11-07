@@ -124,14 +124,18 @@ class ShoppingCartBuyView(View):
         elif action == 'pay':
             shopping_cart = request.session.get('shopping_cart')
             institution = Institutions.objects.get(created_by=request.user.username)
+            date_buy = datetime.datetime.now()
 
             if shopping_cart:
-                managers_commissions = ManagersCommissions.objects.get(manager_id=institution.adviser.manager_id)
+                managers_commissions = ManagersCommissions.objects.get(manager_id=institution.adviser.manager_id, deleted=False)
 
                 commissions_advisers_find = self.commissions_advisers_find(institution)
 
                 order_institution_quotas = OrderInstitutionQuotas.objects.create(
                     institution_id=institution.id,
+                    adviser_id=institution.adviser_id,
+                    manager_id=institution.adviser.manager_id,
+                    date_issue=date_buy,
                     discount_percentage=institution.discount,
                     taxes_percentage=Decimal(0),
                     commissions_advisers_percentage=commissions_advisers_find,
@@ -165,19 +169,26 @@ class ShoppingCartBuyView(View):
 
     def commissions_advisers_find(self, institution_instance):
         date_approval = institution_instance.date_approval
-        date_buy = datetime.datetime.now().date() + datetime.timedelta(days=1500)
+        date_buy = datetime.datetime.now().date()
 
-        period_commissions_list = PeriodCommissions.objects.all()
-        advisers_commissions_list = AdvisersCommissions.objects.filter(adviser_id=institution_instance.adviser_id)
+        period_commissions = PeriodCommissions.objects.filter(deleted=False).last()
+        advisers_commissions = AdvisersCommissions.objects.get(adviser_id=institution_instance.adviser_id, deleted=False)
 
-        for type_period in PeriodCommissions.TYPE_PERIOD:
-            period_commissions = period_commissions_list.get(type_period=type_period[0])
-
-            date_approval += datetime.timedelta(days=period_commissions.days_commissions)
+        if period_commissions:
+            date_approval += datetime.timedelta(days=period_commissions.days_commissions_period_1)
 
             if date_buy <= date_approval:
-                advisers_commissions = advisers_commissions_list.get(period_commissions_id=period_commissions.id)
-                return advisers_commissions.value
+                return advisers_commissions.commissions_period_1
+
+            date_approval += datetime.timedelta(days=period_commissions.days_commissions_period_2)
+
+            if date_buy <= date_approval:
+                return advisers_commissions.commissions_period_2
+
+            date_approval += datetime.timedelta(days=period_commissions.days_commissions_period_3)
+
+            if date_buy <= date_approval:
+                return advisers_commissions.commissions_period_3
 
         return Decimal(0)
 
@@ -185,7 +196,8 @@ class ShoppingCartBuyView(View):
         try:
             institution_quotes_type_register = InstitutionQuotesTypeRegister.objects.get(
                 institution_id=institution_id,
-                type_register_id=ins_type_registries_id
+                type_register_id=ins_type_registries_id,
+                deleted=False
             )
         except:
             institution_quotes_type_register = InstitutionQuotesTypeRegister.objects.create(

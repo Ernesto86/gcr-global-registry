@@ -1,0 +1,82 @@
+{% extends 'list.html' %}
+
+{% block form-search-date %}
+{% endblock %}
+
+{% block form-search-input %}
+    <div class="col-md input-group input-group col-md-4">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroup-sizing-sm">
+                <i class="fa fa-user-graduate"></i>
+            </span>
+        </div>
+
+        <input
+                type="text"
+                name="search"
+                value="{{ search }}"
+                class="form-control"
+                placeholder="Buscar asesor por codigo o nombre.."
+        >
+        <div class="input-group-append">
+            <button class="btn btn-primary">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block table-header-columns %}
+    <th>Asesor</th>
+    <th>Codigo asesor</th>
+    <th>Comision periodo 1</th>
+    <th>Comision periodo 2</th>
+    <th>Comision periodo 3</th>
+    <th>Comision especifica?</th>
+    <th class="text-center">Opciones</th>
+{% endblock %}
+
+{% block url_create %}{% url "advisers:advisers_commissions_create" %}{% endblock %}
+
+{% block table-body-rows %}
+    {% for advisers_commissions in object_list %}
+        <tr>
+            <td>{{ advisers_commissions.adviser }}</td>
+            <td>{{ advisers_commissions.adviser.code }}</td>
+            <td>{{ advisers_commissions.commissions_period_1 }}</td>
+            <td>{{ advisers_commissions.commissions_period_2 }}</td>
+            <td>{{ advisers_commissions.commissions_period_3 }}</td>
+            <td>
+                {% include "component/badge/badge_presentate.html" with badge_type=1 badge_value_bool=advisers_commissions.is_exclude badge_text_bool=True %}
+            </td>
+
+            <td class="text-center">
+                <div class="btn-group" role="group">
+                    <a href="{% url 'advisers:advisers_commissions_update' advisers_commissions.id %}" class="btn btn-primary btn-sm"
+                       data-toggle="tooltip" title="" data-original-title="">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block jscript %}
+    <script>
+        const table = document.querySelector('#id-table-data > tbody');
+
+        table.addEventListener('click', async (event) => {
+            const target = event.target.closest('a[rel="action-delete"]');
+
+            if (target) {
+                event.preventDefault();
+                const id = target.dataset.id
+                const [status, json] = await mFetch(`{{ request.path }}delete/${id}`, {}, 'DELETE');
+
+                if (status === 200)
+                    target.closest('tr').remove()
+            }
+        });
+    </script>
+{% endblock %}
