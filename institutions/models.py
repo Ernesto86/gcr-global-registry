@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import model_to_dict
 from core.models import ModelBase, ModelBaseAudited
 from core.util_functions import util_null_to_decimal
 

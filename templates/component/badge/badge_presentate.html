@@ -1,0 +1,24 @@
+{% if badge_type == 0 %}
+
+    {{ badge_text_before }}
+    <span class="badge {% if badge_value_bool %} badge-success {% else %} badge-warning {% endif %}">
+        {% if badge_value_bool %} <i class="fas fa-check"></i> {% else %} <i class="fas fa-times"></i> {% endif %}
+    </span>
+
+{% elif badge_type == 1 %}
+
+    {{ badge_text_before }}
+    <span class="badge {% if badge_value_bool %} badge-success {% else %} badge-warning {% endif %}">
+        {% if badge_text_bool %}
+            {% if badge_value_bool %} Si {% else %} No {% endif %}
+        {% else %}
+            {% if badge_value_bool %} Activo {% else %} Inactivo {% endif %}
+        {% endif %}
+    </span>
+
+{% elif badge_type == 3 %}
+
+    {{ badge_text_before }}
+    <span class="badge badge-{{ badge_color }}">{{ badge_text_into }}</span>
+
+{% endif %}

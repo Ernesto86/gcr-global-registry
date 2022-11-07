@@ -1,0 +1,144 @@
+{% extends 'list.html' %}
+
+{% block form-search-date %}
+{% endblock %}
+
+{% block form-search-input %}
+    <div class="col-md input-group input-group col-md-4">
+        <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroup-sizing-sm">
+                <i class="fa fa-user-graduate"></i>
+            </span>
+        </div>
+        <input
+                type="text"
+                name="search"
+                value="{{ search }}"
+                class="form-control"
+                placeholder="Buscar asesor por codigo o nombre.."
+        >
+        <div class="input-group-append">
+            <button class="btn btn-primary">
+                <i class="fa fa-search"></i>
+            </button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block table-header-columns %}
+    <th>Numero</th>
+    <th>Tipo</th>
+    <th>Fecha de pago</th>
+    <th>Año</th>
+    <th>Mes</th>
+    <th>Valor de comision</th>
+    <th class="text-center">Opciones</th>
+{% endblock %}
+
+{% block url_create %}{% url "advisers:payment_adviser_commissions_create" %}{% endblock %}
+
+{% block table-body-rows %}
+    {% for object in object_list %}
+        <tr>
+            <td>{{ object.number }}</td>
+            <td>{{ object.get_type_functionary_display }}</td>
+            <td>{{ object.date_payment | date:"Y-m-d" }}</td>
+            <td>{{ object.year }}</td>
+            <td>{{ object.month }}</td>
+            <td>{{ object.values_commission }}</td>
+            <td class="text-center">
+                <div class="btn-group" role="group">
+                    <a href="#" rel="action-view-detail" class="btn btn-primary btn-sm"
+                       data-toggle="tooltip" title="" data-original-title="" data-id="{{ object.id }}">
+                        <i class="fa fa-list"></i>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block frmodal %}
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Detalle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Numero de compra</th>
+                            <th>Fecha de compra</th>
+                            <th>% comision asesor</th>
+                            <th>% comision gerente</th>
+                            <th>Subtotal</th>
+                            <th>Comision</th>
+                            <th>Comision gerente</th>
+                            <th>Comision asesor</th>
+                        </tr>
+                        </thead>
+                        <tbody id="id-detailBody">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jscript %}
+    <script>
+        const table = document.querySelector('#id-table-data > tbody');
+        table.addEventListener('click', async (event) => {
+            const target = event.target.closest('a[rel="action-view-detail"]');
+            if (target) {
+                event.preventDefault();
+
+                const id = target.dataset.id
+                const formData = new FormData()
+                formData.append("action", 'view_detail')
+                formData.append("id", id)
+
+                const [status, json] = await mFetch(`{{ request.path }}`, formData, 'POST');
+
+                if (status !== 200)
+                    return console.log(json)
+
+                let html = ''
+
+                json.order_institution_quotas_list.forEach(elem => {
+                    html += `
+                        <tr>
+                            <td>${elem.number}</td>
+                            <td>${elem.date_issue}</td>
+                            <td>${elem.commissions_advisers_percentage}</td>
+                            <td>${elem.commissions_managers_percentage}</td>
+                            <td>${elem.subtotal}</td>
+                            <td>${elem.commission_adviser_clean}</td>
+                            <td>${elem.commission_manager}</td>
+                            <td>${elem.commission_adviser}</td>
+                        </tr>
+                    `
+                })
+                html += `<tr>
+                    <td colspan="7"></td>
+                    <td>${json.commission_adviser}</td>
+                </tr>`
+
+                document.getElementById('id-detailBody').innerHTML = html
+                console.log(json)
+
+                $('#exampleModal').modal('show')
+            }
+        });
+    </script>
+{% endblock %}

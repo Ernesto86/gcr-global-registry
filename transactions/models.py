@@ -10,6 +10,13 @@ class OrderInstitutionQuotas(ModelBaseAudited):
         on_delete=models.CASCADE,
         verbose_name="Institución"
     )
+    adviser = models.ForeignKey("advisers.Advisers", verbose_name="Asesor", on_delete=models.CASCADE, blank=True, null=True)
+    manager = models.ForeignKey(
+        "advisers.Managers",
+        verbose_name="Gerente",
+        on_delete=models.PROTECT,
+        blank=True, null=True
+    )
     number = models.CharField(max_length=10, blank=True, null=True, editable=False)
     date_issue = models.DateTimeField(blank=True, null=True, verbose_name="Fecha de Emision")
     subtotal = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Subtotal", blank=True, null=True)
@@ -19,8 +26,10 @@ class OrderInstitutionQuotas(ModelBaseAudited):
     taxes = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Impuesto", blank=True, null=True)
     taxes_percentage = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Impuesto porcentaje", blank=True, null=True)
     total = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Total", blank=True, null=True)
-    commissions_advisers_percentage = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Descuento %", blank=True, null=True)
-    commissions_managers_percentage = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Descuento %", blank=True, null=True)
+    commissions_advisers_percentage = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Comision asesor %", blank=True, null=True)
+    commissions_managers_percentage = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Comision gerente %", blank=True, null=True)
+    pay_adviser = models.BooleanField(default=False)
+    pay_manager = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "Orden institucion cupo"
@@ -29,6 +38,15 @@ class OrderInstitutionQuotas(ModelBaseAudited):
 
     def __str__(self):
         return '{}'.format(self.number)
+
+    def get_commission_adviser_clear(self):
+        return util_null_to_decimal(self.subtotal * (self.commissions_advisers_percentage / 100))
+
+    def get_commission_adviser(self):
+        return util_null_to_decimal(self.get_commission_adviser_clear() - self.get_commission_manager())
+
+    def get_commission_manager(self):
+        return util_null_to_decimal(self.get_commission_adviser_clear() * (self.commissions_managers_percentage / 100))
 
     def get_discount_decimal(self):
         return util_null_to_decimal(self.discount_percentage / 100)

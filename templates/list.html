@@ -26,70 +26,77 @@
                                 <div class="form-row align-items-center">
                                     <div class="col-md col-md-1">
                                         <a href="{% block url_create %}{% endblock %}"
-                                        class="btn btn-success btn-block" data-toggle="tooltip"
-                                        title="Agregar">
+                                           class="btn btn-success btn-block" data-toggle="tooltip"
+                                           title="Agregar">
                                             <i class="fa fa-plus"></i>
                                         </a>
                                     </div>
 
-                                    <div class="col-md-2 col-6">
-                                        <div class="input-group input-group">
-                                            <input type="text" name="inicio" id="id-date-inicio" value="{{ inicio }}"
-                                                class="form-control date-piker"
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                placeholder="Fecha inicial" autocomplete="off">
-                                            <div class="input-group-append">
+                                    {% block form-search-date %}
+                                        <div class="col-md-2 col-6">
+                                            <div class="input-group input-group">
+                                                <input type="text" name="inicio" id="id-date-inicio" value="{{ inicio }}"
+                                                       class="form-control date-piker"
+                                                       aria-describedby="inputGroup-sizing-sm"
+                                                       placeholder="Fecha inicial" autocomplete="off">
+                                                <div class="input-group-append">
                                                         <span class="input-group-text" id="inputGroup-sizing-sm">
                                                             <i class="fa fa-calendar"></i>
                                                         </span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-2 col-6">
-                                        <div class="input-group input-group">
-                                            <input type="text" name="final" id="id-date-final" value="{{ final }}"
-                                                class="form-control date-piker"
-                                                aria-describedby="inputGroup-sizing-sm"
-                                                placeholder="Fecha final" autocomplete="off">
-                                            <div class="input-group-append">
+                                        <div class="col-md-2 col-6">
+                                            <div class="input-group input-group">
+                                                <input type="text" name="final" id="id-date-final" value="{{ final }}"
+                                                       class="form-control date-piker"
+                                                       aria-describedby="inputGroup-sizing-sm"
+                                                       placeholder="Fecha final" autocomplete="off">
+                                                <div class="input-group-append">
                                                         <span class="input-group-text" id="inputGroup-sizing-sm">
                                                             <i class="fa fa-calendar"></i>
                                                         </span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    {% endblock %}
 
-                                    <div class="col-md input-group input-group col-md-4">
-                                        <div class="input-group-prepend">
+                                    {% block form-search-input %}
+                                        <div class="col-md input-group input-group col-md-4">
+                                            <div class="input-group-prepend">
                                             <span class="input-group-text" id="inputGroup-sizing-sm">
                                                 <i class="fa fa-user-graduate"></i>
                                             </span>
+                                            </div>
+                                            <input
+                                                    type="text"
+                                                    name="search"
+                                                    value="{{ search }}"
+                                                    class="form-control"
+                                                    placeholder="Buscar estudiante por cédula o nombres.."
+                                            >
+                                            <div class="input-group-append">
+                                                <button class="btn btn-primary">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                            </div>
                                         </div>
-                                        <input type="text" name="search" value="{{ search }}" class="form-control"
-                                            placeholder="Buscar estudiante por cédula o nombres..">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary">
-                                                <i class="fa fa-search"></i>
-                                            </button>
+                                        <div class="col-md-1 col">
+                                            <div class="btn-group" role="group">
+                                                <button id="id-btn-fecha-submit" data-toggle="tooltip"
+                                                        title="Filtro por rango de fechas."
+                                                        class="btn btn-primary">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                                <button type="button" id="id-remove-fechas" data-toggle="tooltip"
+                                                        title="Remover filtro de fechas."
+                                                        class="btn btn-danger">
+                                                    <i class="fa fa-calendar-minus"></i>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
-
-                                    <div class="col-md-1 col">
-                                        <div class="btn-group" role="group">
-                                            <button id="id-btn-fecha-submit" data-toggle="tooltip"
-                                                    title="Filtro por rango de fechas."
-                                                    class="btn btn-primary">
-                                                <i class="fa fa-search"></i>
-                                            </button>
-                                            <button type="button" id="id-remove-fechas" data-toggle="tooltip"
-                                                    title="Remover filtro de fechas."
-                                                    class="btn btn-danger">
-                                                <i class="fa fa-calendar-minus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
+                                    {% endblock %}
                                 </div>
-
                             </form>
                         {% endblock %}
                     </div>
@@ -98,15 +105,15 @@
                         {% block title-list %} {% endblock %}
                         {% block table-list-details %}
                             <table id="id-table-data"
-                                class="table table-striped table-bordered table-sm sm-0 dataTable no-footer"
-                                role="grid">
+                                   class="table table-striped table-bordered table-sm sm-0 dataTable no-footer"
+                                   role="grid">
                                 <thead class="text-center text-sm-center thead-light">
-                                    {% block table-header-columns %}
-                                    {% endblock %}
+                                {% block table-header-columns %}
+                                {% endblock %}
                                 </thead>
                                 <tbody class="table-sm">
-                                    {% block table-body-rows %}
-                                    {% endblock %}
+                                {% block table-body-rows %}
+                                {% endblock %}
                                 </tbody>
                             </table>
                         {% endblock %}
@@ -119,7 +126,7 @@
                                         {% if page_obj.has_previous %}
                                             <li class="page-item">
                                                 <a href="?page={{ page_obj.previous_page_number }}{{ url_params }}"
-                                                class="page-link">&laquo; Atrás</a>
+                                                   class="page-link">&laquo; Atrás</a>
                                             </li>
 
                                             <li class="page-item">
@@ -144,7 +151,7 @@
                                                 {% else %}
                                                     <li class="page-item">
                                                         <a href="?page={{ forloop.counter }}{{ url_params }}"
-                                                        class="page-link">{{ forloop.counter }}</a>
+                                                           class="page-link">{{ forloop.counter }}</a>
                                                     </li>
                                                 {% endif %}
                                             {% endif %}
@@ -153,12 +160,12 @@
                                         {% if page_obj.has_next %}
                                             <li class="page-item">
                                                 <a href="?page={{ page_obj.paginator.num_pages }}{{ url_params }}"
-                                                class="page-link">Final</a>
+                                                   class="page-link">Final</a>
                                             </li>
 
                                             <li class="page-item">
                                                 <a href="?page={{ page_obj.next_page_number }}{{ url_params }}"
-                                                class="page-link">Siguiente &raquo;</a>
+                                                   class="page-link">Siguiente &raquo;</a>
                                             </li>
                                         {% else %}
                                             <li class="page-item disabled" style="pointer-events:none">

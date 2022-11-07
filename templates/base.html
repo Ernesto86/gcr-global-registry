@@ -11,9 +11,20 @@
     <title>{{ title }}</title>
     <style>
         @import url('https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i,700,700i,900,900i');
-        html, body { font-family: 'Roboto', sans-serif;}</style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css" integrity="sha256-46r060N2LrChLLb5zowXQ72/iKKNiw/lAmygmHExk/o=" crossorigin="anonymous" />
+
+        html, body {
+            font-family: 'Roboto', sans-serif;
+        }</style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css" integrity="sha256-46r060N2LrChLLb5zowXQ72/iKKNiw/lAmygmHExk/o=" crossorigin="anonymous"/>
     <link href="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.0.7/css/sb-admin-2.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/vendor/datatables/dataTables.bootstrap4.min.css"/>
+
+    {#    DATATABLE #}
+    {#    <link rel="stylesheet" href="lib/datatables-1.10.25/plugins/responsive-2.2.9/css/responsive.bootstrap4.min.css"/>#}
+    {#    <script src="lib/datatables-1.10.25/js/jquery.dataTables.js"></script>#}
+    {#    <script src="lib/datatables-1.10.25/js/dataTables.bootstrap4.min.js"></script>#}
+    {#    <script src="lib/datatables-1.10.25/plugins/responsive-2.2.9/js/dataTables.responsive.min.js"></script>#}
     <link href="/static/css/uikit.css" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/responsive.css" media="only screen and (max-width: 1200px)">
     <link rel="stylesheet" href="/static/css/style.css">
@@ -24,7 +35,8 @@
 <body>
 <div id="load-content" class="loader-wrapper text-center">
     <div class="spinner-border text-primary" role="status" style="margin: auto;margin-top: calc(40vh);width: 3rem; height: 3rem;">
-    </div><br>
+    </div>
+    <br>
     <span class="text-white">Cargando..</span>
 </div>
 <header id="id-header">
@@ -49,7 +61,7 @@
 
                 <!-- Heading -->
                 <div class="sidebar-heading">
-                PANEL
+                    PANEL
                 </div>
 
                 <!-- Nav Item - Pages Collapse Menu -->
@@ -95,6 +107,27 @@
                         <b>Obtén más Registros</b></a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'advisers:payment_adviser_commissions_list' %}">
+                        <i class="fas fa-fw fa-cart-plus"></i>
+                        <b>Pagos de comisiones</b></a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePagesComisiones" aria-expanded="true" aria-controls="collapsePagesComisiones">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <b>Comisiones</b>
+                    </a>
+                    <div id="collapsePagesComisiones" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" href="{% url 'advisers:advisers_commissions_list' %}">Asesores</a>
+                            <div class="collapse-divider"></div>
+                            <a class="collapse-item" href="/security/organizador-registros">Gerentes</a>
+                        </div>
+                    </div>
+                </li>
+
+
                 <!-- Divider -->
                 <hr class="sidebar-divider d-none d-md-block">
 
@@ -126,10 +159,15 @@
 <script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.0.7/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!--script src="/static/js/sb-admin-2.min.js"></script-->
 <script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.0.7/js/sb-admin-2.min.js"></script>
+{#<script src="/static/vendor/datatables/dataTables.bootstrap4.min.js"></script>#}
+<script src="/static/vendor/datatables/jquery.dataTables.min.js"></script>
 <script src="/static/lib/js.cookie.min.js"></script>
 <script src="/static/js/app.js"></script>
 {% block js %}
 {% endblock %}
 {% block jscript %}
 {% endblock %}
+{% block jscript-2 %}
+{% endblock %}
+
 </body>

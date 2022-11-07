@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import *
 
+
 class AdvisersAdmin(admin.ModelAdmin):
     list_display = (
         'code',
@@ -20,6 +21,7 @@ class AdvisersAdmin(admin.ModelAdmin):
 
     def estado(self, obj):
         return not obj.deleted
+
     estado.boolean = True
 
 
@@ -41,41 +43,42 @@ class AdvisersCommissionsAdmin(admin.ModelAdmin):
 
     def estado(self, obj):
         return not obj.deleted
+
     estado.boolean = True
 
 
 admin.site.register(AdvisersCommissions, AdvisersCommissionsAdmin)
 
-class ItemPaymentAdviserCommissionsDetailsInline(admin.TabularInline):
-    model = PaymentAdviserCommissionsDetails
-    extra = 0
+# class ItemPaymentAdviserCommissionsDetailsInline(admin.TabularInline):
+#     model = PaymentAdviserCommissionsDetails
+#     extra = 0
 
 
-class PaymentAdviserCommissionsAdmin(admin.ModelAdmin):
-    inlines = (ItemPaymentAdviserCommissionsDetailsInline, )
-    list_display = (
-        'number',
-        'adviser',
-        'date_payment',
-        'year',
-        'month',
-        'values',
-        'estado',
-    )
-    list_per_page = 20
-    ordering = ('-created_at',)
-    search_fields = ('numero', 'adviser__names',)
-    list_filter = (
-        'deleted',
-    )
+# class PaymentAdviserCommissionsAdmin(admin.ModelAdmin):
+#     inlines = (ItemPaymentAdviserCommissionsDetailsInline, )
+#     list_display = (
+#         'number',
+#         'adviser',
+#         'date_payment',
+#         'year',
+#         'month',
+#         'values',
+#         'estado',
+#     )
+#     list_per_page = 20
+#     ordering = ('-created_at',)
+#     search_fields = ('numero', 'adviser__names',)
+#     list_filter = (
+#         'deleted',
+#     )
+#
+#     def estado(self, obj):
+#         return not obj.deleted
+#
+#     estado.boolean = True
 
-    def estado(self, obj):
-        return not obj.deleted
 
-    estado.boolean = True
-
-
-admin.site.register(PaymentAdviserCommissions, PaymentAdviserCommissionsAdmin)
+# admin.site.register(PaymentAdviserCommissions, PaymentAdviserCommissionsAdmin)
 
 admin.site.register(Managers)
 

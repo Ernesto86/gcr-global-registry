@@ -1,0 +1,103 @@
+{% extends 'form.html' %}
+{% load crispy_forms_tags %}
+{% block container-main %}
+    <article class="container-fluid" style="margin-top: 3.5rem">
+        <div class="row">
+            <div class="col">
+                <nav id="siteBreadcrumb" aria-label="breadcrumb">
+                    <ol class="breadcrumb p-2">
+                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                        <li class="breadcrumb-item" aria-current="page"><a href="/institutions/">Instituciones</a></li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <form method="POST" action="" enctype="multipart/form-data" id="formConfigurateData">
+                    {% csrf_token %}
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Configuracion de datos : {{ form_action }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-row">
+                                <div class="form-group col-12 mb-0">
+                                    {{ form_2.advisers_specific|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-4 mb-0">
+                                    {{ form_2.advisers_percentage_period_1|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-4 mb-0">
+                                    {{ form_2.days_commissions_period_1|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-4 mb-0">
+                                    {{ form_2.advisers_percentage_max_period_1|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-4 mb-0">
+                                    {{ form_2.advisers_percentage_period_2|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-4 mb-0">
+                                    {{ form_2.days_commissions_period_2|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-4 mb-0">
+                                    {{ form_2.advisers_percentage_max_period_2|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-4 mb-0">
+                                    {{ form_2.advisers_percentage_period_3|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-4 mb-0">
+                                    {{ form_2.days_commissions_period_3|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-4 mb-0">
+                                    {{ form_2.advisers_percentage_max_period_3|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-success float-right ml-2" id="id-btnSave">
+                                <i class="fa fa-save"></i> Guardar Registro
+                            </button>
+                            <button type="button" class="btn btn-secondary float-right" onclick="window.location='{{ back_url }}'">
+                                <i class="fa fa-arrow-left"></i> Atras
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </article>
+{% endblock %}
+{% block jscript-2 %}
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function (e) {
+            const $advisers_percentage_max_period_1 = document.getElementById('id_advisers_percentage_max_period_1')
+            const $advisers_percentage_max_period_2 = document.getElementById('id_advisers_percentage_max_period_2')
+            const $advisers_percentage_max_period_3 = document.getElementById('id_advisers_percentage_max_period_3')
+
+            const $advisers_percentage_period_1 = document.getElementById('id_advisers_percentage_period_1')
+            const $advisers_percentage_period_2 = document.getElementById('id_advisers_percentage_period_2')
+            const $advisers_percentage_period_3 = document.getElementById('id_advisers_percentage_period_3')
+
+            $advisers_percentage_period_1.addEventListener('change', (e) => {
+                if (parseInt(e.target.value) > parseInt($advisers_percentage_max_period_1.value))
+                    alert("Excedió valor maximo: " + $advisers_percentage_max_period_1.value)
+            })
+            $advisers_percentage_period_2.addEventListener('change', (e) => {
+                if (parseInt(e.target.value) > parseInt($advisers_percentage_max_period_2.value))
+                    alert("Excedió valor maximo: " + $advisers_percentage_max_period_2.value)
+            })
+            $advisers_percentage_period_3.addEventListener('change', (e) => {
+                if (parseInt(e.target.value) > parseInt($advisers_percentage_max_period_3.value))
+                    alert("Excedió valor maximo: " + $advisers_percentage_max_period_3.value)
+            })
+        })
+    </script>
+{% endblock %}
