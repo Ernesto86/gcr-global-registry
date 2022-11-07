@@ -185,6 +185,22 @@ class PaymentAdviserCommissionsCreateView(CreateView):
             'value_commission': value_commission_sum
         }
 
+    def delete_payment(self, payment_to, year, month):
+        payment_adviser_commissions_list = PaymentAdviserCommissions.objects.filter(
+            type_functionary=payment_to,
+            year=year,
+            month=month,
+            pay_period=False
+        )
+
+        if payment_adviser_commissions_list:
+            for payment_adviser_commissions in payment_adviser_commissions_list:
+                PaymentAdviserCommissionsDetails.objects.filter(
+                    payment_adviser_commissions_id=payment_adviser_commissions.id
+                ).delete()
+
+            payment_adviser_commissions_list.delete()
+
     def post(self, request, *args, **kwargs):
         data = {'errors': []}
         status = 500
@@ -204,20 +220,7 @@ class PaymentAdviserCommissionsCreateView(CreateView):
                     month
                 )
 
-                payment_adviser_commissions_list = PaymentAdviserCommissions.objects.filter(
-                    type_functionary=payment_to,
-                    year=year,
-                    month=month,
-                    pay_period=False
-                )
-
-                if payment_adviser_commissions_list:
-                    for payment_adviser_commissions in payment_adviser_commissions_list:
-                        PaymentAdviserCommissionsDetails.objects.filter(
-                            payment_adviser_commissions_id=payment_adviser_commissions.id
-                        ).delete()
-
-                    payment_adviser_commissions_list.delete()
+                self.delete_payment(payment_to, year, month)
 
                 payment_adviser_commissions = PaymentAdviserCommissions.objects.create(
                     type_functionary=payment_to,
