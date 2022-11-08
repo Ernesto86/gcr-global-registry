@@ -1,6 +1,8 @@
 from decimal import Decimal
 
 from django.db import models
+
+from advisers.choices import TL_YEAR, TL_MONTH
 from core.models import ModelBaseAudited
 from django.db.models import Sum
 from core.util_functions import util_null_to_decimal
@@ -83,10 +85,10 @@ class PaymentAdviserCommissions(ModelBaseAudited):
     )
     number = models.CharField(max_length=10, blank=True, null=True, editable=False)
     date_payment = models.DateTimeField(blank=True, null=True, verbose_name="Fecha de Pago")
-    year = models.IntegerField(blank=True, null=True, verbose_name="Año")
-    month = models.IntegerField(blank=True, null=True, verbose_name="Mes")
+    year = models.IntegerField(blank=True, null=True, verbose_name="Año", choices=TL_YEAR, default=TL_YEAR[0][0])
+    month = models.IntegerField(blank=True, null=True, verbose_name="Mes", choices=TL_MONTH, default=TL_MONTH[0][0])
     values_commission = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Comision asesor", blank=True, null=True)
-    type_functionary = models.IntegerField(verbose_name="Tipo modulo", choices=TYPE_FUNCTIONARY, default=TYPE_FUNCTIONARY[0][0])
+    type_functionary = models.IntegerField(verbose_name="Tipo de funcionario", choices=TYPE_FUNCTIONARY, default=TYPE_FUNCTIONARY[0][0])
     pay_period = models.BooleanField(default=False)
 
     class Meta:

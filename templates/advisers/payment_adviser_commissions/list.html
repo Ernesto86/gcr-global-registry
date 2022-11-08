@@ -48,8 +48,22 @@
             <td>{{ object.values_commission }}</td>
             <td class="text-center">
                 <div class="btn-group" role="group">
-                    <a href="#" rel="action-view-detail" class="btn btn-primary btn-sm"
-                       data-toggle="tooltip" title="" data-original-title="" data-id="{{ object.id }}">
+                    <a
+                            href="{% url "advisers:payment_adviser_commissions_update" object.id %}"
+                            class="btn btn-primary btn-sm"
+                            data-toggle="tooltip" title=""
+                            data-original-title=""
+                            data-id="{{ object.id }}"
+                    >
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    <a
+                            href="{% url "advisers:payment_adviser_commissions_update" object.id %}?action=view_detail"
+                            class="btn btn-primary btn-sm"
+                            data-toggle="tooltip" title=""
+                            data-original-title=""
+                            data-id="{{ object.id }}"
+                    >
                         <i class="fa fa-list"></i>
                     </a>
                 </div>

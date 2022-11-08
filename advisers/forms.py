@@ -1,4 +1,6 @@
 from django import forms
+
+from advisers.choices import TL_YEAR, TL_MONTH
 from advisers.models import AdvisersCommissions, PeriodCommissions, Advisers, PaymentAdviserCommissions
 
 
@@ -48,54 +50,13 @@ class PeriodCommissionsForm(forms.ModelForm):
     )
 
 
-TL_MONTH = (
-    ("", "----------"),
-    (1, "ENERO"),
-    (2, "FEBRERO"),
-    (3, "MARZO"),
-    (4, "ABRIL"),
-    (5, "MAYO"),
-    (6, "JUNIO"),
-    (7, "JULIO"),
-    (8, "AGOSTO"),
-    (9, "SEPTIEMBRE"),
-    (10, "OCTUBRE"),
-    (11, "NOVIEMBRE"),
-    (12, "DICIEMBRE"),
-)
-
-
 class PaymentAdviserCommissionsForm(forms.ModelForm):
     class Meta:
         model = PaymentAdviserCommissions
         fields = '__all__'
 
-    payment_to = forms.ChoiceField(
-        widget=forms.Select(attrs={'class': "select2 select2-design"}),
-        choices=PaymentAdviserCommissions.TYPE_FUNCTIONARY,
-        label='Pagar a',
-        required=True,
-    )
-    year_option = forms.ChoiceField(
-        widget=forms.Select(attrs={'class': "select2 select2-design"}),
-        choices=(
-            ("", "------------"),
-            (2022, 2022),
-            (2023, 2023),
-            (2024, 2024),
-            (2025, 2025),
-            (2026, 2026),
-            (2027, 2027),
-            (2028, 2028),
-            (2029, 2029),
-            (2030, 2030),
-        ),
-        label='Año',
-        required=True,
-    )
-    month_option = forms.ChoiceField(
-        widget=forms.Select(attrs={'class': "select2 select2-design"}),
-        choices=TL_MONTH,
-        label='Mes',
-        required=True,
-    )
+        widgets = {
+            'type_functionary': forms.Select(attrs={'class': "select2 select2-design"}),
+            'month': forms.Select(attrs={'class': "select2 select2-design"}),
+            'year': forms.Select(attrs={'class': "select2 select2-design"}),
+        }
