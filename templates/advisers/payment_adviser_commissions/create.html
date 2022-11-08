@@ -23,13 +23,13 @@
                         <div class="card-body">
                             <div class="form-row">
                                 <div class="form-group col-4 mb-0">
-                                    {{ form.payment_to|as_crispy_field }}
+                                    {{ form.type_functionary|as_crispy_field }}
                                 </div>
                                 <div class="form-group col-4 mb-0">
-                                    {{ form.year_option|as_crispy_field }}
+                                    {{ form.year|as_crispy_field }}
                                 </div>
                                 <div class="form-group col-4 mb-0">
-                                    {{ form.month_option|as_crispy_field }}
+                                    {{ form.month|as_crispy_field }}
                                 </div>
                             </div>
                         </div>
@@ -37,7 +37,7 @@
                             <button class="btn btn-success ml-2" type="button" id="id-btnSave">
                                 <i class="fas fa-save"></i> Guardar registro
                             </button>
-                            <button class="btn btn-success float-right ml-2">
+                            <button class="btn btn-success float-right ml-2" id="id-btnCalculate">
                                 <i class="fas fa-calculator"></i> Calcular
                             </button>
                             <button type="button" class="btn btn-secondary float-right" onclick="window.location='{{ back_url }}'">
@@ -113,12 +113,21 @@
         const form = document.getElementById('id-form');
         let c = console.log
 
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////  ELEVATED  ////////////////////////////////////////////////////////
+        const objElevate = {
+            action: '{{ action }}'
+        }
+
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////  FUNCIONES  ///////////////////////////////////////////////////////
         const getDetailPaymentSpecific = async (object_id) => {
             const formData = new FormData()
             formData.append("action", 'view_detail')
-            formData.append("payment_to", document.getElementById('id_payment_to').value)
-            formData.append("year", document.getElementById('id_year_option').value)
-            formData.append("month", document.getElementById('id_month_option').value)
+            formData.append("type_functionary", document.getElementById('id_type_functionary').value)
+            formData.append("year", document.getElementById('id_year').value)
+            formData.append("month", document.getElementById('id_month').value)
             formData.append("object_id", object_id)
 
             const [status, json] = await mFetch(`{{ request.path }}`, formData, 'POST');
@@ -163,12 +172,7 @@
             $('#exampleModal').modal('show')
         }
 
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            form.classList.add('was-validated');
-            e.preventDefault();
-            e.stopPropagation();
-
+        const loadDataTable = () => {
             var tblDetail = $('#id-table').DataTable({
                 responsive: true,
                 autoWidth: false,
@@ -182,9 +186,9 @@
                     },
                     data: {
                         action: 'calculate',
-                        payment_to: document.getElementById('id_payment_to').value,
-                        year: document.getElementById('id_year_option').value,
-                        month: document.getElementById('id_month_option').value,
+                        type_functionary: document.getElementById('id_type_functionary').value,
+                        year: document.getElementById('id_year').value,
+                        month: document.getElementById('id_month').value,
                     },
                     dataSrc: "calculate_payment_commissions.payment_commissions_details_list"
                 },
@@ -199,7 +203,7 @@
                         class: 'text-center',
                         render: function (data, type, row) {
                             // Todo: Arregla == 0
-                            return row.payment_to == 0
+                            return row.type_functionary == 0
                                 ? row.adviser.first_name
                                 : row.manager.first_name
                         }
@@ -232,21 +236,47 @@
 
                     // Todo: arreglar == 0
                     getDetailPaymentSpecific(
-                        parseInt(document.getElementById('id_payment_to').value) === 0
+                        parseInt(document.getElementById('id_type_functionary').value) === 0
                             ? data.adviser.id
                             : data.manager.id
                     )
                 })
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+        if (objElevate.action === 'edit') {
+            loadDataTable()
+        } else if (objElevate.action === 'view_detail') {
+            document.getElementById('id_type_functionary').disabled = true
+            document.getElementById('id_year').disabled = true
+            document.getElementById('id_month').disabled = true
+            document.getElementById('id-btnSave').classList.add('d-none')
+            document.getElementById('id-btnCalculate').classList.add('d-none')
+            loadDataTable()
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            form.classList.add('was-validated');
+            e.preventDefault();
+            e.stopPropagation();
+
+            loadDataTable()
 
         })
 
 
         document.getElementById('id-btnSave').addEventListener("click", async (e) => {
             const formData = new FormData()
-            formData.append("action", 'add')
-            formData.append("payment_to", document.getElementById('id_payment_to').value)
-            formData.append("year", document.getElementById('id_year_option').value)
-            formData.append("month", document.getElementById('id_month_option').value)
+            formData.append("action", objElevate.action)
+            formData.append("type_functionary", document.getElementById('id_type_functionary').value)
+            formData.append("year", document.getElementById('id_year').value)
+            formData.append("month", document.getElementById('id_month').value)
 
             const [status, json] = await mFetch(`{{ request.path }}`, formData, 'POST');
 
