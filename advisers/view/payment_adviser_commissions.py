@@ -46,8 +46,8 @@ class PaymentAdviserCommissionsCreateView(CreateView):
             try:
                 status = 200
                 type_functionary = int(request.POST.get('type_functionary', ''))
-                year = request.POST.get('year', '')
-                month = request.POST.get('month', '')
+                year = int(request.POST.get('year', ''))
+                month = int(request.POST.get('month', ''))
                 date_payment = datetime.datetime.now()
 
                 data['calculate_payment_commissions'] = PaymentAdviserCommissionsManager.get_calculate_payment_commissions(
@@ -55,6 +55,8 @@ class PaymentAdviserCommissionsCreateView(CreateView):
                     year,
                     month
                 )
+
+                PaymentAdviserCommissionsManager.validate_or_raise_name_error(year, month, type_functionary)
 
                 try:
                     payment_adviser_commissions = PaymentAdviserCommissions.objects.get(
@@ -156,8 +158,8 @@ class PaymentAdviserCommissionsUpdateView(UpdateView):
             try:
                 status = 200
                 type_functionary = int(request.POST.get('type_functionary', ''))
-                year = request.POST.get('year', '')
-                month = request.POST.get('month', '')
+                year = int(request.POST.get('year', ''))
+                month = int(request.POST.get('month', ''))
                 payment_adviser_commissions = self.get_object()
                 date_payment = datetime.datetime.now()
 
@@ -166,6 +168,8 @@ class PaymentAdviserCommissionsUpdateView(UpdateView):
                     year,
                     month
                 )
+
+                PaymentAdviserCommissionsManager.validate_or_raise_name_error(year, month, type_functionary)
 
                 payment_adviser_commissions.date_payment = date_payment
                 payment_adviser_commissions.save()

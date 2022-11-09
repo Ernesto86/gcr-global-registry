@@ -19,6 +19,9 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <h5>Configuracion de datos : {{ form_action }}</h5>
+                            <div class="alert alert-danger d-none" role="alert" id="id-alert">
+                                A simple danger alert—check it out!
+                            </div>
                         </div>
                         <div class="card-body">
                             <div class="form-row">
@@ -112,6 +115,7 @@
     <script>
         const form = document.getElementById('id-form');
         let c = console.log
+        const alert = document.getElementById('id-alert');
 
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////  ELEVATED  ////////////////////////////////////////////////////////
@@ -246,14 +250,17 @@
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
 
-        if (objElevate.action === 'edit') {
-            loadDataTable()
-        } else if (objElevate.action === 'view_detail') {
+        if (objElevate.action === 'edit' || objElevate.action === 'view_detail') {
+
+            if (objElevate.action === 'view_detail') {
+                document.getElementById('id-btnSave').classList.add('d-none')
+                document.getElementById('id-btnCalculate').classList.add('d-none')
+            }
+
             document.getElementById('id_type_functionary').disabled = true
             document.getElementById('id_year').disabled = true
             document.getElementById('id_month').disabled = true
-            document.getElementById('id-btnSave').classList.add('d-none')
-            document.getElementById('id-btnCalculate').classList.add('d-none')
+
             loadDataTable()
         }
 
@@ -280,8 +287,13 @@
 
             const [status, json] = await mFetch(`{{ request.path }}`, formData, 'POST');
 
-            if (status !== 200)
+            if (status !== 200) {
+
+                alert.innerText = json.errors.join(',');
+                alert.classList.remove('d-none');
+
                 return console.log(json)
+            }
             window.location = '{{ back_url }}'
 
         })
