@@ -7,6 +7,10 @@ class InstitutionForm(forms.ModelForm):
         model = Institutions
         exclude = ('detail','created_at', 'created_by', 'deleted', 'deleted_at', 'deleted_by', 'deleted_reason')
         widgets = {
+            'adviser': forms.Select(attrs={
+                'class': 'select2-design',
+                'required': False
+            }),
             'type_registration': forms.Select(attrs={
                 'class': 'select2-design',
                 'required': False

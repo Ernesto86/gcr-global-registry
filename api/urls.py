@@ -20,7 +20,7 @@ from django.conf import settings
 from security.views import HomeView
 
 urlpatterns = [
-    path('', HomeView.as_view()),
+    path('', HomeView.as_view(), name='home'),
     path('admin/', admin.site.urls),
     path('security/', include('security.urls')),
     path('institutions/', include('institutions.urls')),

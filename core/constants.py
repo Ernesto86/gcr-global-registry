@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+DEFAULT_GRUP_USER = 'Solicitantes'
 class Gender(models.TextChoices):
     MALE = "Male", _("Masculino")
     FEMALE = "Female", _("Femenino")
@@ -17,7 +18,20 @@ class TypePost(models.TextChoices):
     MANAGER = "Manager", _("Gerente")
     OTHER = "Other", _("Otro")
 
+class CategoryModule(models.TextChoices):
+    MAINTENANCE = "Maintenance", _("Mantenimientos")
+    DOCUMENTS = "Documents", _("Documentos")
+    PROCESSES = "Processes", _("Procesos")
+    REPORTS = "Resports", _("Informes")
+    SECURITY = "Security", _("Seguridad")
+    OTHER = "Other", _("Otro")
 
+class TypeModule(models.TextChoices):
+    MENU = "Menu", _("Menu")
+    SUBMENU = "submenu", _("submenu")
+    LIST_RESOURCE = "List Resource", _("Listar Recurso")
+    ACTION_RESOURCE = "Action Resource", _("Accion Recurso")
+    OTHER = "Other", _("Otro")
 # ESTADO_CIVIL = (
 #     (1, 'SOLTERO(A)'),
 #     (2, 'CASADO(A)'),

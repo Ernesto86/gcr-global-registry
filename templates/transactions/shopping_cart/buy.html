@@ -4,33 +4,37 @@
 {% endblock %}
 
 {% block container-main %}
-    <div class="container-fluid" style="margin: 5rem;  ">
-        <div class="row">
+    <div class="container-fluid" style="margin: 3rem;  ">
+        <div class="row mt-3">
             <div class="col-lg-10 col-md">
-                <h4 class="border-bottom-3"><b>CARRITO</b></h4>
+                <h4 class="border-bottom-3 font-weight-bold"><b>CARRITO</b></h4>
             </div>
             <div class="col-lg-2 col-md">
-                <h4 class="border-bottom-3"><b>Precio total</b></h4>
+                <h4 class="border-bottom-3 font-weight-bold"><b>Precio total</b></h4>
             </div>
         </div>
         <div class="row d-flex justify-content-center align-items-center">
             {% for dicc in type_registries_list %}
                 <div class="col-lg-12">
-                    <hr style="background: black"/>
+                    <hr style="background: lightgrey"/>
                 </div>
                 <div class="col-lg-4 col-md">
-                    <div style="border-radius:25px" class="alert alert-{{ dicc.type_registries.color }} mb-0 mt-5 text-center register " role="alert">
-                        <p class="display-3 text-center"><b class="circle">{{ dicc.type_registries.registers_level_count }}</b></p>
-                        <p><b>REGISTROS {{ dicc.type_registries.name }}</b></p>
-                        <p><b> $ {{ dicc.type_registries.price }}</b></p>
+                    <div
+                            style="border-radius:25px; background: {{ dicc.type_registries.color }}"
+                            class="alert alert-light mb-0 mt-5 text-center register shadow-lg m-auto"
+                            role="alert"
+                    >
+                        <p class="display-3 text-center white"><b class="circle">{{ dicc.type_registries.registers_level_count }}</b></p>
+                        <p class="white"><b>REGISTROS {{ dicc.type_registries.name }}</b></p>
+                        <p class="white"><b> $ {{ dicc.type_registries.price }}</b></p>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md">
                     <p style="color: black">
                         <b>{{ dicc.type_registries.detail|upper }}</b>
                     </p>
-                    <p>
-                        Actualmente tiene disponible {{ dicc.quota_balance }} registros. Adquiera más
+                    <p class="font-weight-bold">
+                        Actualmente tiene disponible <span class="badge badge-danger rounded-pill">{{ dicc.quota_balance }}</span> registros. Adquiera más
                         registros para seguir ingresando sus certificados.
                     </p>
                     <div class="row">
@@ -41,20 +45,19 @@
                                     id="id-{{ dicc.institution_id }}{{ dicc.type_registries.id }}"
                                     value="{{ dicc.quotes }}"
                                     min="1"
-                                    {% if not dicc.has_type_register_assigned %} readonly {% endif %}
-
+                                    readonly
                             >
                         </div>
-                        <div class="col-lg-5 col-md">
-                            <button type="button" class="btn btn-warning btn-lg btn-block" style="border-radius:25px; font-size: 1rem; color: black">
-                                Precio Unitario Final: US $ {{ dicc.price_discount }}
+                        <div class="col-lg-6 col-md">
+                            <button type="button" class="btn btn-warning btn-lg btn-block font-weight-bold black" style="border-radius:25px; font-size: 1rem">
+                                Precio unitario final: <span class="badge badge-danger rounded-pill"> US $ {{ dicc.price_discount }}</span>
                             </button>
                         </div>
                         <div class="col-lg-3 col-md">
                             <button
                                     type="button"
-                                    class="btn btn-danger btn-lg btn-block cls-btn-delete-item"
-                                    style="border-radius:25px; font-size: 1rem; color: black"
+                                    class="btn btn-danger btn-lg btn-block cls-btn-delete-item font-weight-bold"
+                                    style="border-radius:25px; font-size: 1rem; color: black; background: red"
                                     data-institutionid="{{ dicc.institution_id }}"
                                     data-typeregisterid="{{ dicc.type_registries.id }}"
                             >
@@ -63,12 +66,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md" style="color: black">
-                    <p class="text-center">$ {{ dicc.price }}</p>
+                <div class="col-lg-2 col-md m-auto">
+                    <p class="text-center black font-weight-bold">$ {{ dicc.price }}</p>
                 </div>
             {% endfor %}
             <div class="col-lg-12">
-                <hr style="background: black"/>
+                <hr style="background: lightgrey"/>
             </div>
             <div class="col-lg-2 offset-10 pt-3">
                 <p style="color: black">Subtotal <b>$ {{ subtotal }}</b></p>

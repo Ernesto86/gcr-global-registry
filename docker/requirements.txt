@@ -12,5 +12,6 @@ django-crum==0.7.9
 django-filter==21.1
 django-jazzmin==2.5.0
 debugpy==1.6.2
+requests==2.28.1
 supervisor
 uwsgi

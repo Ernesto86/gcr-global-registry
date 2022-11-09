@@ -47,10 +47,20 @@
 <main id="id-main">
     <div id="wrapper">
         {% block sidebar-navbar %}
-            <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" style="margin-top: 2.3rem" id="accordionSidebar">
+            <ul class="navbar-nav bg-gradient-secondary sidebar sidebar-dark accordion" style="margin-top: 2.3rem" id="accordionSidebar">
                 <hr class="sidebar-divider my-0">
+                <li class="nav-item mt-4 d-flex justify-content-center align-items-center flex-column text-center">
+                    {% if user.institution.get_logo_url is not None %}
+                        <img src="{{ user.institution.get_logo_url }}" class="brand-image img-circle elevation-2" width="130px">
+                    {% else %}
+                        <img src="/static/img/logo/empty.png" class="brand-image img-circle elevation-2" width="130px">
+                    {% endif %}
+                    {% if user.institution is not None %}
+                        <p class="white"><b>{{ user.institution.name| title }}</b></p>
+                    {% endif %}
+                </li>
                 <!-- Nav Item - Dashboard -->
-                <li class="nav-item active">
+                <li class="nav-item active mt-4">
                     <a class="nav-link" href="index.html">
                         <i class="fas fa-fw fa-tachometer-alt"></i>
                         <b>Dashboard</b></a>
@@ -61,21 +71,29 @@
 
                 <!-- Heading -->
                 <div class="sidebar-heading">
-                    PANEL
+                    MENU DE OPCIONES
                 </div>
 
                 <!-- Nav Item - Pages Collapse Menu -->
+
+                {% for gc in module_grup_categories %}
                 <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse-{{ gc.main_category.id }}" aria-expanded="true" aria-controls="collapseTwo">
                         <i class="fas fa-fw fa-cog"></i>
-                        <b>Institución</b>
+                        <b>{{ gc.main_category.name }}</b>
                     </a>
-                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div id="collapse-{{ gc.main_category.id }}" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                         <div class="bg-white py-2 collapse-inner rounded">
-                            <a class="collapse-item" href="/institutions/create">Configuración de Datos</a>
+                        {% for cm in gc.get_grup_category_modules %}
+                            <a class="collapse-item" href="{{ cm.module.url }}">{{ cm.module.name }}</a>
+                         {% endfor %}
                         </div>
                     </div>
                 </li>
+                 <hr class="sidebar-divider d-none d-md-block">
+                {% empty %}
+                    <br><b class="text-white">No se encontro modulos</b><br>
+                {% endfor %}
 
                 <!-- Divider -->
                 <hr class="sidebar-divider">
@@ -162,6 +180,7 @@
 {#<script src="/static/vendor/datatables/dataTables.bootstrap4.min.js"></script>#}
 <script src="/static/vendor/datatables/jquery.dataTables.min.js"></script>
 <script src="/static/lib/js.cookie.min.js"></script>
+<script src="/static/js/toast.js"></script>
 <script src="/static/js/app.js"></script>
 {% block js %}
 {% endblock %}

@@ -3,6 +3,7 @@ from rest_framework_simplejwt import views as jwt_views
 
 from security.login import LogoutRedirectView, LoginAuthView
 from security.main import MainView
+from security.sign_up import SignUpView
 from security.view.organizador_detalle import OrganizadorRegistroListView
 from security.view.organizador_registros import OrganizadorRegistrosView
 from security.view.query_general import QueryGeneralView
@@ -21,6 +22,7 @@ urlpatterns = [
     # path('token/auth', CustomTokenObtainPairView.as_view(), name='token-auth'),
     # modulo de seguridad frontend
     path('login', LoginAuthView.as_view(), name='login'),
+    path('sign-up', SignUpView.as_view(), name='sign_up'),
     path('logout', LogoutRedirectView.as_view(), name='logout'),
     path('main', MainView.as_view(), name='main'),
     path('query-general', QueryGeneralView.as_view(), name='query_general'),

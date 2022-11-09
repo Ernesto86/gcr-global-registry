@@ -93,3 +93,6 @@ class Institutions(ModelBaseAudited):
             self.web = self.web.lower()
 
         ModelBaseAudited.save(self)
+
+    def get_logo_url(self):
+        return self.logo.url

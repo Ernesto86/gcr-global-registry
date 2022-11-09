@@ -12,12 +12,9 @@
                 <div>
                     <div class="card-body">
                         <div class="text-center" style="margin-top: 2rem">
-                            <!--i class="{{ logo_in }} text-primary"></i-->
                             <img src="/static/img/logo/gr-logo.png" height="120">
                         </div>
-
-
-                        <div style="padding-left: 8rem; padding-right: 8rem; margin-top: 3rem">
+                        <div style="padding-left: 5%; padding-right: 5%; margin-top: 3rem" class="text-justify">
                             <h4 class="font-weight-bold">
                                 Bienvenido a <b style="color: black">Global Registry</b>. Somos una comunidad internacional que busca impulsar el desarrollo educativo y profesional
                                 de todas las personas a nivel global, permitiendo el registro y verificación de sus conocimientos adquiridos a través de
@@ -30,47 +27,19 @@
                             </h4>
                         </div>
 
-                        <div class="text-center" style="margin-top: 5rem">
-                            <a id="id-btnlogin" href="{% url 'login' %}" class="btn btn-lg btn-primary mr-5" style="font-size: 26px; border-radius: 20px; width: 25rem; padding-top: 30px; padding-bottom: 30px" >
+                        <div class="text-center d-flex justify-content-center align-items-center" style="margin-top: 5rem" >
+                            <a id="id-btnlogin" href="{% url 'login' %}" class="btn btn-lg btn-primary mr-5" style="font-size: 26px; border-radius: 20px; width: 25rem; padding-top: 30px; padding-bottom: 30px">
                                 <b>Login or Sign up</b>
                             </a>
 
-                            <a id="id-btn-go-query" href="{% url 'query_general' %}"  class="btn btn-lg btn-success"style="font-size: 26px; border-radius: 20px; width: 25rem ; padding-top: 11px; padding-bottom: 10px" >
+                            <a id="id-btn-go-query" href="{% url 'query_general' %}" class="btn btn-lg btn-success" style="font-size: 26px; border-radius: 20px; width: 25rem ; padding-top: 11px; padding-bottom: 10px">
                                 <b>Consulta de Títulos y Certificados</b>
                             </a>
                         </div>
-
                         <br>
                     </div>
                 </div>
             </aside>
         </div>
     </div>
-{% endblock %}
-{% block jscript %}
-    <script>
-        const loginForm = document.getElementById('id-form-login');
-        const btnLogin = document.getElementById('id-btnlogin');
-        const alert = document.getElementById('id-alert');
-
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (loginForm.checkValidity() === false) {
-                loginForm.classList.add("was-validated");
-            } else {
-
-                btnLogin.disabled = true;
-                const formData = new FormData(loginForm);
-                const [status, json] = await mFetch('{{ request.path }}', formData);
-                if (status === 200) {
-                    window.location = '/';
-                } else {
-                    alert.innerText = json.errors.join(',');
-                    alert.classList.remove('d-none');
-                }
-                btnLogin.disabled = false;
-            }
-            return false;
-        });
-    </script>
 {% endblock %}

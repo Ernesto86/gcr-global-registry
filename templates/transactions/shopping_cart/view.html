@@ -4,32 +4,34 @@
 {% endblock %}
 
 {% block container-main %}
-    <div class="container-fluid" style="margin: 5rem;  ">
+    <div class="container-fluid" style="margin: 3rem;">
         <div class="row">
-            <div class="col-lg-10 col-md">
-                <h4 class="border-bottom-3"><b>OBTÉN MÁS REGISTROS</b></h4>
+            <div class="col-lg-10 col-md mt-4">
+                <h4 class="border-bottom-3 font-weight-bold"><b>OBTÉN MÁS REGISTROS</b></h4>
             </div>
             <div class="col-lg-2 col-md text-center">
                 <a href="{% url 'transactions:shopping_cart_buy' %}" type="button" class="btn btn-lg" style="border-radius:25px; font-size: 1rem; color: black">
-                    <i class="fas fa-cart-plus" style="font-size: 4rem; color: #fd7e14"></i>
-                    <span class="badge badge-danger" style="font-size: 16px" id="id-spanQuoteSum">{{ quota_sum }}</span>
+                    <i class="fas fa-cart-plus" style="font-size: 3rem; color: #fd7e14"></i>
+                    <span class="badge badge-danger rounded-pill" style="font-size: 16px" id="id-spanQuoteSum">{{ quota_sum }}</span>
                 </a>
-                {#                <button type="button" class="btn btn-danger btn-lg btn-block cls-btn-buy-now" style="border-radius:25px; font-size: 1rem;">Proceder compra</button>#}
             </div>
         </div>
-        <hr>
-        <p><b>Puedes seguir adquiriendo más registros para seguir ingresando tus títulos y/o certificaciones.</b></p>
-        <div class="row d-flex justify-content-center align-items-center">
-
-            {% for dicc in type_registries_list %}
+        <hr class="mt-0">
+        <p class="mb-0"><b>Puedes seguir adquiriendo más registros para seguir ingresando tus títulos y/o certificaciones.</b></p>
+        {% for dicc in type_registries_list %}
+            <div class="row d-flex justify-content-center align-items-center text-center">
                 <div class="col-lg-12">
-                    <hr style="background: black"/>
+                    <hr style="background: lightgrey"/>
                 </div>
                 <div class="col-lg-4 col-md">
-                    <div style="border-radius:25px" class="alert alert-{{ dicc.type_registries.color }} mb-0 mt-5 text-center register " role="alert">
-                        <p class="display-3 text-center"><b class="circle">{{ dicc.type_registries.registers_level_count }}</b></p>
-                        <p><b>REGISTROS {{ dicc.type_registries.name }}</b></p>
-                        <p><b> $ {{ dicc.type_registries.price }}</b></p>
+                    <div
+                            style="border-radius:25px; background: {{ dicc.type_registries.color }}"
+                            class="alert alert-light mb-0 mt-5 text-center register shadow-lg m-auto"
+                            role="alert"
+                    >
+                        <p class="display-3 text-center white"><b class="circle">{{ dicc.type_registries.registers_level_count }}</b></p>
+                        <p class="white"><b>REGISTROS {{ dicc.type_registries.name }}</b></p>
+                        <p class="white"><b> $ {{ dicc.type_registries.price }}</b></p>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md">
@@ -37,8 +39,8 @@
                         <b>{{ dicc.type_registries.detail|upper }}</b>
                     </p>
                     {% if dicc.has_type_register_assigned %}
-                        <p>
-                            Actualmente tiene disponible {{ dicc.quota_balance }} registros. Adquiera más
+                        <p class="font-weight-bold">
+                            Actualmente tiene disponible <span class="badge badge-danger rounded-pill">{{ dicc.quota_balance }}</span> registros. Adquiera más
                             registros para seguir ingresando sus certificados.
                         </p>
                     {% else %}
@@ -56,13 +58,12 @@
                                     value="5"
                                     min="1"
                                     {% if not dicc.has_type_register_assigned %} readonly {% endif %}
-
                             >
                         </div>
-                        <div class="col-lg-5 col-md">
+                        <div class="col-lg-6 col-md">
                             {% if dicc.has_type_register_assigned %}
-                                <button type="button" class="btn btn-warning btn-lg btn-block" style="border-radius:25px; font-size: 1rem; color: black">
-                                    Precio Unitario Final: US $ {{ dicc.price_discount }}
+                                <button type="button" class="btn btn-warning btn-lg btn-block font-weight-bold black" style="border-radius:25px; font-size: 1rem">
+                                    Precio unitario final: <span class="badge badge-danger rounded-pill"> US $ {{ dicc.price_discount }}</span>
                                 </button>
                             {% endif %}
                         </div>
@@ -71,16 +72,17 @@
                 <div class="col-lg-2 col-md">
                     <button
                             type="button"
-                            class="btn btn-warning btn-lg btn-block cls-btn-add-to-cart"
-                            style="border-radius:25px" {% if not dicc.has_type_register_assigned %} disabled {% endif %}
+                            class="btn btn-warning btn-lg btn-block cls-btn-add-to-cart font-weight-bold"
+                            style="border-radius:25px; background: {% if dicc.has_type_register_assigned %}red{% endif %}; font-size: 1rem"
+                            {% if not dicc.has_type_register_assigned %} disabled {% endif %}
                             data-institutionid="{{ dicc.institution_id }}"
                             data-typeregisterid="{{ dicc.type_registries.id }}"
                     >
                         Agregar al Carrito
                     </button>
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+        {% endfor %}
     </div>
 {% endblock %}
 {% block jscript %}
@@ -109,8 +111,6 @@
                         } else {
                             alert.innerText = json.errors.join(',');
                             alert.classList.remove('d-none');
-
-
                         }
 
                     },

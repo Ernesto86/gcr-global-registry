@@ -1,7 +1,8 @@
-<nav class="navbar navbar-landing navbar-expand-lg navbar-dark bg-gradient-primary p-0">
+<nav class="navbar navbar-landing navbar-expand-lg navbar-dark bg-gradient-secondary p-0">
     <div class="container-fluid">
-        <a class="navbar-brand mr-auto" href="/" style="font-family:Arial; font-weight: bolder;font-size: 15px;letter-spacing:4px">
-                <i class="{{ system_logo }}"></i>
+        <a class="navbar-brand mr-auto" href="/" style="font-weight: bolder;font-size: 15px;letter-spacing:4px">
+{#                <i class="{{ system_logo }}"></i>#}
+{#                <img src="/static/img/logo/logo-global-2.jpeg" width="70px" style="border-radius: 5px">#}
                 {{ system_name }} </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar1">
             <span class="navbar-toggler-icon"></span>
@@ -19,14 +20,14 @@
                             <i class="fa fa-user-circle fa fa-1x"></i>
                         {% endif %}
 
-                        | {{ user.last_name }} {{ user.first_name }} (<em>{{ grupo.name }}</em>)
+                        | {% if user.last_name %} {{ user.last_name }} {{ user.first_name }} {% else %} {{ user.email }} {% endif %} ( <em>{{ grup.name }}</em> )
                     </a>
-                    {% if user_grupos %}
+                    {% if user_grups %}
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="font-size: 13px">
-                            {% for g in user_grupos %}
+                            {% for g in user_grups %}
                                 <a class="dropdown-item {% if g.id == grupo.id %} active {% endif %}" href="{% if g.id == grupo.id %}#{% else %}/?gpid={{ g.id }} {% endif %}">
-                                        {% if g.id == grupo.id %}<i class="fa fa-check"></i>{% endif %}
-                                        {{ user.last_name }} {{ user.first_name }} (<em>{{ g.name }}</em>)
+                                        {% if g.id == grup.id %}<i class="fa fa-check"></i>{% endif %}
+                                        {% if user.last_name %} {{ user.last_name }} {{ user.first_name }} {% else %} {{ user.email }} {% endif %} ( <em>{{ g.name }}</em> )
                                 </a>
                             {% endfor %}
 

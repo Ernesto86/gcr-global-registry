@@ -214,6 +214,12 @@ class PeriodCommissions(ModelBaseAudited):
 
 
 class AdvisersCommissions(ModelBaseAudited):
+    period_commissions = models.ForeignKey(
+        PeriodCommissions,
+        on_delete=models.PROTECT,
+        verbose_name="Periodo",
+        blank=True, null=True
+    )
     adviser = models.ForeignKey(
         Advisers,
         on_delete=models.CASCADE,

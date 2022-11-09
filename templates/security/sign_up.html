@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% block header %}
     {% include 'header.html' %}
 {% endblock %}
@@ -10,15 +11,15 @@
         <div class="row" style="background: white">
             <aside class="col-lg-4 col-md" style="background: #f8f9fc; margin-left: -24px;">
                 <div class="card vh-100" style="background: #f8f9fc">
-                    <div class="card-body" style="margin-top: 20%; background:  #f8f9fc">
-                        <form id="id-form-login" class="form-signin p-4">
+                    <div class="card-body" style="margin-top: 8%; background:  #f8f9fc">
+                        <form id="id-form-consulta" class="form-signin p-4" method="POST">
                             {% csrf_token %}
                             <div class="text-center">
                                 <!--i class="{{ logo_in }} text-primary"></i-->
-                                <img src="/static/img/logo/logo-global-2.jpeg" height="100">
+                                <img src="/static/img/logo/logo-global-2.jpeg" height="70">
                             </div>
 
-                            <div class="divider-text mt-5"></div>
+                            <div class="divider-text mt-4"></div>
 
                             <div class="p-1" style="min-height: 1.5rem">
                                 <div id="id-alert" class="alert alert-danger p-1 text-center d-none" role="alert">
@@ -26,36 +27,48 @@
                                 </div>
                             </div>
 
-                            <div class="form-group mt-4">
+                            <div class="form-group mt-0">
                                 <div class="col-xs-6">
-                                    <label for="id-usuario"><b>Email :</b></label>
-                                    {{ form.username }}
+                                     {{ form.username|as_crispy_field }}
                                 </div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group mt-0">
                                 <div class="col-xs-6">
-                                    <label for="id-password"><b>Contraseña :</b></label>
-                                    {{ form.password }}
+                                     {{ form.email|as_crispy_field }}
                                 </div>
                             </div>
-                            <div class="checkbox mb-3">
+
+                            <div class="form-group mt-0">
+                                <div class="col-xs-6">
+                                    {{ form.password1|as_crispy_field }}
+                                </div>
+                            </div>
+
+                            <div class="form-group mt-0">
+                                <div class="col-xs-6">
+                                    {{ form.password2|as_crispy_field }}
+                                </div>
+                            </div>
+
+
+                            <div class="checkbox mb-2">
                                 <div class="custom-control custom-switch">
                                     <input type="checkbox" name="norobot" class="custom-control-input" id="switch1" required>
                                     <label class="custom-control-label" for="switch1">No soy un Robot</label>
+                                     {% if messages %}
+                                        {% for message in messages %}
+                                        <p class="text-danger">
+                                            <strong>{{ message }}</strong>
+                                        </p>
+                                        {% endfor %}
+                                    {% endif %}
+
                                 </div>
                             </div>
 
                             <button id="id-btnlogin" class="btn btn-lg btn-warning btn-block p-1">
-                                <i class="fa fa-sign-in-alt"></i> Iniciar Sesión
+                                <i class="fa fa-sign-in-alt"></i> Registarse
                             </button>
-                            <br>
-                            <p>
-                                <a href="/security/sign-up" class="text-black-50 text-link" id="id-btn-show-form-consulta">
-                                    <b>Registrarse</b>
-                                </a>
-                                <br>
-                                <a href="#" class="text-black-50" id="id-btn-show-form-email"><b>¿Olvidaste tu contraseña?</b></a>
-                            </p>
                         </form>
                     </div>
                 </div>
@@ -76,34 +89,10 @@
 {% endblock %}
 {% block jscript %}
     <script>
-        const loginForm = document.getElementById('id-form-login');
-        const btnLogin = document.getElementById('id-btnlogin');
-        const alert = document.getElementById('id-alert');
-
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (loginForm.checkValidity() === false) {
-                loginForm.classList.add("was-validated");
-            } else {
-
-                btnLogin.disabled = true;
-                const formData = new FormData(loginForm);
-                const [status, json] = await mFetch('{{ request.path }}', formData);
-                if (status === 200) {
-                    window.location = '/';
-                } else {
-                    alert.innerText = json.errors.join(',');
-                    alert.classList.remove('d-none');
-                }
-                btnLogin.disabled = false;
-            }
-            return false;
-        });
-
         {% if messages %}
             {% for message in messages %}
-                {% if message.tags.lower == 'info' %}
-                    fnToast("{{ message }}");
+                {% if message.tags.lower == 'error' %}
+                    fnToast("{{ message }}", 3);
                 {% endif %}
             {% endfor %}
         {% endif %}

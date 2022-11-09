@@ -67,6 +67,14 @@ class UserAdmin(BaseUserAdmin):
                 )
             },
         ),
+        (
+            _("Institution"),
+            {
+                "fields": (
+                    "institution",
+                )
+            },
+        ),
         (_("Important Dates"), {"fields": ("last_login", "date_joined")}),
     )
     add_fieldsets = (
@@ -81,13 +89,15 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ["email", "username", "first_name", "last_name"]
 
 admin.site.register(User, UserAdmin)
+admin.site.register(ModuleGrupCategory)
 
-class SecurityModuleAdmin(admin.ModelAdmin):
+class ModuleAdmin(admin.ModelAdmin):
     list_display = (
         'code',
         'url',
         'name',
         'type_module',
+        'visible',
         'order',
         'status'
     )
@@ -102,18 +112,20 @@ class SecurityModuleAdmin(admin.ModelAdmin):
         return not obj.deleted
     status.boolean = True
 
-admin.site.register(SecurityModule, SecurityModuleAdmin)
+admin.site.register(Module, ModuleAdmin)
 
-class SecurityModuloGrupoAdmin(admin.ModelAdmin):
+class ModuleGrupPermissionsAdmin(admin.ModelAdmin):
     list_display = (
-        'name',
         'description',
+        'main_category',
+        'group',
+        'module',
         'priority',
         'status',
     )
     list_per_page = 20
-    ordering = ('priority','name',)
-    search_fields = ('name',)
+    ordering = ('priority',)
+    search_fields = ('description',)
     list_filter = (
         'deleted',
     )
@@ -121,4 +133,4 @@ class SecurityModuloGrupoAdmin(admin.ModelAdmin):
         return not obj.deleted
     status.boolean = True
 
-admin.site.register(SecurityModuloGrupo, SecurityModuloGrupoAdmin)
+admin.site.register(ModuleGrupPermissions,ModuleGrupPermissionsAdmin)
