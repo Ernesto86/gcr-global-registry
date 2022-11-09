@@ -4,12 +4,37 @@ from decimal import Decimal
 from django.db.models import Q
 from django.forms import model_to_dict
 
+from advisers.choices import TL_MONTH
 from advisers.models import PaymentAdviserCommissions, Advisers, Managers, PaymentAdviserCommissionsDetails
+from core.common.filter_orm.filter_orm_common import FilterOrmCommon
 from core.util_functions import util_null_to_decimal
 from transactions.models import OrderInstitutionQuotas
 
 
 class PaymentAdviserCommissionsManager:
+
+    @staticmethod
+    def validate_or_raise_name_error(year, month, type_functionary):
+        if PaymentAdviserCommissions.objects.filter(pay_period=True).count():
+            month_copy = month
+            query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
+            query_AND_1.children.append(('type_functionary', type_functionary))
+            query_AND_1.children.append(('pay_period', True))
+
+            if month_copy == TL_MONTH[1][0]:
+                month_copy = TL_MONTH[12][0]
+                year_copy = year - 1
+                query_AND_1.children.append(('year', year_copy))
+                query_AND_1.children.append(('month', month_copy))
+            else:
+                month_copy -= 1
+                query_AND_1.children.append(('year', year))
+                query_AND_1.children.append(('month', month_copy))
+
+            if not PaymentAdviserCommissions.objects.filter(
+                    query_AND_1
+            ).exists():
+                raise NameError('No existe el pago del mes antecesor.')
 
     @staticmethod
     def get_calculate_payment_commissions(type_functionary, year, month):

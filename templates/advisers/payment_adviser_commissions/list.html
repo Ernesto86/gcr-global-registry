@@ -44,19 +44,21 @@
             <td>{{ object.get_type_functionary_display }}</td>
             <td>{{ object.date_payment | date:"Y-m-d" }}</td>
             <td>{{ object.year }}</td>
-            <td>{{ object.month }}</td>
+            <td>{{ object.get_month_display }}</td>
             <td>{{ object.values_commission }}</td>
             <td class="text-center">
                 <div class="btn-group" role="group">
-                    <a
-                            href="{% url "advisers:payment_adviser_commissions_update" object.id %}"
-                            class="btn btn-primary btn-sm"
-                            data-toggle="tooltip" title=""
-                            data-original-title=""
-                            data-id="{{ object.id }}"
-                    >
-                        <i class="fa fa-edit"></i>
-                    </a>
+                    {% if not object.pay_period %}
+                        <a
+                                href="{% url "advisers:payment_adviser_commissions_update" object.id %}"
+                                class="btn btn-primary btn-sm"
+                                data-toggle="tooltip" title=""
+                                data-original-title=""
+                                data-id="{{ object.id }}"
+                        >
+                            <i class="fa fa-edit"></i>
+                        </a>
+                    {% endif %}
                     <a
                             href="{% url "advisers:payment_adviser_commissions_update" object.id %}?action=view_detail"
                             class="btn btn-primary btn-sm"
