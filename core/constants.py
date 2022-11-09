@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+DEFAULT_GRUP_USER = 'Solicitantes'
 class Gender(models.TextChoices):
     MALE = "Male", _("Masculino")
     FEMALE = "Female", _("Femenino")

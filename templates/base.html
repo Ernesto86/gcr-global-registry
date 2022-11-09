@@ -42,12 +42,14 @@
             <ul class="navbar-nav bg-gradient-secondary sidebar sidebar-dark accordion" style="margin-top: 2.3rem" id="accordionSidebar">
                 <hr class="sidebar-divider my-0">
                 <li class="nav-item mt-4 d-flex justify-content-center align-items-center flex-column text-center">
-                    {% if user.get_foto_url is not None %}
-                        <img src="{{ user.get_foto_url }}" class="brand-image img-circle elevation-2" width="150px">
+                    {% if user.institution.get_logo_url is not None %}
+                        <img src="{{ user.institution.get_logo_url }}" class="brand-image img-circle elevation-2" width="130px">
                     {% else %}
-                        <img src="/static/img/logo/empty.png" class="brand-image img-circle elevation-2" width="150px">
+                        <img src="/static/img/logo/empty.png" class="brand-image img-circle elevation-2" width="130px">
                     {% endif %}
-                    <p class="white"><b>{{ user.last_name | upper }} {{ user.first_name | upper }}</b></p>
+                    {% if user.institution is not None %}
+                        <p class="white"><b>{{ user.institution.name| title }}</b></p>
+                    {% endif %}
                 </li>
                 <!-- Nav Item - Dashboard -->
                 <li class="nav-item active mt-4">
@@ -110,6 +112,7 @@
 <!--script src="/static/js/sb-admin-2.min.js"></script-->
 <script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.0.7/js/sb-admin-2.min.js"></script>
 <script src="/static/lib/js.cookie.min.js"></script>
+<script src="/static/js/toast.js"></script>
 <script src="/static/js/app.js"></script>
 {% block js %}
 {% endblock %}

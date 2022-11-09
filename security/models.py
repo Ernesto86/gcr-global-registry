@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, Group
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from core.constants import CategoryModule, TypeModule
+from core.constants import DEFAULT_GRUP_USER, CategoryModule, TypeModule
 from core.models import ModelBase
 from .managers import CustomUserManager
 from crum import get_current_request
@@ -13,10 +13,10 @@ from crum import get_current_request
 class User(AbstractBaseUser, PermissionsMixin):
     pkid = models.BigAutoField(primary_key=True, editable=False)
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    username = models.CharField(verbose_name=_("Username"), max_length=191, unique=True)
-    first_name = models.CharField(verbose_name=_("First Name"), max_length=50)
-    last_name = models.CharField(verbose_name=_("Last Name"), max_length=50)
-    email = models.EmailField(verbose_name=_("Email Address"), unique=True)
+    username = models.CharField(verbose_name=_("Usuario"), max_length=191, unique=True)
+    first_name = models.CharField(verbose_name=_("Nombres"), max_length=50, blank=True, null=True)
+    last_name = models.CharField(verbose_name=_("Apellidos"), max_length=50, blank=True, null=True)
+    email = models.EmailField(verbose_name=_("Email"), unique=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     date_joined = models.DateTimeField(default=timezone.now)
@@ -28,10 +28,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=1024,
         blank=True, null=True
     )
-    institution = models.ForeignKey("institutions.Institutions", verbose_name=_("Institución"), on_delete=models.PROTECT,blank=True, null=True)
+    institution = models.ForeignKey("institutions.Institutions", verbose_name=_("Institución"), on_delete=models.PROTECT, blank=True, null=True)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["username", "first_name", "last_name"]
+    REQUIRED_FIELDS = ["username"]
 
     objects = CustomUserManager()
 
@@ -83,6 +83,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         except:
             pass
         return response
+
+    def set_grup_to_user(self):
+        grup = Group.objects.filter(name=DEFAULT_GRUP_USER).first()
+        if grup is not None:
+            grup.user_set.add(self)
 
 class Module(ModelBase):
     code = models.CharField(max_length=50, verbose_name="Código", blank=True, null=True)
@@ -137,7 +142,7 @@ class ModuleGrupPermissions(ModelBase):
     main_category = models.ForeignKey(ModuleGrupCategory, on_delete=models.CASCADE, verbose_name='Categoria principal', blank=True, null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, verbose_name="Grupo", blank=True, null=True)
     module = models.ForeignKey(Module, on_delete=models.CASCADE, verbose_name="Módulo", blank=True, null=True)
-    permissions = models.ManyToManyField(Permission, verbose_name='Permisos')
+    permissions = models.ManyToManyField(Permission, verbose_name='Permisos', blank=True)
     priority = models.IntegerField(verbose_name="Prioridad", blank=True, null=True)
 
     def __str__(self):

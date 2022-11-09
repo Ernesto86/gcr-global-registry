@@ -39,12 +39,12 @@
     }
 })(jQuery);
 
-function fnToast(ms,tipo,time) {
-    var TYPES = ['', 'warning', 'success', 'error','info'];
+function fnToast(message, tipo, time) {
+    const TYPES = ['', 'warning', 'success', 'error', 'info'];
     $.toast({
-        title: 'Mensaje de SAyA.',
-        //subtitle: datenow,
-        content: ms,
+        title: 'Mensaje sistema GlobalRegister',
+        subtitle: '',
+        content: message,
         type: TYPES[tipo||2],
         delay: time || 5000
     });

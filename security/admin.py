@@ -118,6 +118,8 @@ class ModuleGrupPermissionsAdmin(admin.ModelAdmin):
     list_display = (
         'description',
         'main_category',
+        'group',
+        'module',
         'priority',
         'status',
     )

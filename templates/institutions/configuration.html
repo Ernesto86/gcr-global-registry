@@ -8,7 +8,7 @@
                     <ol class="breadcrumb p-2">
                         <li class="breadcrumb-item"><a href="/">Inicio</a></li>
                         <li class="breadcrumb-item" aria-current="page"><a
-                                href="/institutions/">Instituciones</a></li>
+                                href="/institutions/configuration">Configuración de datos</a></li>
                     </ol>
                 </nav>
             </div>
@@ -19,7 +19,7 @@
                     {% csrf_token %}
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h5>Configuracion de datos : {{ form_action }}</h5>
+                            <h5>Configurar datos de Institución </h5>
                         </div>
                         <div class="card-body">
                             <div class="form-row">
@@ -40,7 +40,7 @@
                                     </div>
                                 </div>
                                  <div class="form-group col-6 mb-0">
-                                    {{ form.code|as_crispy_field }}
+                                    {{ form.adviser|as_crispy_field }}
                                 </div>
                             </div>
                             <div class="form-row">
@@ -140,7 +140,7 @@
 {% endblock %}
 {% block jscript %}
     <script>
-        const MAXIMOSIZE = 5;//2097152;
+        const MAXIMOSIZE = 2097152;
         const formFields = document.querySelector('#formConfigurateData')
         const customFileInput = document.querySelectorAll('input[type=file]')
 
@@ -183,44 +183,6 @@
                 inputLabel.innerText = `${fileName} Tamaño: ${fileSize.toString()}`
             }
         }))
-
-        /*$(function () {
-
-
-            $('#id-form-persona-documentos').addClass('was-validated');
-            $('#btn-guardar').on('click', function (e) {
-                $('#id-form-persona-documentos').addClass('was-validated');
-                let element = null;
-                let validate = false;
-                $("#id-form-persona-documentos").find("input[type=file]").each(function (index, field) {
-                    for (var i = 0; i < field.files.length; i++) {
-                        const file = field.files[i];
-                        if (file.size > MAXIMOSIZE || file.fileSize > MAXIMOSIZE) {
-                            element = field;
-                            validate = true;
-                        }
-                    }
-                });
-                if (validate) {
-                    element.focus();
-                    fnToast('Tamaño permitido para los archivos maximo 2MB.', 3);
-                    return false;
-                }
-            });
-            $('#id-form-persona-documentos').on({
-                submit: function (e) {
-                    this.submit();
-                }
-            });
-
-            $(".custom-file-input").on("change", function () {
-                let fileName = $(this).val().split("\\").pop();
-                let file_size = $(this)[0].files[0].size;
-                file_size = niceBytes(file_size);
-                $(this).siblings(".custom-file-label").addClass("selected").html(fileName.toString() + '  Tamaño: ' + file_size.toString());
-            });
-
-        });*/
 
         {% if messages %}
             {% for message in messages %}

@@ -14,7 +14,7 @@ class ModuleMixin(object):
 
             user.set_group_session()
             group = user.get_group_session()
-            group_module = group.modulegruppermits_set.filter(
+            group_module = group.modulegruppermissions_set.filter(
                 module__deleted=False,
                 module__url=request.path,
                 module__visible=True,
@@ -51,15 +51,15 @@ class PermissionMixin(object):
                 group = user.get_group_session()
                 permissions = self.get_permissions()
                 for permission in permissions:
-                    if not group.modulegruppermits_set.filter(permissions__codename=permission).exists():
+                    if not group.modulegruppermissions_set.filter(permissions__codename=permission).exists():
                         messages.error(request, 'No tiene permiso para ingresar a este módulo')
                         return redirect('home')
 
-                modulegruppermit = group.modulegruppermits_set.filter(
+                modulegruppermission = group.modulegruppermissions_set.filter(
                     permissions__codename=permissions[0]
                 ).first()
-                if modulegruppermit is not None:
-                    request.session['module_id'] = modulegruppermit.module.id
+                if modulegruppermission is not None:
+                    request.session['module_id'] = modulegruppermission.module.id
                 return super().get(request, *args, **kwargs)
         except Exception as ex:
             return redirect('login')
