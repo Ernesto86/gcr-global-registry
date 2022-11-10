@@ -18,27 +18,27 @@ class PeriodCommissionsForm(forms.ModelForm):
         widgets = {
             'days_commissions_period_1': forms.TextInput(attrs={
                 'class': 'bg-light',
-                'disabled': True
+                'readonly': True
             }),
             'days_commissions_period_2': forms.TextInput(attrs={
                 'class': 'bg-light',
-                'disabled': True
+                'readonly': True
             }),
             'days_commissions_period_3': forms.TextInput(attrs={
                 'class': 'bg-light',
-                'disabled': True
+                'readonly': True
             }),
             'advisers_percentage_max_period_1': forms.TextInput(attrs={
                 'class': 'bg-light',
-                'disabled': True
+                'readonly': True
             }),
             'advisers_percentage_max_period_2': forms.TextInput(attrs={
                 'class': 'bg-light',
-                'disabled': True
+                'readonly': True
             }),
             'advisers_percentage_max_period_3': forms.TextInput(attrs={
                 'class': 'bg-light',
-                'disabled': True
+                'readonly': True
             }),
         }
 

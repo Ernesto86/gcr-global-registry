@@ -1,6 +1,7 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
-from django.http import JsonResponse
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
 
@@ -19,7 +20,7 @@ def validate_commissions_max(period_commissions, request):
         raise NameError(f"Excedió valor maximo de la comision del periodo: {period_commissions.advisers_percentage_max_period_3}")
 
 
-def advisers_commissions_save(request):
+def advisers_commissions_save(request, *args, **kwargs):
     list_id_specific = request.POST.getlist('advisers_specific')
 
     query_AND_1 = Q()
@@ -37,8 +38,6 @@ def advisers_commissions_save(request):
         query_AND_1.children.append(("adviser_id__in", list_id_specific))
         dict_update['is_exclude'] = True
 
-    form = PeriodCommissionsForm(request.POST)
-
     period_commissions = PeriodCommissions.objects.filter(deleted=False).last()
 
     validate_commissions_max(period_commissions, request)
@@ -53,9 +52,6 @@ def advisers_commissions_save(request):
     ).update(
         **dict_update
     )
-
-    # return form_invalid(form)
-    return False
 
 
 class AdvisersCommissionsListView(LoginRequiredMixin, ListView):
@@ -88,11 +84,19 @@ class AdvisersCommissionsCreateView(CreateView):
     permission_required = 'add_institutions'
 
     def post(self, request, *args, **kwargs):
+        period_commissions = PeriodCommissions.objects.filter(deleted=False).last()
         try:
-            return advisers_commissions_save(request, *args, **kwargs)
+            advisers_commissions_save(request, *args, **kwargs)
+            return redirect(self.success_url)
         except Exception as ex:
-            print("palmitos", str(ex))
-            return JsonResponse({}, status=500)
+            messages.add_message(request, messages.ERROR, str(ex))
+
+        form = AdvisersCommissionsForm()
+        form_2 = PeriodCommissionsForm(
+            request.POST,
+            instance=period_commissions,
+        )
+        return render(request, self.template_name, {'form': form, 'form_2': form_2})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
@@ -100,7 +104,7 @@ class AdvisersCommissionsCreateView(CreateView):
         context['back_url'] = reverse_lazy('advisers:advisers_commissions_list')
         period_commissions = PeriodCommissions.objects.filter(deleted=False).last()
         context['form_2'] = PeriodCommissionsForm(
-            instance=PeriodCommissions.objects.filter(deleted=False).last(),
+            instance=period_commissions,
             initial={
                 'advisers_percentage_period_1': period_commissions.advisers_percentage_max_period_1,
                 'advisers_percentage_period_2': period_commissions.advisers_percentage_max_period_2,
@@ -119,11 +123,19 @@ class AdvisersCommissionsUpdateView(UpdateView):
     permission_required = 'change_institutions'
 
     def post(self, request, *args, **kwargs):
+        period_commissions = PeriodCommissions.objects.filter(deleted=False).last()
         try:
-            return advisers_commissions_save(request, *args, **kwargs)
+            advisers_commissions_save(request, *args, **kwargs)
+            return redirect(self.success_url)
         except Exception as ex:
-            print("palmitos", str(ex))
-            return JsonResponse({}, status=500)
+            messages.add_message(request, messages.ERROR, str(ex))
+
+        form = AdvisersCommissionsForm()
+        form_2 = PeriodCommissionsForm(
+            request.POST,
+            instance=period_commissions,
+        )
+        return render(request, self.template_name, {'form': form, 'form_2': form_2})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()

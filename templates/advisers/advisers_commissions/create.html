@@ -98,6 +98,17 @@
                 if (parseInt(e.target.value) > parseInt($advisers_percentage_max_period_3.value))
                     alert("Excedió valor maximo: " + $advisers_percentage_max_period_3.value)
             })
-        })
+        });
+
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags.lower == 'success' %}
+                    fnToast("{{ message }}");
+                {% elif message.tags.lower == 'error'  %}
+                    fnToast("{{ message }}", 3 );
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
     </script>
 {% endblock %}
