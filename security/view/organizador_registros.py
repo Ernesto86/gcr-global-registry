@@ -3,6 +3,8 @@ from django.views.generic.base import View
 from institutions.models import InsTypeRegistries
 from security.functions import addUserData
 from students.models import StudentRegisters
+
+
 class OrganizadorRegistrosView(View):
     template_name = 'security/organizador_registros/view.html'
 
@@ -14,7 +16,7 @@ class OrganizadorRegistrosView(View):
         for ins_type_registries in InsTypeRegistries.objects.all():
             registers_level = StudentRegisters.objects.filter(
                 type_register_id=ins_type_registries.id,
-                institution__created_by=context['user'].username
+                institution_id=context['user'].institution_id
             ).count()
 
             if registers_level:

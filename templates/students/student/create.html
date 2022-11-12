@@ -1,0 +1,118 @@
+{% extends 'form.html' %}
+{% load crispy_forms_tags %}
+{% block container-main %}
+    <article class="container-fluid" style="margin-top: 3.5rem">
+        <div class="row">
+            <div class="col">
+                <nav id="siteBreadcrumb" aria-label="breadcrumb">
+                    <ol class="breadcrumb p-2">
+                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                        <li class="breadcrumb-item" aria-current="page"><a
+                                href="/institutions/">Instituciones</a></li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="alert alert-danger d-none" role="alert" id="id-alert">
+                </div>
+
+                <form method="POST" action="" enctype="multipart/form-data" id="id-form">
+                    {% csrf_token %}
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Configuracion de datos : {{ form_action }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-row">
+                                <div class="form-group col-12 mb-0">
+                                    {{ form.dni|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-12 mb-0">
+                                    {{ form.first_name|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-12 mb-0">
+                                    {{ form.last_name|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-12 mb-0">
+                                    {{ form.country|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-12 mb-0">
+                                    {{ form.gender|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-12 mb-0">
+                                    {{ form.email|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-success float-right ml-2" type="submit">
+                                <i class="fa fa-save"></i> Guardar Registro
+                            </button>
+
+                            <button type="button" class="btn btn-secondary float-right" onclick="window.location='{{ back_url }}'">
+                                <i class="fa fa-arrow-left"></i> Atras
+                            </button>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </article>
+{% endblock %}
+{% block jscript-2 %}
+    <script>
+        const form = document.getElementById('id-form')
+        const c = console.log
+        const dni = document.getElementById('id_dni').value
+        const $alert = document.getElementById('id-alert');
+
+        const objElevate = {
+            student_id: '{{ student_id }}',
+            success_url: '{{ success_url }}'
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            form.classList.add('was-validated');
+
+            if (dni.length < 1)
+                return fnToast("La identificacion debe tener mas de un digito", 3)
+
+
+            if (form.checkValidity() === false) {
+                e.preventDefault();
+                e.stopPropagation();
+            } else {
+
+                const formData = new FormData(form)
+                formData.append("action", 'add')
+
+                const [status, json] = await mFetch(`{{ request.path }}`, formData, 'POST');
+
+                if (status !== 200) {
+                    c(json)
+                    $alert.innerText = json.errors.join(',');
+                    $alert.classList.remove('d-none');
+
+                    return console.log(json)
+                }
+
+                window.location = objElevate.success_url
+            }
+        })
+
+    </script>
+{% endblock %}

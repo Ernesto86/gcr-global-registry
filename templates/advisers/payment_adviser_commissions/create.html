@@ -208,8 +208,8 @@
                         render: function (data, type, row) {
                             // Todo: Arregla == 0
                             return row.type_functionary == 0
-                                ? row.adviser.first_name
-                                : row.manager.first_name
+                                ? `${row.adviser.first_name} ${row.adviser.last_name}`
+                                : `${row.manager.first_name} ${row.manager.last_name}`
                         }
                     },
                     {

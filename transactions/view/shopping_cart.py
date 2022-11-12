@@ -24,12 +24,10 @@ class ShoppingCartView(View):
         institution = Institutions.objects.select_related(
             "type_registration"
         ).get(
-            created_by=context['user'].username
+            id=context['user'].institution_id
         )
 
-        code = institution.type_registration.code
-
-        ins_type_registries_list = InsTypeRegistries.objects.filter(code__gte=code).order_by('code')
+        ins_type_registries_list = institution.get_type_register_enabled_list()
 
         context['type_registries_list'] = [
             {

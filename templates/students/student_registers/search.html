@@ -1,0 +1,177 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block header %}
+    {% include 'header.html' %}
+{% endblock %}
+
+{% block container-main %}
+    <div class="container-fluid" style="margin: 5rem;  ">
+        <h4 class="border-bottom-3 font-weight-bold"><b>INGRESO INTERNACIONAL DE REGISTROS INSTITUCIONAL</b></h4>
+        <hr>
+        <p class="font-weight-bold">
+            <b>
+                Bienvenidos al portal de ingreso internacional de registros de títulos y certificaciones de su institución. Aquí podrá ingresar los
+                certificados que ha emitido a sus estudiantes. Le recordamos que la información ingresada se encuentra bajo estricta responsabilidad de
+                su institución.
+            </b>
+        </p>
+        <div class="row">
+            <div class="col">
+                <form method="POST" action="" enctype="multipart/form-data" id="id-form">
+                    <div class="alert alert-danger d-none" role="alert" id="id-alert">
+                    </div>
+
+                    {% csrf_token %}
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Configuración de datos : {{ form_action }}</h5>
+                            <div class="alert alert-danger d-none" role="alert" id="id-alert">
+                                A simple danger alert—check it out!
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-row d-flex justify-content-center align-items-center text-center">
+                                <div class="form-group col-10 mb-0">
+                                    {{ form.identification|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-lg-2 col-md-12 col-sm-12 mb-0 mt-3">
+                                    <button class="btn btn-success ml-2" type="submit" id="id-btnSave">
+                                        <i class="fas fa-search"></i> Buscar
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-12 mb-0">
+                                    {{ form.name|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex align-items-center justify-content-between">
+                            <button class="btn btn-success ml-2 d-none" type="button" id="id-btnAddStudent">
+                                <i class="fas fa-plus"></i> Crear estudiante
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="window.location='{{ back_url }}'">
+                                <i class="fa fa-arrow-left"></i> Atras
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jscript-2 %}
+    <script>
+        let c = console.log
+        const form = document.getElementById('id-form');
+        const $name = document.getElementById('id_name');
+        const alert = document.getElementById('id-alert');
+        const $btnAddStudent = document.getElementById('id-btnAddStudent');
+        const $identification = document.getElementById('id_identification');
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////  ELEVATED  ////////////////////////////////////////////////////////
+        const objElevate = {
+            action: '{{ action }}'
+        }
+
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////  FUNCIONES  ///////////////////////////////////////////////////////
+        const getDetailPaymentSpecific = async (object_id) => {
+            const formData = new FormData()
+            formData.append("action", 'view_detail')
+            formData.append("type_functionary", document.getElementById('id_type_functionary').value)
+            formData.append("year", document.getElementById('id_year').value)
+            formData.append("month", document.getElementById('id_month').value)
+            formData.append("object_id", object_id)
+
+            const [status, json] = await mFetch(`{{ request.path }}`, formData, 'POST');
+
+            if (status !== 200)
+                return console.log(json)
+
+            let html = ''
+
+            json.order_institution_quotas_list.forEach(elem => {
+                html += `
+                        <tr>
+                            <td>${elem.number}</td>
+                            <td>${elem.institution.name}</td>
+                            <td>${elem.date_issue}</td>
+                            <td>${elem.commissions_advisers_percentage}</td>
+                            <td>${elem.commissions_managers_percentage}</td>
+                            <td>${elem.subtotal}</td>
+                            <td>${elem.commission_adviser_clean}</td>
+                            <td>${elem.commission_manager}</td>
+                            <td>${elem.commission_adviser}</td>
+                        </tr>
+                    `
+            })
+            html += `<tr>
+                    <td colspan="7"></td>
+                    <td>${json.commission_manager}</td>
+                    <td>${json.commission_adviser}</td>
+                </tr>`
+
+            document.getElementById('id-detailAdviserBody').innerHTML = html
+            document.getElementById('id-modalTitle').innerText = `
+                Detalle de comisiones de: ${
+                json.adviser
+                    ? `${json.adviser.first_name} ${json.adviser.last_name}`
+                    : json.manager
+                        ? `${json.manager.first_name} ${json.manager.last_name}`
+                        : "Error"
+            }
+            `
+
+            $('#exampleModal').modal('show')
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            form.classList.add('was-validated');
+            e.preventDefault();
+            e.stopPropagation();
+
+            const identification = document.getElementById('id_identification').value
+
+
+            $btnAddStudent.classList.add('d-none');
+            alert.classList.add('d-none');
+
+            const formData = new FormData()
+            formData.append("action", "search")
+            formData.append("identification", identification)
+
+            const [status, json] = await mFetch(`{{ request.path }}`, formData, 'POST');
+
+            if (status !== 200) {
+
+                if (status === 404)
+                    $btnAddStudent.classList.remove('d-none');
+
+                $name.value = json.message
+                alert.innerText = json.message;
+                alert.classList.remove('d-none');
+                return c(json)
+            }
+
+            $name.value = json.student.first_name
+
+            window.location = `/students/students-registers/create?student_id=${json.student.id}`
+        })
+
+        $btnAddStudent.addEventListener('click', () => {
+            c($identification)
+            window.location = `{% url "students:students_create" %}?dni=${$identification.value}`
+        })
+    </script>
+{% endblock %}
