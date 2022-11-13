@@ -18,8 +18,9 @@ def validate_commissions_max(period_commissions, request):
 
 
 def managers_commissions_save(request, *args, **kwargs):
-    print("ya les caigo")
     list_id_specific = request.POST.getlist('managers_specific')
+    is_specific = True if list_id_specific else False
+    period_commissions = PeriodCommissions.objects.filter(deleted=False).last()
 
     query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
     query_AND_1.children.append(("deleted", False))
@@ -29,15 +30,14 @@ def managers_commissions_save(request, *args, **kwargs):
         'is_exclude': False
     }
 
-    if list_id_specific:
+    validate_commissions_max(period_commissions, request)
+
+    if is_specific:
         query_AND_1.children.append(("manager_id__in", list_id_specific))
         dict_update['is_exclude'] = True
-
-    period_commissions = PeriodCommissions.objects.filter(deleted=False).last()
-
-    validate_commissions_max(period_commissions, request)
-    period_commissions.manager_percentage = request.POST.get('manager_percentage')
-    period_commissions.save()
+    else:
+        period_commissions.manager_percentage = request.POST.get('manager_percentage')
+        period_commissions.save()
 
     ManagersCommissions.objects.filter(
         query_AND_1
