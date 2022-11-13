@@ -70,7 +70,6 @@ class StudentRegistersSearchView(View):
         context = {}
         addUserData(self.request, context)
         context['form'] = StudentRegistersSearchForm()
-        context['back_url'] = reverse_lazy('students:students_registers')
         return render(request, self.template_name, context)
 
 

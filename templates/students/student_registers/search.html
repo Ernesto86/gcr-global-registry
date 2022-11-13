@@ -51,9 +51,9 @@
                             <button class="btn btn-success ml-2 d-none" type="button" id="id-btnAddStudent">
                                 <i class="fas fa-plus"></i> Crear estudiante
                             </button>
-                            <button type="button" class="btn btn-secondary" onclick="window.location='{{ back_url }}'">
+                            <a type="button" class="btn btn-secondary" href="{% url "students:students_registers" %}" >
                                 <i class="fa fa-arrow-left"></i> Atras
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </form>
