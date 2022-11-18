@@ -27,7 +27,9 @@ class OrderInstitutionQuotas(ModelBaseAudited):
     taxes_percentage = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Impuesto porcentaje", blank=True, null=True)
     total = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Total", blank=True, null=True)
     commissions_advisers_percentage = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Comision asesor %", blank=True, null=True)
+    commissions_advisers_value = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Comision asesor valor", blank=True, null=True)
     commissions_managers_percentage = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Comision gerente %", blank=True, null=True)
+    commissions_managers_value = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Comision gerente valor", blank=True, null=True)
     pay_adviser = models.BooleanField(default=False)
     pay_manager = models.BooleanField(default=False)
 
@@ -59,6 +61,8 @@ class OrderInstitutionQuotas(ModelBaseAudited):
         # TODO: INCLUDE AND DETERMINATE THE IVA
         self.taxes = util_null_to_decimal(self.subtotal * self.get_taxes_decimal())
         self.total = util_null_to_decimal(self.subtotal + self.taxes)
+        self.commissions_advisers_value = self.get_commission_adviser()
+        self.commissions_managers_value = self.get_commission_manager()
         self.save()
 
     def save(self, *args, **kwargs):

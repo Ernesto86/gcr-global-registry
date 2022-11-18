@@ -96,7 +96,52 @@ class PaymentAdviserCommissionsManager:
         }
 
     @staticmethod
-    def get_detail_adviser_payment(type_functionary, object_id, year, month):
+    def get_detail_adviser_payment_acummulate(type_functionary, object_id, pay_adviser=False, pay_manager=False):
+
+        adviser = None
+        manager = None
+
+        query_AND_1 = Q()
+        query_AND_1.connector = 'AND'
+        query_AND_1.children.append(("deleted", False))
+
+        if type_functionary == PaymentAdviserCommissions.TYPE_FUNCTIONARY[0][0]:
+            adviser = Advisers.objects.get(id=object_id)
+            query_AND_1.children.append(("adviser_id", object_id))
+            query_AND_1.children.append(("pay_adviser", pay_adviser))
+        else:
+            manager = Managers.objects.get(id=object_id)
+            query_AND_1.children.append(("manager_id", object_id))
+            query_AND_1.children.append(("pay_manager", pay_manager))
+
+        order_list = OrderInstitutionQuotas.objects.filter(query_AND_1)
+
+        commission_adviser_sum = Decimal(0)
+        commission_manager_sum = Decimal(0)
+
+        for detail in order_list:
+            commission_adviser = detail.get_commission_adviser()
+            commission_manager = detail.get_commission_manager()
+            commission_adviser_sum += commission_adviser
+            commission_manager_sum += commission_manager
+
+        return {
+            'commission_adviser': commission_adviser_sum,
+            'commission_manager': commission_manager_sum,
+            'adviser': model_to_dict(adviser) if adviser else None,
+            'manager': model_to_dict(manager) if manager else None,
+        }
+
+    @staticmethod
+    def get_detail_adviser_payment(
+            type_functionary,
+            object_id,
+            year=None,
+            month=None,
+            institution_id=None,
+            pay_adviser=None,
+            pay_manager=None
+    ):
         order_institution_quotas_list = []
 
         adviser = None
@@ -105,15 +150,27 @@ class PaymentAdviserCommissionsManager:
         query_AND_1 = Q()
         query_AND_1.connector = 'AND'
         query_AND_1.children.append(("deleted", False))
-        query_AND_1.children.append(("date_issue__year", year))
-        query_AND_1.children.append(("date_issue__month", month))
+
+        if year:
+            query_AND_1.children.append(("date_issue__year", year))
+        if month:
+            query_AND_1.children.append(("date_issue__month", month))
+        if institution_id:
+            query_AND_1.children.append(("institution_id", institution_id))
 
         if type_functionary == PaymentAdviserCommissions.TYPE_FUNCTIONARY[0][0]:
             adviser = Advisers.objects.get(id=object_id)
             query_AND_1.children.append(("adviser_id", object_id))
+
+            if pay_adviser is not None:
+                query_AND_1.children.append(("pay_adviser", pay_adviser))
+
         else:
             manager = Managers.objects.get(id=object_id)
             query_AND_1.children.append(("manager_id", object_id))
+
+            if pay_manager is not None:
+                query_AND_1.children.append(("pay_adviser", pay_manager))
 
         order_list = OrderInstitutionQuotas.objects.select_related(
             'institution'
