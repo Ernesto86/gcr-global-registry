@@ -77,20 +77,20 @@
                 <!-- Nav Item - Pages Collapse Menu -->
 
                 {% for gc in module_grup_categories %}
-                <li class="nav-item">
-                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse-{{ gc.main_category.id }}" aria-expanded="true" aria-controls="collapseTwo">
-                        <i class="fas fa-fw fa-cog"></i>
-                        <b>{{ gc.main_category.name }}</b>
-                    </a>
-                    <div id="collapse-{{ gc.main_category.id }}" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
-                        <div class="bg-white py-2 collapse-inner rounded">
-                        {% for cm in gc.get_grup_category_modules %}
-                            <a class="collapse-item" href="{{ cm.module.url }}">{{ cm.module.name }}</a>
-                         {% endfor %}
+                    <li class="nav-item">
+                        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapse-{{ gc.main_category.id }}" aria-expanded="true" aria-controls="collapseTwo">
+                            <i class="fas fa-fw fa-cog"></i>
+                            <b>{{ gc.main_category.name }}</b>
+                        </a>
+                        <div id="collapse-{{ gc.main_category.id }}" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                            <div class="bg-white py-2 collapse-inner rounded">
+                                {% for cm in gc.get_grup_category_modules %}
+                                    <a class="collapse-item" href="{{ cm.module.url }}">{{ cm.module.name }}</a>
+                                {% endfor %}
+                            </div>
                         </div>
-                    </div>
-                </li>
-                 <hr class="sidebar-divider d-none d-md-block">
+                    </li>
+                    <hr class="sidebar-divider d-none d-md-block">
                 {% empty %}
                     <br><b class="text-white">No se encontro modulos</b><br>
                 {% endfor %}
@@ -129,6 +129,13 @@
                     <a class="nav-link" href="{% url 'advisers:payment_adviser_commissions_list' %}">
                         <i class="fas fa-fw fa-cart-plus"></i>
                         <b>Pagos de comisiones</b></a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'advisers:dashboard_advisor' %}">
+                        <i class="fas fa-fw fa-cart-plus"></i>
+                        <b>Dashboard asesor</b>
+                    </a>
                 </li>
 
                 <li class="nav-item">
@@ -179,6 +186,7 @@
 <script src="https://cdn.jsdelivr.net/npm/startbootstrap-sb-admin-2@4.0.7/js/sb-admin-2.min.js"></script>
 {#<script src="/static/vendor/datatables/dataTables.bootstrap4.min.js"></script>#}
 <script src="/static/vendor/datatables/jquery.dataTables.min.js"></script>
+<script src="/static/vendor/chart.js/Chart.js"></script>
 <script src="/static/lib/js.cookie.min.js"></script>
 <script src="/static/js/toast.js"></script>
 <script src="/static/js/app.js"></script>
