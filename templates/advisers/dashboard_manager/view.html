@@ -1,0 +1,563 @@
+{% extends 'v2/base/crud/template/template.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block template-content %}
+
+    <div class="row d-flex justify-content-evenly">
+        <div class="col-lg-2">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="bg-soft-primary rounded p-3">
+                            <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                      d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-center">
+                            <span>Intituciones aprobadas</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center align-items-center pt-2">
+                        <h3 class="counter"><b>{{ institutions_active_count }}</b></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="bg-soft-primary rounded p-3">
+                            <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                      d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-center">
+                            <span>Instituciones pendientes</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center align-items-center pt-2">
+                        <h3 class="counter"><b>{{ institutions_disabled_count }}</b></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="bg-soft-primary rounded p-3">
+                            <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                      d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-center">
+                            <span>Comisiones pagadas</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center align-items-center pt-2">
+                        <h3 class="counter"><b>{{ value_commission_payment }}</b></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="bg-soft-primary rounded p-3">
+                            <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                      d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-center">
+                            <span>Comisiones x cobrar</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center align-items-center pt-2">
+                        <h3 class="counter"><b>{{ value_commission_x_cobrar }}</b></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-2">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="bg-soft-primary rounded p-3">
+                            <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                      d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-center">
+                            <span>Total compras</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-center align-items-center pt-2">
+                        <h3 class="counter"><b>{{ order_subtotal }}</b></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <div class="header-title">
+                        <h4 class="card-title">Instituciones</h4>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive mt-4">
+                        <table id="id-institutionTable" class="table table-striped mb-0" role="grid">
+                            <thead class="table-primary">
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Alias</th>
+                                <th>Tipo de registro</th>
+                                <th>Representante</th>
+                                <th>Identificacion</th>
+                                <th>Pais</th>
+                                <th>Direccion</th>
+                                <th>Telefono</th>
+                                <th>Email</th>
+                                <th>Habilitado?</th>
+                                <th>Opciones</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for object in institutions_list %}
+                                <tr>
+                                    <td>{{ object.name }}</td>
+                                    <td>{{ object.alias }}</td>
+                                    <td>{{ object.type_registration }}</td>
+                                    <td>{{ object.representative }}</td>
+                                    <td>{{ object.identification }}</td>
+                                    <td>{{ object.country }}</td>
+                                    <td>{{ object.address }}</td>
+                                    <td>{{ object.telephone }}</td>
+                                    <td>{{ object.email }}</td>
+                                    <td class="text-center">
+                                        {% include "v2/common/components/badge/badge_presentate.html" with badge_type=1 badge_value_bool=object.status badge_text_bool=True %}
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="bd-content">
+                                            <a
+                                                    class="btn btn-icon btn-primary"
+                                                    rel="action-view-paid"
+                                                    data-institutionid="{{ object.id }}"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Comisiones pagadas"
+                                            >
+                                                <span class="btn-inner"><i class="fas fa-eye black"></i></span>
+                                            </a>
+                                            <a
+                                                    class="btn btn-icon btn-outline-secondary"
+                                                    rel="action-view-x-cobrar"
+                                                    data-institutionid="{{ object.id }}"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Comisiones x cobrar"
+                                            >
+                                                <span class="btn-inner"><i class="fas fa-eye black"></i></span>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card border-bottom border-4 border-0 border-primary">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <select class="form-control" id="id-yearFilterBarSelect">
+                                <option value="">Todos los años</option>
+                                {% for year in year_list %}
+                                    <option value="{{ year }}">{{ year }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-lg-4">
+                            <select class="form-control" id="id-abviserFilterBarSelect">
+                                <option value="">Todos los Asesores</option>
+                                {% for adviser in advisers_list %}
+                                    <option value="{{ adviser.id }}">{{ adviser }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-12">
+
+            {% include 'advisers/dashboard_manager/card_chart_bar.html' with id_chart_bart='id-commissionsPaidBarChart' id_select_chart_bart='id-selectYearBarChartCommissionXCobrar' title_chart_bart='Comisiones pagadas' %}
+
+        </div>
+        <div class="col-lg-6 col-md-12">
+
+            {% include 'advisers/dashboard_manager/card_chart_bar.html' with id_chart_bart='id-commissionsXCobrarBarChart' id_select_chart_bart='id-selectYearBarChartCommissionXCobrar' title_chart_bart='Comisiones x cobrar' %}
+
+        </div>
+        <div class="col-lg-12 col-md-12">
+
+            {% include 'advisers/dashboard_manager/card_chart_bar.html' with id_chart_bart='id-commissionsTotalsBarChart' id_select_chart_bart='id-selectYearBarChartCommissionTotals' title_chart_bart='Comisiones totales' %}
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block content-modal %}
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-fullscreen-xl-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle de comisiones del Gerente : <span class="badge bg-primary" id="id-nameManagerDetailInstitution"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive mt-4">
+                        <table id="basic-table" class="table table-striped mb-0" role="grid">
+                            <thead class="table-primary">
+                            <tr>
+                                <th>Nº</th>
+                                <th>Institucion</th>
+                                <th>Fecha compra</th>
+                                <th>% asesor</th>
+                                <th>% gerente</th>
+                                <th>Subtotal</th>
+                                <th>Comision</th>
+                                <th>C. gerente</th>
+                                <th>C. asesor</th>
+                            </tr>
+                            </thead>
+                            <tbody id="id-detailInstitutionBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block base-body-js %}
+
+    <script>
+        const objElevate = {}
+
+        document.addEventListener('DOMContentLoaded', function (e) {
+            const objD = {
+                repeat: {},
+                attr: {},
+                loadFirst: {},
+                elem: {
+                    $tableInstitution: document.querySelector('#id-institutionTable > tbody'),
+                    $yearFilterBarSelect: document.getElementById('id-yearFilterBarSelect'),
+                    $adviserFilterBarSelect: document.getElementById('id-abviserFilterBarSelect'),
+
+                    ctxCommissionsPaidBarChart: document.getElementById("id-commissionsPaidBarChart"),
+                    ctxCommissionsXCobrarBarChart: document.getElementById("id-commissionsXCobrarBarChart"),
+                    ctxCommissionsTotalsBarChart: document.getElementById("id-commissionsTotalsBarChart"),
+
+                    barChartCommissionPaid: undefined,
+                    barChartCommissionXCobrar: undefined,
+                    barChartCommissionTotals: undefined,
+                },
+                CONSTANT: {
+                    actionType: ['add', 'edit']
+                },
+                model: {},
+                fun: {}
+            }
+
+            const getParameterFilterCommissions = () => {
+                const year = objD.elem.$yearFilterBarSelect.value === ''
+                    ? null
+                    : objD.elem.$yearFilterBarSelect.value
+                const adviser_id = objD.elem.$adviserFilterBarSelect.value === ''
+                    ? null
+                    : objD.elem.$adviserFilterBarSelect.value
+
+                return {
+                    year,
+                    adviser_id
+                }
+            }
+
+            const getOptionBarChart = (labels, values, max) => {
+                const variableColors = IQUtils.getVariableColor()
+                const colors = [variableColors.primary]
+                return {
+                    series: [
+                        {
+                            name: "Sales",
+                            {#data: [10, 800, 1500, 5000, 10000, 60, 49, 91, 108],#}
+                            data: values,
+                        },
+                    ],
+                    colors: colors,
+                    chart: {
+                        height: "300px",
+                        type: "bar",
+                        toolbar: {
+                            show: false,
+                        },
+                    },
+                    stroke: {
+                        width: 3,
+                    },
+                    grid: {
+                        show: true,
+                        strokeDashArray: 7,
+                    },
+                    markers: {
+                        size: 6,
+                        colors: "#FFFFFF",
+                        strokeColors: colors,
+                        strokeWidth: 2,
+                        strokeOpacity: 0.9,
+                        strokeDashArray: 0,
+                        fillOpacity: 0,
+                        shape: "circle",
+                        radius: 2,
+                        offsetX: 0,
+                        offsetY: 0,
+                    },
+                    xaxis: {
+                        {#categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"],#}
+                        categories: labels,
+                        axisBorder: {
+                            show: false,
+                        },
+                        axisTicks: {
+                            show: false,
+                        },
+                        tooltip: {
+                            enabled: false,
+                        },
+                    },
+                }
+            }
+
+            const getChartBarValue = async (action, {year = undefined, adviser_id = undefined}, callBackSuccess, callbackError) => {
+                const formData = new FormData()
+                formData.append("action", action)
+                formData.append("year", year)
+                formData.append("adviser_id", adviser_id)
+
+                await ClientHttpFetch.exec(
+                    location.pathname,
+                    formData,
+                    {
+                        callbackSuccess: async ({data}) => {
+                            let labels = []
+                            let values = []
+
+                            data.payment_paid_list.map(
+                                payment_paid => {
+                                    return payment_paid.value_presenter_list.map(elem => {
+                                        labels = [...labels, elem.label]
+                                        return elem.label
+                                    })
+                                }
+                            )
+
+                            data.payment_paid_list.map(
+                                payment_paid => {
+                                    return payment_paid.value_presenter_list.map(elem => {
+                                        values = [...values, elem.value]
+                                        return elem.value
+                                    })
+                                }
+                            )
+
+                            const max = Math.max(...values);
+
+
+                            callBackSuccess(
+                                {
+                                    labels,
+                                    values,
+                                    max
+                                }
+                            )
+                        },
+                        callbackError: (errorResponseInstance) => {
+                            callbackError(errorResponseInstance)
+                        },
+                    }
+                )
+            }
+
+            const getChartCommissionPaid = async (action, params) => {
+                if (objD.elem.barChartCommissionPaid)
+                    objD.elem.barChartCommissionPaid.destroy()
+
+                await getChartBarValue(
+                    action, params,
+                    (data) => {
+                        const {labels, values, max} = data
+                        objD.elem.barChartCommissionPaid = new ApexCharts(objD.elem.ctxCommissionsPaidBarChart, getOptionBarChart(labels, values, max))
+                        objD.elem.barChartCommissionPaid.render()
+                    },
+                    () => {
+                    }
+                )
+            }
+
+            const getChartCommissionXCobrar = async (action, params) => {
+                if (objD.elem.barChartCommissionXCobrar)
+                    objD.elem.barChartCommissionXCobrar.destroy()
+
+                await getChartBarValue(
+                    action, params,
+                    (data) => {
+                        const {labels, values, max} = data
+                        objD.elem.barChartCommissionXCobrar = new ApexCharts(objD.elem.ctxCommissionsXCobrarBarChart, getOptionBarChart(labels, values, max))
+                        objD.elem.barChartCommissionXCobrar.render()
+                    },
+                    () => {
+                    }
+                )
+            }
+
+            const getChartCommissionTotals = async (action, params) => {
+                if (objD.elem.barChartCommissionTotals)
+                    objD.elem.barChartCommissionTotals.destroy()
+
+                await getChartBarValue(
+                    action, params,
+                    (data) => {
+                        const {labels, values, max} = data
+                        objD.elem.barChartCommissionTotals = new ApexCharts(objD.elem.ctxCommissionsTotalsBarChart, getOptionBarChart(labels, values, max))
+                        objD.elem.barChartCommissionTotals.render()
+                    },
+                    () => {
+                    }
+                )
+            }
+
+            const getDetailPaymentSpecific = async (institutionId, optionView) => {
+                const formData = new FormData()
+                formData.append("action", 'view_detail_institution')
+                formData.append("institution_id", institutionId)
+                formData.append("option_view", optionView)
+
+                await ClientHttpFetch.exec(
+                    location.pathname,
+                    formData,
+                    {
+                        callbackSuccess: ({data}) => {
+
+                            let html = ''
+
+                            data.order_institution_quotas_list.forEach(elem => {
+                                html += `
+                                    <tr>
+                                        <td>${elem.number}</td>
+                                        <td>${elem.institution.name}</td>
+                                        <td>${elem.date_issue}</td>
+                                        <td>${elem.commissions_advisers_percentage}</td>
+                                        <td>${elem.commissions_managers_percentage}</td>
+                                        <td>${elem.subtotal}</td>
+                                        <td>${elem.commission_adviser_clean}</td>
+                                        <td>${elem.commission_manager}</td>
+                                        <td>${elem.commission_adviser}</td>
+                                    </tr>
+                                `
+                            })
+                            html += `<tr>
+                                <td colspan="7"></td>
+                                <td>${data.commission_manager}</td>
+                                <td>${data.commission_adviser}</td>
+                            </tr>`
+
+                            document.getElementById('id-detailInstitutionBody').innerHTML = html
+                            document.getElementById('id-nameManagerDetailInstitution').innerText = `${data.manager.first_name} ${data.manager.last_name}`
+
+                            $('#exampleModal').modal('show')
+                        },
+                        callbackError: (errorResponseInstance) => {
+                            alert(errorResponseInstance.message)
+                        },
+                    }
+                )
+            }
+
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+            getChartCommissionPaid('commission_paid', {})
+            getChartCommissionXCobrar('commission_x_cobrar', {})
+            getChartCommissionTotals('commission_totals', {})
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+
+
+            objD.elem.$yearFilterBarSelect.addEventListener('change', (e) => {
+                const params = getParameterFilterCommissions()
+
+                getChartCommissionPaid('commission_paid', params)
+                getChartCommissionXCobrar('commission_x_cobrar', params)
+                getChartCommissionTotals('commission_totals', params)
+            })
+
+            objD.elem.$adviserFilterBarSelect.addEventListener('change', (e) => {
+                const params = getParameterFilterCommissions()
+
+                getChartCommissionPaid('commission_paid', params)
+                getChartCommissionXCobrar('commission_x_cobrar', params)
+                getChartCommissionTotals('commission_totals', params)
+            })
+
+
+            objD.elem.$tableInstitution.addEventListener('click', async (event) => {
+                const targetPaid = event.target.closest('a[rel="action-view-paid"]')
+                const targetXCobrar = event.target.closest('a[rel="action-view-x-cobrar"]')
+
+                if (targetPaid) {
+                    event.preventDefault()
+
+                    await getDetailPaymentSpecific(targetPaid.dataset.institutionid, 'paid')
+                }
+
+                if (targetXCobrar) {
+                    event.preventDefault()
+
+                    await getDetailPaymentSpecific(targetXCobrar.dataset.institutionid, 'xcobrar')
+                }
+
+            });
+        })
+
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags.lower == 'success' %}
+                    fnToast("{{ message }}");
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    </script>
+{% endblock %}

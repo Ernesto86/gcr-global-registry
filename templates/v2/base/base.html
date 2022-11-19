@@ -11,6 +11,10 @@
 
     {% include 'v2/base/components/partials/head.html' %}
 
+    <script>
+        const c = console.log
+    </script>
+
     {% block head %}
     {% endblock %}
 
@@ -28,6 +32,8 @@
 
 </head>
 <body class=" {{ bodyClass }} ">
+
+{% include 'v2/base/components/partials/loading-to-data.html' %}
 
 <div id="loading">
     {% include 'v2/base/components/partials/loader.html' %}
@@ -48,6 +54,10 @@
     <div class="content-inner container-fluid pb-0" id="page_layout">
         {% block content %}
         {% endblock %}
+
+        {% block content-modal %}
+        {% endblock %}
+
     </div>
     {% include 'v2/base/components/partials/footer.html' %}
 </main>
@@ -57,6 +67,8 @@
 {% include 'v2/base/components/widgets/auth-pro/modal-popup.html' %}
 
 {% include 'v2/base/components/partials/scripts.html' %}
+<script src="/static/lib/js.cookie.min.js"></script>
+<script src="/static/v2/js/common/client-http/fetch/index.js"></script>
 
 {% block scripts %}
 {% endblock %}

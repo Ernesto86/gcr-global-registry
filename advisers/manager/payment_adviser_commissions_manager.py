@@ -170,7 +170,7 @@ class PaymentAdviserCommissionsManager:
             query_AND_1.children.append(("manager_id", object_id))
 
             if pay_manager is not None:
-                query_AND_1.children.append(("pay_adviser", pay_manager))
+                query_AND_1.children.append(("pay_manager", pay_manager))
 
         order_list = OrderInstitutionQuotas.objects.select_related(
             'institution'
