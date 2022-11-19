@@ -1,0 +1,20 @@
+<!-- Library Bundle Script -->
+<script src="/static/v2/js/core/libs.min.js"></script>
+<!-- Plugin Scripts -->
+{% include 'v2/base/components/partials/plugin-scripts.html' %}
+<!-- Lodash Utility -->
+<script src="/static/v2/vendor/lodash/lodash.min.js"></script>
+<!-- Utilities Functions -->
+<script src="/static/v2/js/iqonic-script/utility{% if not dev %}.min{% endif %}.js"></script>
+<!-- Settings Script -->
+<script src="/static/v2/js/iqonic-script/setting{% if not dev %}.min{% endif %}.js"></script>
+<!-- Settings Init Script -->
+<script src="/static/v2/js/setting-init.js"></script>
+<!-- External Library Bundle Script -->
+<script src="/static/v2/js/core/external.min.js"></script>
+<!-- Dashboard Script -->
+<script src="/static/v2/js/charts/dashboard.js?v={{ version }}" defer></script>
+<!-- Hopeui Script -->
+<script src="/static/v2/js/hope-ui.js?v={{ version }}" defer></script>
+<script src="/static/v2/js/hope-uipro.js?v={{ version }}" defer></script>
+<script src="/static/v2/js/sidebar.js?v={{version}}" defer></script>

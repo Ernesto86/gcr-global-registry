@@ -1,0 +1,105 @@
+{% extends 'v2/base/base.html' %}
+
+
+{% block main-wrapper-content %}
+
+    <form method="POST" action="" enctype="multipart/form-data" id="id-form">
+        <input type="hidden" name="action" value="{{ action }}">
+
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="card-title">
+                    {{ title }}
+                </h3>
+            </div>
+
+            <div class="card-body">
+                {% csrf_token %}
+
+                {% block form-card-body %}
+
+                    ¿Estas seguro de eliminar el registro {{ content }}?
+
+                {% endblock %}
+
+            </div>
+
+            {% block form-wrapper-card-footer %}
+
+                <div class="card-footer">
+                    {% block form-card-footer %}
+
+                        {% block card-footer-bottom-save %}
+                            <button type="submit" form="id-form" class="btn btn-warning">
+                                <i class="fas fa-save"></i>
+                                Si, eliminar
+                            </button>
+                        {% endblock %}
+
+                        {% block card-footer-bottom-cancelated %}
+                            <a href="{{ success_url }}{{ to_back }}" class="btn btn-danger">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        {% endblock %}
+
+                    {% endblock %}
+                </div>
+
+            {% endblock %}
+        </div>
+    </form>
+
+{% endblock %}
+
+
+{% block base-body-js %}
+    <script>
+        const objElevate = {
+            successWithToBackUrl: '{{ success_with_to_back_url | safe }}',
+        }
+
+        document.addEventListener('DOMContentLoaded', function (e) {
+            const objD = {
+                repeat: {},
+                attr: {},
+                loadFirst: {},
+                elem: {
+                    $form: document.getElementById('id-form')
+                },
+                CONSTANT: {
+                    actionType: ['add', 'edit']
+                },
+                model: {},
+                fun: {}
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+
+            {#const formValidation = FormValidation.formValidation(objD.elem.$form, {#}
+            {#        ...FormValidationCommon.settings.getObjParameters({}),#}
+            {#        fields: {},#}
+            {#    }#}
+            {#)#}
+            {#    .on('core.element.validated', (e) => FormValidationCommon.settings.coreElementValidated({e, formValidation}))#}
+            {#    .on('core.validator.validated', (e) => FormValidationCommon.settings.coreValidatorValidated({e, form: objD.elem.$form}))#}
+            {#    .on('core.form.valid', async function () {#}
+            {#        await mFetch(#}
+            {#            location.pathname,#}
+            {#            new FormData(objD.elem.$form),#}
+            {#            {#}
+            {#                callbackSuccess: (successResponseInstance) => location.href = objElevate.successWithToBackUrl,#}
+            {#                callbackError: (errorResponseInstance) => {#}
+            {#                    alert(errorResponseInstance.message)#}
+            {#                },#}
+            {#            }#}
+            {#        )#}
+            {#    })#}
+        })
+    </script>
+{% endblock %}
