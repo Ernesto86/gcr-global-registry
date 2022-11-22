@@ -3,10 +3,14 @@
 {% load crispy_forms_tags %}
 
 {% block template-content %}
-
     <div class="row">
         <div class="col-lg-12">
-            <div class="card border-bottom border-4 border-4 border-primary">
+            {% include 'v2/common/components/alert/alert.html' with type_feature_alert=4 hidden_alert=True %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card border-bottom border-4 border-0 border-primary">
                 <div class="card-header">
                     <h4>Criterio de busqueda</h4>
                 </div>
@@ -169,42 +173,6 @@
                             </tr>
                             </thead>
                             <tbody id="id-institutionBody">
-                            {#                            {% for object in institutions_list %}#}
-                            {#                                <tr>#}
-                            {#                                    <td>{{ object.name }}</td>#}
-                            {#                                    <td>{{ object.alias }}</td>#}
-                            {#                                    <td>{{ object.type_registration }}</td>#}
-                            {#                                    <td>{{ object.representative }}</td>#}
-                            {#                                    <td>{{ object.identification }}</td>#}
-                            {#                                    <td>{{ object.country }}</td>#}
-                            {#                                    <td>{{ object.address }}</td>#}
-                            {#                                    <td>{{ object.telephone }}</td>#}
-                            {#                                    <td>{{ object.email }}</td>#}
-                            {#                                    <td class="text-center">#}
-                            {#                                        {% include "v2/common/components/badge/badge_presentate.html" with badge_type=1 badge_value_bool=object.status badge_text_bool=True %}#}
-                            {#                                    </td>#}
-                            {#                                    <td class="text-center">#}
-                            {#                                        <div class="bd-content">#}
-                            {#                                            <a#}
-                            {#                                                    class="btn btn-icon btn-primary"#}
-                            {#                                                    rel="action-view-paid"#}
-                            {#                                                    data-institutionid="{{ object.id }}"#}
-                            {#                                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Comisiones pagadas"#}
-                            {#                                            >#}
-                            {#                                                <span class="btn-inner"><i class="fas fa-eye black"></i></span>#}
-                            {#                                            </a>#}
-                            {#                                            <a#}
-                            {#                                                    class="btn btn-icon btn-outline-secondary"#}
-                            {#                                                    rel="action-view-x-cobrar"#}
-                            {#                                                    data-institutionid="{{ object.id }}"#}
-                            {#                                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Comisiones x cobrar"#}
-                            {#                                            >#}
-                            {#                                                <span class="btn-inner"><i class="fas fa-eye black"></i></span>#}
-                            {#                                            </a>#}
-                            {#                                        </div>#}
-                            {#                                    </td>#}
-                            {#                                </tr>#}
-                            {#                            {% endfor %}#}
                             </tbody>
                         </table>
                     </div>
@@ -277,9 +245,7 @@
 
         document.addEventListener('DOMContentLoaded', function (e) {
             const objD = {
-                repeat: {},
-                attr: {},
-                loadFirst: {},
+                CONSTANT: {},
                 elem: {
                     $institutionsActiveCount: document.getElementById('id-institutionsActiveCount'),
                     $institutionsDisabledCount: document.getElementById('id-institutionsDisabledCount'),
@@ -300,9 +266,8 @@
                     barChartCommissionXCobrar: undefined,
                     barChartCommissionTotals: undefined,
                 },
-                CONSTANT: {
-                    actionType: ['add', 'edit']
-                },
+                repeat: {},
+                loadFirst: {},
                 model: {},
                 fun: {}
             }
@@ -328,7 +293,6 @@
                     series: [
                         {
                             name: "Sales",
-                            {#data: [10, 800, 1500, 5000, 10000, 60, 49, 91, 108],#}
                             data: values,
                         },
                     ],
@@ -361,7 +325,6 @@
                         offsetY: 0,
                     },
                     xaxis: {
-                        {#categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"],#}
                         categories: labels,
                         axisBorder: {
                             show: false,
@@ -413,45 +376,48 @@
                 formData.append("institution_id", institutionId)
                 formData.append("option_view", optionView)
 
-                await ClientHttpFetch.exec(
+                AppSystem.fun.showLoadingUi()
+
+                const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
                     location.pathname,
-                    formData,
-                    {
-                        callbackSuccess: ({data}) => {
-
-                            let html = ''
-
-                            data.order_institution_quotas_list.forEach(elem => {
-                                html += `
-                                    <tr>
-                                        <td>${elem.number}</td>
-                                        <td>${elem.institution.name}</td>
-                                        <td>${elem.date_issue}</td>
-                                        <td>${elem.commissions_advisers_percentage}</td>
-                                        <td>${elem.commissions_managers_percentage}</td>
-                                        <td>${elem.subtotal}</td>
-                                        <td>${elem.commission_adviser_clean}</td>
-                                        <td>${elem.commission_manager}</td>
-                                        <td>${elem.commission_adviser}</td>
-                                    </tr>
-                                `
-                            })
-                            html += `<tr>
-                                <td colspan="7"></td>
-                                <td>${data.commission_manager}</td>
-                                <td>${data.commission_adviser}</td>
-                            </tr>`
-
-                            document.getElementById('id-detailInstitutionBody').innerHTML = html
-                            document.getElementById('id-nameManagerDetailInstitution').innerText = `${data.manager.first_name} ${data.manager.last_name}`
-
-                            $('#exampleModal').modal('show')
-                        },
-                        callbackError: (errorResponseInstance) => {
-                            alert(errorResponseInstance.message)
-                        },
-                    }
+                    formData
                 )
+
+                AppSystem.fun.hiddenLoadingUi()
+
+                if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                    alert(message)
+                    return
+                }
+
+                let html = ''
+
+                data.order_institution_quotas_list.forEach(elem => {
+                    html += `
+                        <tr>
+                            <td>${elem.number}</td>
+                            <td>${elem.institution.name}</td>
+                            <td>${elem.date_issue}</td>
+                            <td>${elem.commissions_advisers_percentage}</td>
+                            <td>${elem.commissions_managers_percentage}</td>
+                            <td>${elem.subtotal}</td>
+                            <td>${elem.commission_adviser_clean}</td>
+                            <td>${elem.commission_manager}</td>
+                            <td>${elem.commission_adviser}</td>
+                        </tr>
+                    `
+                })
+                html += `<tr>
+                        <td colspan="7"></td>
+                        <td>${data.commission_manager}</td>
+                        <td>${data.commission_adviser}</td>
+                    </tr>
+                `
+
+                document.getElementById('id-detailInstitutionBody').innerHTML = html
+                document.getElementById('id-nameManagerDetailInstitution').innerText = `${data.manager.first_name} ${data.manager.last_name}`
+
+                $('#exampleModal').modal('show')
             }
 
             const getCommissionManager = async () => {
@@ -459,101 +425,102 @@
                     year,
                     adviser_id
                 } = getParameterFilterCommissions()
-
                 const formData = new FormData()
                 formData.append("action", 'commission_manager')
                 formData.append("year", year)
                 formData.append("adviser_id", adviser_id)
 
-                await ClientHttpFetch.exec(
+                AppSystem.fun.showLoadingUi()
+                AppSystem.handleComp.alert.hidden({})
+
+                const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
                     location.pathname,
-                    formData,
-                    {
-                        callbackSuccess: async ({data}) => {
-
-                            objD.elem.$institutionsActiveCount.innerText = data.institutions_active_count
-                            objD.elem.$institutionsDisabledCount.innerText = data.institutions_disabled_count
-                            objD.elem.$valueCommissionPaid.innerText = data.value_commission_paid
-                            objD.elem.$valueCommissionXCobrar.innerText = data.value_commission_x_cobrar
-                            objD.elem.$valueCommissionTotals.innerText = data.value_commission_totals
-
-                            const insitututionList = data.institutions_list.map(elem => {
-                                return `
-                                    <tr>
-                                        <td>${elem.name}</td>
-                                        <td>${elem.alias}</td>
-                                        <td>${elem.type_registration}</td>
-                                        <td>${elem.representative}</td>
-                                        <td>${elem.identification}</td>
-                                        <td>${elem.country}</td>
-                                        <td>${elem.address}</td>
-                                        <td>${elem.telephone}</td>
-                                        <td>${elem.email}</td>
-                                        <td class="text-center">
-{#                                            {% include "v2/common/components/badge/badge_presentate.html" with badge_type=1 badge_value_bo${elem.statusadge_text_bool=True %}#}
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="bd-content">
-                                                <a
-                                                        class="btn btn-icon btn-primary"
-                                                        rel="action-view-paid"
-                                                        data-institutionid="${elem.id}"
-                                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Comisiones pagadas"
-                                                >
-                                                    <span class="btn-inner"><i class="fas fa-eye black"></i></span>
-                                                </a>
-                                                <a
-                                                        class="btn btn-icon btn-outline-secondary"
-                                                        rel="action-view-x-cobrar"
-                                                        data-institutionid="${elem.id}"
-                                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Comisiones x cobrar"
-                                                >
-                                                    <span class="btn-inner"><i class="fas fa-eye black"></i></span>
-                                                </a>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                `
-                            })
-
-                            objD.elem.$institutionBody.innerHTML = insitututionList.join(' ')
-
-                            if (objD.elem.barChartCommissionPaid)
-                                objD.elem.barChartCommissionPaid.destroy()
-
-                            if (objD.elem.barChartCommissionXCobrar)
-                                objD.elem.barChartCommissionXCobrar.destroy()
-
-                            if (objD.elem.barChartCommissionTotals)
-                                objD.elem.barChartCommissionTotals.destroy()
-
-                            const paidInfoChart = getValueCommissionInfoChart(data.payment_paid_list)
-                            objD.elem.barChartCommissionPaid = new ApexCharts(
-                                objD.elem.ctxCommissionsPaidBarChart,
-                                getOptionBarChart(paidInfoChart.labels, paidInfoChart.values, paidInfoChart.max)
-                            )
-                            objD.elem.barChartCommissionPaid.render()
-
-                            const xCobrarInfoChart = getValueCommissionInfoChart(data.payment_x_cobrar_list)
-                            objD.elem.barChartCommissionXCobrar = new ApexCharts(
-                                objD.elem.ctxCommissionsXCobrarBarChart,
-                                getOptionBarChart(xCobrarInfoChart.labels, xCobrarInfoChart.values, xCobrarInfoChart.max)
-                            )
-                            objD.elem.barChartCommissionXCobrar.render()
-
-                            const totalsInfoChart = getValueCommissionInfoChart(data.payment_totals_list)
-                            objD.elem.barChartCommissionTotals = new ApexCharts(
-                                objD.elem.ctxCommissionsTotalsBarChart,
-                                getOptionBarChart(totalsInfoChart.labels, totalsInfoChart.values, totalsInfoChart.max)
-                            )
-                            objD.elem.barChartCommissionTotals.render()
-
-                        },
-                        callbackError: (errorResponseInstance) => {
-
-                        },
-                    }
+                    formData
                 )
+
+                AppSystem.fun.hiddenLoadingUi()
+
+                if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                    AppSystem.handleComp.alert.show({content: message, type_feature: AppSystem.CONSTANT.type_feature.danger})
+                    return
+                }
+
+                objD.elem.$institutionsActiveCount.innerText = data.institutions_active_count
+                objD.elem.$institutionsDisabledCount.innerText = data.institutions_disabled_count
+                objD.elem.$valueCommissionPaid.innerText = data.value_commission_paid
+                objD.elem.$valueCommissionXCobrar.innerText = data.value_commission_x_cobrar
+                objD.elem.$valueCommissionTotals.innerText = data.value_commission_totals
+
+                const insitututionList = data.institutions_list.map(elem => {
+                    return `
+                        <tr>
+                            <td>${elem.name}</td>
+                            <td>${elem.alias}</td>
+                            <td>${elem.type_registration}</td>
+                            <td>${elem.representative}</td>
+                            <td>${elem.identification}</td>
+                            <td>${elem.country}</td>
+                            <td>${elem.address}</td>
+                            <td>${elem.telephone}</td>
+                            <td>${elem.email}</td>
+                            <td class="text-center">
+{#                                            {% include "v2/common/components/badge/badge_presentate.html" with badge_type=1 badge_value_bo${elem.statusadge_text_bool = True %}#}
+                            </td>
+                            <td class="text-center">
+                                <div class="bd-content">
+                                    <a
+                                            class="btn btn-icon btn-primary"
+                                            rel="action-view-paid"
+                                            data-institutionid="${elem.id}"
+                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Comisiones pagadas"
+                                    >
+                                        <span class="btn-inner"><i class="fas fa-eye black"></i></span>
+                                    </a>
+                                    <a
+                                            class="btn btn-icon btn-outline-secondary"
+                                            rel="action-view-x-cobrar"
+                                            data-institutionid="${elem.id}"
+                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Comisiones x cobrar"
+                                    >
+                                        <span class="btn-inner"><i class="fas fa-eye black"></i></span>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                                `
+                })
+
+                objD.elem.$institutionBody.innerHTML = insitututionList.join(' ')
+
+                if (objD.elem.barChartCommissionPaid)
+                    objD.elem.barChartCommissionPaid.destroy()
+
+                if (objD.elem.barChartCommissionXCobrar)
+                    objD.elem.barChartCommissionXCobrar.destroy()
+
+                if (objD.elem.barChartCommissionTotals)
+                    objD.elem.barChartCommissionTotals.destroy()
+
+                const paidInfoChart = getValueCommissionInfoChart(data.payment_paid_list)
+                objD.elem.barChartCommissionPaid = new ApexCharts(
+                    objD.elem.ctxCommissionsPaidBarChart,
+                    getOptionBarChart(paidInfoChart.labels, paidInfoChart.values, paidInfoChart.max)
+                )
+                objD.elem.barChartCommissionPaid.render()
+
+                const xCobrarInfoChart = getValueCommissionInfoChart(data.payment_x_cobrar_list)
+                objD.elem.barChartCommissionXCobrar = new ApexCharts(
+                    objD.elem.ctxCommissionsXCobrarBarChart,
+                    getOptionBarChart(xCobrarInfoChart.labels, xCobrarInfoChart.values, xCobrarInfoChart.max)
+                )
+                objD.elem.barChartCommissionXCobrar.render()
+
+                const totalsInfoChart = getValueCommissionInfoChart(data.payment_totals_list)
+                objD.elem.barChartCommissionTotals = new ApexCharts(
+                    objD.elem.ctxCommissionsTotalsBarChart,
+                    getOptionBarChart(totalsInfoChart.labels, totalsInfoChart.values, totalsInfoChart.max)
+                )
+                objD.elem.barChartCommissionTotals.render()
             }
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

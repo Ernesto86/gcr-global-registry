@@ -1,10 +1,11 @@
 'use strict';
 
-const $loadingUi = document.getElementById('id-loadContent')
-
 
 class SuccessResponse {
+    static KIND_STATIC = 'success'
+
     constructor(code = 0, message = "", data = {}) {
+        this.kind = SuccessResponse.KIND_STATIC
         this.code = code
         this.message = message
         this.data = data
@@ -12,7 +13,10 @@ class SuccessResponse {
 }
 
 class ErrorResponse {
+    static KIND_STATIC = 'error'
+
     constructor(code = 0, message = "", data = {}) {
+        this.kind = ErrorResponse.KIND_STATIC
         this.code = code
         this.message = message
         this.data = data
@@ -121,20 +125,9 @@ const ClientHttpFetch = {
             return false
         }
     },
-    exec: async (
-        url,
-        data,
-        configExtra = {}
-    ) => {
+    exec: async (url, data, configExtra = {}) => {
         const {
             method = ClientHttpFetch.CONSTANT.verboseMethod.POST.description,
-            withControlSpinner = true,
-            callbackSuccess = (successResponseInstance) => {
-            },
-            callbackError = (errorResponseInstance) => {
-            },
-            callbackFinally = () => {
-            }
         } = configExtra
 
         let options = {
@@ -147,9 +140,6 @@ const ClientHttpFetch = {
         }
 
         try {
-            if (withControlSpinner)
-                $loadingUi.classList.remove('d-none')
-
             if (method === ClientHttpFetch.CONSTANT.verboseMethod.GET.description)
                 url += '?' + (new URLSearchParams(data)).toString()
             else
@@ -159,14 +149,14 @@ const ClientHttpFetch = {
 
             const status = response.status
 
-            if (!response.ok) throw response
+            if (!response.ok)
+                throw response
 
             const responseJson = await response.json()
 
-            return callbackSuccess(new SuccessResponse(status, responseJson.message, responseJson))
+            return new SuccessResponse(status, responseJson.message, responseJson)
 
         } catch (error) {
-
             c("Error http client fetch: ", error)
 
             try {
@@ -182,26 +172,22 @@ const ClientHttpFetch = {
                         message = error.statusText
                     }
 
-                    callbackError(new ErrorResponse(responseJson.status, message, responseJson))
+                    return new ErrorResponse(responseJson.status, message, responseJson)
 
                 } else {
 
-                    callbackError(new ErrorResponse(ClientHttpFetch.CONSTANT.statusCode.ErrorNetwork, "Error de red", {}))
+                    return new ErrorResponse(ClientHttpFetch.CONSTANT.statusCode.ErrorNetwork, "Error de red", {})
 
                 }
 
             } catch (errorUnknown) {
 
-                callbackError(new ErrorResponse(ClientHttpFetch.CONSTANT.statusCode.ErrorUnknown, "Error desconocido", {}))
+
+
+                return new ErrorResponse(ClientHttpFetch.CONSTANT.statusCode.ErrorUnknown, "Error desconocido", {})
 
             }
-        } finally {
-
-            if (withControlSpinner)
-                $loadingUi.classList.add('d-none')
-
-            callbackFinally()
         }
-    }
+    },
 }
 

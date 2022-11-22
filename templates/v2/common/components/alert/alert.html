@@ -1,0 +1,77 @@
+{#{% if type_feature_alert == 1 %}#}
+{#    'primary'#}
+{#{% elif type_feature_alert == 2 %}#}
+{#    'secondary'#}
+{#{% elif type_feature_alert == 3 %}#}
+{#    'success'#}
+{#{% elif type_feature_alert == 4 %}#}
+{#    'danger'#}
+{#{% elif type_feature_alert == 5 %}#}
+{#    'warning'#}
+{#{% elif type_feature_alert == 6 %}#}
+{#    'info'#}
+{#{% elif type_feature_alert == 7 %}#}
+{#    'light'#}
+{#{% elif type_feature_alert == 8 %}#}
+{#    'dark'#}
+{#{% endif %}#}
+
+<div
+        class="
+            alert
+            alert-{% if type_feature_alert == 1 %}primary
+            {% elif type_feature_alert == 2 %}secondary
+            {% elif type_feature_alert == 3 %}success
+            {% elif type_feature_alert == 4 %}danger
+            {% elif type_feature_alert == 5 %}warning
+            {% elif type_feature_alert == 6 %}info
+            {% elif type_feature_alert == 7 %}light
+            {% elif type_feature_alert == 8 %}dark
+            {% else %}info{% endif %}
+            mb-0
+            {% if hidden_alert %}d-none{% endif %}
+        "
+        role="alert"
+        id="id-{% if alert_id %}{{ alert_id }}{% endif %}Alert"
+>
+    <div class="d-flex align-items-center">
+        <svg class="bi flex-shrink-0 me-2" width="24" height="24">
+            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+        </svg>
+        <div
+                class="alert-heading fs-3 fw-bold"
+                id="id-{% if alert_id %}{{ alert_id }}{% endif %}titleAlert"
+        >
+            {% if title_alert %}
+                {{ title_alert }}
+            {% else %}
+                {% if type_feature_alert == 1 %}
+                    Informacion
+                {% elif type_feature_alert == 2 %}
+                    Informacion
+                {% elif type_feature_alert == 3 %}
+                    Exitoso
+                {% elif type_feature_alert == 4 %}
+                    Error
+                {% elif type_feature_alert == 5 %}
+                    Alerta
+                {% elif type_feature_alert == 6 %}
+                    Informacion
+                {% elif type_feature_alert == 7 %}
+                    Informacion
+                {% elif type_feature_alert == 8 %}
+                    Informacion
+                {% else %}
+                    Informacion
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    <p
+            id="id-{% if alert_id %}{{ alert_id }}{% endif %}contentAlert"
+    >
+        {% if content_alert %}
+            {{ content_alert }}
+        {% endif %}
+    </p>
+</div>

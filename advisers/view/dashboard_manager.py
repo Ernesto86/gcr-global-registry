@@ -397,33 +397,5 @@ class DashboardManagerView(LoginRequiredMixin, TemplateView):
         addUserData(self.request, context)
         context['managers'] = manager = Managers.objects.get(user_id=self.request.user.pkid)
         context['advisers_list'] = advisers_list = Advisers.objects.filter(manager_id=manager.id)
-        # advisers_id_list = list(advisers_list.values_list('id', flat=True))
-
         context['year_list'] = self.get_range_year_list()
-
-        # context['institutions_active_count'] = Institutions.objects.filter(adviser_id__in=advisers_id_list, deleted=False, status=True).count()
-        # context['institutions_disabled_count'] = Institutions.objects.filter(adviser_id__in=advisers_id_list, deleted=False, status=False).count()
-        #
-        # context['value_commission_payment'] = util_null_to_decimal(
-        #     OrderInstitutionQuotas.objects.filter(
-        #         manager_id=manager.id,
-        #         pay_manager=True,
-        #         deleted=False
-        #     ).aggregate(
-        #         sum=Sum('commissions_managers_value')
-        #     )['sum']
-        # )
-        # context['order_subtotal'] = util_null_to_decimal(
-        #     OrderInstitutionQuotas.objects.filter(
-        #         manager_id=manager.id,
-        #         deleted=False,
-        #     ).aggregate(sum=Sum('subtotal'))['sum']
-        # )
-        # order_institution_quotas_subtotal = PaymentAdviserCommissionsManager.get_detail_adviser_payment_acummulate(
-        #     PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0],
-        #     manager.id
-        # )
-        # context['value_commission_x_cobrar'] = order_institution_quotas_subtotal['commission_manager']
-        # context['institutions_list'] = Institutions.objects.filter(adviser_id__in=advisers_id_list)
-
         return context
