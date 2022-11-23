@@ -11,7 +11,7 @@ const AppSystem = {
             two: 'two',
             three: 'three',
         },
-        type_feature: {
+        typeFeature: {
             primary: 'primary',
             secondary: 'secondary',
             success: 'success',
@@ -65,7 +65,7 @@ const AppSystem = {
                 $alert.classList.remove('d-none')
             },
             show: function (data = {}) {
-                const {id = '', title = '', content = '', type_feature = AppSystem.CONSTANT.type_feature.info, withTitleDefault = true} = data
+                const {id = '', title = '', content = '', typeFeature = AppSystem.CONSTANT.typeFeature.info, withTitleDefault = true} = data
 
                 const $alert = document.getElementById(this.getConstructId(id, this.CONSTANT.alertSuffix))
                 const $title = document.getElementById(this.getConstructId(id, this.CONSTANT.titleSuffix))
@@ -73,21 +73,21 @@ const AppSystem = {
 
                 let titleDefault = ''
 
-                if (type_feature === AppSystem.CONSTANT.type_feature.primary) {
+                if (typeFeature === AppSystem.CONSTANT.typeFeature.primary) {
                     titleDefault = 'Informacion'
-                } else if (type_feature === AppSystem.CONSTANT.type_feature.secondary) {
+                } else if (typeFeature === AppSystem.CONSTANT.typeFeature.secondary) {
                     titleDefault = 'Informacion'
-                } else if (type_feature === AppSystem.CONSTANT.type_feature.success) {
+                } else if (typeFeature === AppSystem.CONSTANT.typeFeature.success) {
                     titleDefault = 'Exitoso'
-                } else if (type_feature === AppSystem.CONSTANT.type_feature.danger) {
+                } else if (typeFeature === AppSystem.CONSTANT.typeFeature.danger) {
                     titleDefault = 'Error'
-                } else if (type_feature === AppSystem.CONSTANT.type_feature.warning) {
+                } else if (typeFeature === AppSystem.CONSTANT.typeFeature.warning) {
                     titleDefault = 'Alerta'
-                } else if (type_feature === AppSystem.CONSTANT.type_feature.info) {
+                } else if (typeFeature === AppSystem.CONSTANT.typeFeature.info) {
                     titleDefault = 'Informacion'
-                } else if (type_feature === AppSystem.CONSTANT.type_feature.light) {
+                } else if (typeFeature === AppSystem.CONSTANT.typeFeature.light) {
                     titleDefault = 'Informacion'
-                } else if (type_feature === AppSystem.CONSTANT.type_feature.dark) {
+                } else if (typeFeature === AppSystem.CONSTANT.typeFeature.dark) {
                     titleDefault = 'Informacion'
                 }
 
