@@ -182,8 +182,6 @@ const ClientHttpFetch = {
 
             } catch (errorUnknown) {
 
-
-
                 return new ErrorResponse(ClientHttpFetch.CONSTANT.statusCode.ErrorUnknown, "Error desconocido", {})
 
             }

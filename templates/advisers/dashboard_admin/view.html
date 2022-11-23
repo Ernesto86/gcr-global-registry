@@ -3,11 +3,14 @@
 {% load crispy_forms_tags %}
 
 {% block template-content %}
+    <h2 class="mb-5">Dashboard administrador</h2>
+
     <div class="row">
         <div class="col-lg-12">
             {% include 'v2/common/components/alert/alert.html' with type_feature_alert=4 hidden_alert=True %}
         </div>
     </div>
+
     <div class="row">
         <div class="col-lg-12">
             <div class="card border-bottom border-4 border-0 border-primary">
@@ -16,21 +19,41 @@
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-lg-4">
-                            <select class="form-control" id="id-yearFilterBarSelect">
-                                <option value="">Todos los años</option>
-                                {% for year in year_list %}
-                                    <option value="{{ year }}">{{ year }}</option>
-                                {% endfor %}
-                            </select>
+                        <div class="col-lg-3">
+                            <div class="form-floating custom-form-floating custom-form-floating-sm form-group mb-3">
+                                <select class="form-control" id="id-yearFilterBarSelect">
+                                    <option value="">Todos...</option>
+                                    {% for year in year_list %}
+                                        <option value="{{ year }}">{{ year }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="id-yearFilterBarSelect">Año</label>
+                            </div>
                         </div>
-                        <div class="col-lg-4">
-                            <select class="form-control" id="id-abviserFilterBarSelect">
-                                <option value="">Todos los Asesores</option>
-                                {% for adviser in advisers_list %}
-                                    <option value="{{ adviser.id }}">{{ adviser }}</option>
-                                {% endfor %}
-                            </select>
+                        <div class="col-lg-3">
+                            <div class="form-floating custom-form-floating custom-form-floating-sm form-group mb-3">
+                                <select class="form-control" id="id-countryFilterBarSelect">
+                                    <option value="">Todos...</option>
+                                    {% for country in country_list %}
+                                        <option value="{{ country.id }}">{{ country }}</option>
+                                    {% endfor %}
+                                </select>
+                                <label for="id-countryFilterBarSelect">Pais</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-floating custom-form-floating custom-form-floating-sm form-group mb-3">
+                                <select class="form-control" id="id-managerFilterBarSelect" disabled>
+                                </select>
+                                <label for="id-managerFilterBarSelect">Gerente</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3">
+                            <div class="form-floating custom-form-floating custom-form-floating-sm form-group mb-3">
+                                <select class="form-control" id="id-adviserFilterBarSelect" disabled>
+                                </select>
+                                <label for="id-adviserFilterBarSelect">Asesor</label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -184,17 +207,17 @@
     <div class="row">
         <div class="col-lg-6 col-md-12">
 
-            {% include 'advisers/dashboard_manager/card_chart_bar.html' with id_chart_bart='id-commissionsPaidBarChart' id_select_chart_bart='id-selectYearBarChartCommissionXCobrar' title_chart_bart='Comisiones pagadas' %}
+            {% include 'advisers/dashboard_admin/card_chart_bar.html' with id_chart_bart='id-commissionsPaidBarChart' id_select_chart_bart='id-selectYearBarChartCommissionXCobrar' title_chart_bart='Comisiones pagadas' %}
 
         </div>
         <div class="col-lg-6 col-md-12">
 
-            {% include 'advisers/dashboard_manager/card_chart_bar.html' with id_chart_bart='id-commissionsXCobrarBarChart' id_select_chart_bart='id-selectYearBarChartCommissionXCobrar' title_chart_bart='Comisiones x cobrar' %}
+            {% include 'advisers/dashboard_admin/card_chart_bar.html' with id_chart_bart='id-commissionsXCobrarBarChart' id_select_chart_bart='id-selectYearBarChartCommissionXCobrar' title_chart_bart='Comisiones x cobrar' %}
 
         </div>
         <div class="col-lg-12 col-md-12">
 
-            {% include 'advisers/dashboard_manager/card_chart_bar.html' with id_chart_bart='id-commissionsTotalsBarChart' id_select_chart_bart='id-selectYearBarChartCommissionTotals' title_chart_bart='Comisiones totales' %}
+            {% include 'advisers/dashboard_admin/card_chart_bar.html' with id_chart_bart='id-commissionsTotalsBarChart' id_select_chart_bart='id-selectYearBarChartCommissionTotals' title_chart_bart='Comisiones totales' %}
 
         </div>
     </div>
@@ -206,7 +229,7 @@
         <div class="modal-dialog modal-xl modal-fullscreen-xl-down">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Detalle de comisiones del Gerente : <span class="badge bg-primary" id="id-nameManagerDetailInstitution"></span></h5>
+                    <h5 class="modal-title"><span class="badge bg-primary" id="id-nameManagerDetailInstitution"></span></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -256,7 +279,9 @@
 
                     $tableInstitution: document.querySelector('#id-institutionTable > tbody'),
                     $yearFilterBarSelect: document.getElementById('id-yearFilterBarSelect'),
-                    $adviserFilterBarSelect: document.getElementById('id-abviserFilterBarSelect'),
+                    $countryFilterBarSelect: document.getElementById('id-countryFilterBarSelect'),
+                    $managerFilterBarSelect: document.getElementById('id-managerFilterBarSelect'),
+                    $adviserFilterBarSelect: document.getElementById('id-adviserFilterBarSelect'),
 
                     ctxCommissionsPaidBarChart: document.getElementById("id-commissionsPaidBarChart"),
                     ctxCommissionsXCobrarBarChart: document.getElementById("id-commissionsXCobrarBarChart"),
@@ -269,19 +294,85 @@
                 repeat: {},
                 loadFirst: {},
                 model: {},
-                fun: {}
+                fun: {
+                    get_object_list: async (formData) => {
+                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                            location.pathname,
+                            formData
+                        )
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                            return
+                        }
+
+                        return data
+                    },
+                    get_and_load_manager_list: async (country_id) => {
+
+                        objD.elem.$managerFilterBarSelect.disabled = true
+                        objD.elem.$adviserFilterBarSelect.disabled = true
+                        objD.elem.$adviserFilterBarSelect.innerHTML = ''
+
+                        if (!country_id)
+                            return objD.elem.$managerFilterBarSelect.innerHTML = ''
+
+                        const formData = new FormData()
+                        formData.append("action", 'get_manager')
+                        formData.append("country_id", country_id)
+
+                        const data = await objD.fun.get_object_list(formData)
+
+                        if (data?.manager_list) {
+                            objD.elem.$managerFilterBarSelect.innerHTML = [
+                                '<option value="">Todos...</option>',
+                                ...data.manager_list.map(elem => `<option value="${elem.id}">${elem.value}</option>`)
+                            ]
+                            objD.elem.$managerFilterBarSelect.disabled = false
+                        }
+                        return
+                    },
+                    get_and_load_adviser_list: async (manager_id) => {
+
+                        objD.elem.$adviserFilterBarSelect.disabled = true
+
+                        if (!manager_id)
+                            return objD.elem.$adviserFilterBarSelect.innerHTML = ''
+
+                        const formData = new FormData()
+                        formData.append("action", 'get_adviser')
+                        formData.append("manager_id", manager_id)
+
+                        const data = await objD.fun.get_object_list(formData)
+
+                        if (data?.adviser_list) {
+                            objD.elem.$adviserFilterBarSelect.innerHTML = [
+                                '<option value="">Todos...</option>',
+                                ...data.adviser_list.map(elem => `<option value="${elem.id}">${elem.value}</option>`)
+                            ]
+                            objD.elem.$adviserFilterBarSelect.disabled = false
+                        }
+                    }
+                }
             }
 
             const getParameterFilterCommissions = () => {
                 const year = objD.elem.$yearFilterBarSelect.value === ''
                     ? null
                     : objD.elem.$yearFilterBarSelect.value
+                const countryId = objD.elem.$countryFilterBarSelect.value === ''
+                    ? null
+                    : objD.elem.$countryFilterBarSelect.value
+                const managerId = objD.elem.$managerFilterBarSelect.value === ''
+                    ? null
+                    : objD.elem.$managerFilterBarSelect.value
                 const adviserId = objD.elem.$adviserFilterBarSelect.value === ''
                     ? null
                     : objD.elem.$adviserFilterBarSelect.value
 
                 return {
                     year,
+                    countryId,
+                    managerId,
                     adviserId
                 }
             }
@@ -415,19 +506,22 @@
                 `
 
                 document.getElementById('id-detailInstitutionBody').innerHTML = html
-                document.getElementById('id-nameManagerDetailInstitution').innerText = `${data.manager.first_name} ${data.manager.last_name}`
-
                 $('#exampleModal').modal('show')
             }
 
             const getCommissionManager = async () => {
                 const {
                     year,
+                    countryId,
+                    managerId,
                     adviserId
                 } = getParameterFilterCommissions()
+
                 const formData = new FormData()
                 formData.append("action", 'commission_manager')
                 formData.append("year", year)
+                formData.append("country_id", countryId)
+                formData.append("manager_id", managerId)
                 formData.append("adviser_id", adviserId)
 
                 AppSystem.fun.showLoadingUi()
@@ -451,7 +545,7 @@
                 objD.elem.$valueCommissionXCobrar.innerText = data.value_commission_x_cobrar
                 objD.elem.$valueCommissionTotals.innerText = data.value_commission_totals
 
-                const insitututionList = data.institutions_list.map(elem => {
+                objD.elem.$institutionBody.innerHTML = data.institutions_list.map(elem => {
                     return `
                         <tr>
                             <td>${elem.name}</td>
@@ -464,7 +558,7 @@
                             <td>${elem.telephone}</td>
                             <td>${elem.email}</td>
                             <td class="text-center">
-{#                                            {% include "v2/common/components/badge/badge_presentate.html" with badge_type=1 badge_value_bo${elem.statusadge_text_bool = True %}#}
+
                             </td>
                             <td class="text-center">
                                 <div class="bd-content">
@@ -490,37 +584,34 @@
                                 `
                 })
 
-                objD.elem.$institutionBody.innerHTML = insitututionList.join(' ')
-
                 if (objD.elem.barChartCommissionPaid)
                     objD.elem.barChartCommissionPaid.destroy()
-
                 if (objD.elem.barChartCommissionXCobrar)
                     objD.elem.barChartCommissionXCobrar.destroy()
-
                 if (objD.elem.barChartCommissionTotals)
                     objD.elem.barChartCommissionTotals.destroy()
 
                 const paidInfoChart = getValueCommissionInfoChart(data.payment_paid_list)
+                const xCobrarInfoChart = getValueCommissionInfoChart(data.payment_x_cobrar_list)
+                const totalsInfoChart = getValueCommissionInfoChart(data.payment_totals_list)
+
                 objD.elem.barChartCommissionPaid = new ApexCharts(
                     objD.elem.ctxCommissionsPaidBarChart,
                     getOptionBarChart(paidInfoChart.labels, paidInfoChart.values, paidInfoChart.max)
                 )
-                objD.elem.barChartCommissionPaid.render()
-
-                const xCobrarInfoChart = getValueCommissionInfoChart(data.payment_x_cobrar_list)
                 objD.elem.barChartCommissionXCobrar = new ApexCharts(
                     objD.elem.ctxCommissionsXCobrarBarChart,
                     getOptionBarChart(xCobrarInfoChart.labels, xCobrarInfoChart.values, xCobrarInfoChart.max)
                 )
-                objD.elem.barChartCommissionXCobrar.render()
-
-                const totalsInfoChart = getValueCommissionInfoChart(data.payment_totals_list)
                 objD.elem.barChartCommissionTotals = new ApexCharts(
                     objD.elem.ctxCommissionsTotalsBarChart,
                     getOptionBarChart(totalsInfoChart.labels, totalsInfoChart.values, totalsInfoChart.max)
                 )
+
+                objD.elem.barChartCommissionPaid.render()
+                objD.elem.barChartCommissionXCobrar.render()
                 objD.elem.barChartCommissionTotals.render()
+
             }
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -534,6 +625,18 @@
 
             objD.elem.$yearFilterBarSelect.addEventListener('change', (e) => {
                 getCommissionManager()
+            })
+
+            objD.elem.$countryFilterBarSelect.addEventListener('change', async (e) => {
+                await objD.fun.get_and_load_manager_list(e.target.value)
+
+                await getCommissionManager()
+            })
+
+            objD.elem.$managerFilterBarSelect.addEventListener('change', async (e) => {
+                await objD.fun.get_and_load_adviser_list(e.target.value)
+
+                await getCommissionManager()
             })
 
             objD.elem.$adviserFilterBarSelect.addEventListener('change', (e) => {
