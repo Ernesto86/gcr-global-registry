@@ -135,7 +135,7 @@ class PaymentAdviserCommissionsManager:
     @staticmethod
     def get_detail_adviser_payment(
             type_functionary,
-            object_id,
+            object_id=None,
             year=None,
             month=None,
             institution_id=None,
@@ -158,19 +158,20 @@ class PaymentAdviserCommissionsManager:
         if institution_id:
             query_AND_1.children.append(("institution_id", institution_id))
 
-        if type_functionary == PaymentAdviserCommissions.TYPE_FUNCTIONARY[0][0]:
-            adviser = Advisers.objects.get(id=object_id)
-            query_AND_1.children.append(("adviser_id", object_id))
+        if object_id:
+            if type_functionary == PaymentAdviserCommissions.TYPE_FUNCTIONARY[0][0]:
+                adviser = Advisers.objects.get(id=object_id)
+                query_AND_1.children.append(("adviser_id", object_id))
 
-            if pay_adviser is not None:
-                query_AND_1.children.append(("pay_adviser", pay_adviser))
+                if pay_adviser is not None:
+                    query_AND_1.children.append(("pay_adviser", pay_adviser))
 
-        else:
-            manager = Managers.objects.get(id=object_id)
-            query_AND_1.children.append(("manager_id", object_id))
+            else:
+                manager = Managers.objects.get(id=object_id)
+                query_AND_1.children.append(("manager_id", object_id))
 
-            if pay_manager is not None:
-                query_AND_1.children.append(("pay_adviser", pay_manager))
+                if pay_manager is not None:
+                    query_AND_1.children.append(("pay_manager", pay_manager))
 
         order_list = OrderInstitutionQuotas.objects.select_related(
             'institution'

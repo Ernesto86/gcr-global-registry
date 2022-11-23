@@ -30,6 +30,8 @@ class OrderInstitutionQuotas(ModelBaseAudited):
     commissions_advisers_value = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Comision asesor valor", blank=True, null=True)
     commissions_managers_percentage = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Comision gerente %", blank=True, null=True)
     commissions_managers_value = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Comision gerente valor", blank=True, null=True)
+    commissions_admin_percentage = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Comision administrador %", blank=True, null=True)
+    commissions_admin_value = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Comision administrador valor", blank=True, null=True)
     pay_adviser = models.BooleanField(default=False)
     pay_manager = models.BooleanField(default=False)
 
@@ -47,7 +49,16 @@ class OrderInstitutionQuotas(ModelBaseAudited):
     def get_commission_adviser(self):
         return util_null_to_decimal(self.get_commission_adviser_clear() - self.get_commission_manager())
 
+    # def get_commission_adviser(self):
+    #     return util_null_to_decimal(self.get_commission_adviser_clear() - self.get_commission_manager() - self.get_commission_admin())
+
     def get_commission_manager(self):
+        return util_null_to_decimal(self.get_commission_adviser_clear() * (self.commissions_managers_percentage / 100))
+
+    # def get_commission_manager(self):
+    #     return util_null_to_decimal(self.get_commission_adviser_clear() - self.get_commission_admin() * (self.commissions_managers_percentage / 100))
+
+    def get_commission_admin(self):
         return util_null_to_decimal(self.get_commission_adviser_clear() * (self.commissions_managers_percentage / 100))
 
     def get_discount_decimal(self):

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title data-setting="app_name" data-rightJoin=" Pro | Responsive Bootstrap 5 Admin Dashboard Template">{{ appName }} Pro | Responsive Bootstrap 5 Admin Dashboard Template</title>
+    <meta name="description" content="{{ appName }} Pro is a revolutionary Bootstrap Admin Dashboard Template and UI Components Library. The Admin Dashboard Template and UI Component features 8 modules.">
+    <meta name="keywords" content="premium, admin, dashboard, template, bootstrap 5, clean ui, hope ui, admin dashboard,responsive dashboard, optimized dashboard,">
+    <meta name="author" content="Iqonic Design">
+    <meta name="DC.title" content="{{ appName }}">
+
+    {% include 'v2/base/components/partials/head.html' %}
+
+    <script>
+        const c = console.log
+    </script>
+
+    {% block head %}
+    {% endblock %}
+
+    {% block base-head %}
+    {% endblock %}
+
+    {% block base-head-js %}
+    {% endblock %}
+
+    {% block base-head-js-2 %}
+    {% endblock %}
+
+    {% block base-head-style %}
+    {% endblock %}
+
+</head>
+<body class=" {{ bodyClass }} ">
+
+{% include 'v2/base/components/partials/loading-to-data.html' %}
+
+{#<div id="loading">#}
+{#    {% include 'v2/base/components/partials/loader.html' %}#}
+{#</div>#}
+
+{% include 'v2/base/components/partials/sidebar.html' %}
+
+<main class="main-content">
+    <div class="position-relative {% if isBanner %} iq-banner {% endif %}">
+
+        {% include 'v2/base/components/partials/pro/header.html' %}
+
+        {% if isBanner %}
+            {% include 'v2/base/components/partials/sub-header.html' %}
+        {% endif %}
+
+    </div>
+    <div class="content-inner container-fluid pb-0" id="page_layout">
+        {% block content %}
+        {% endblock %}
+
+        {% block content-modal %}
+        {% endblock %}
+
+    </div>
+    {% include 'v2/base/components/partials/footer.html' %}
+</main>
+
+{% include 'v2/base/components/widgets/setting-offcanvas.html' %}
+
+{% include 'v2/base/components/widgets/auth-pro/modal-popup.html' %}
+
+{% include 'v2/base/components/partials/scripts.html' %}
+
+<script src="/static/lib/js.cookie.min.js"></script>
+<script src="/static/v2/js/common/app-system/index.js"></script>
+<script src="/static/v2/js/common/client-http/fetch/index.js"></script>
+
+{% block scripts %}
+{% endblock %}
+
+{% block base-body-js %}
+{% endblock %}
+
+{% block base-body-js-2 %}
+{% endblock %}
+
+{% block base-body-js-3 %}
+{% endblock %}
+
+</body>
+</html>

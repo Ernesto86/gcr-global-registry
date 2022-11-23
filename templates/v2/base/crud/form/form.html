@@ -1,0 +1,51 @@
+{% extends 'v2/base/base.html' %}
+
+
+{% block content %}
+
+    <form method="POST" action="" enctype="multipart/form-data" id="id-form">
+        <input type="hidden" name="action" value="{{ action }}">
+
+        <div class="card">
+
+            <div class="card-header">
+                <h3 class="card-title">
+                    {{ title }}
+                </h3>
+            </div>
+
+            <div class="card-body">
+
+                {% block form-card-body %}
+                    {% csrf_token %}
+                    {#                    {% include "component/form/form_presentate_all_field.html" with form=form %}#}
+                {% endblock %}
+
+            </div>
+
+            {% block form-wrapper-card-footer %}
+
+                <div class="card-footer">
+                    {% block form-card-footer %}
+
+                        {% block card-footer-bottom-save %}
+                            <button type="submit" form="id-form" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                Guardar registro
+                            </button>
+                        {% endblock %}
+
+                        {% block card-footer-bottom-cancelated %}
+                            <a href="{{ success_url }}{{ to_back }}" class="btn btn-danger">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        {% endblock %}
+
+                    {% endblock %}
+                </div>
+
+            {% endblock %}
+        </div>
+    </form>
+
+{% endblock %}

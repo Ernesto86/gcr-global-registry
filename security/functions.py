@@ -39,3 +39,27 @@ def addUserData(request, data):
                     ).distinct('main_category_id')
         except:
             pass
+
+        data['title'] = "Home"
+        data['active'] = "index"
+        # data['bodyClass'] = "uikit"
+        data['isTour'] = True
+        data['isFlatpickr'] = True
+        data['isBanner'] = True
+        data['isSidebar'] = True
+        data['isNavbar'] = True
+        data['dev'] = True
+        data['version'] = '2.0.0'
+
+        data['isSidebar'] = True
+        data['isNavbar'] = True
+        data['isBanner'] = True
+        data['isPageContainer'] = True
+        data['title'] = "index"
+        data['isFlatpickr'] = True
+        data['isNoUISlider'] = True
+        data['active'] = "index"
+        # data['bodyClass'] = "uikit"
+        # data['isFlatpickr'] = True
+
+

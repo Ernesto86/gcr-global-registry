@@ -1,0 +1,35 @@
+<div class="card card-block card-stretch card-height">
+    <div class="card-header">
+        <div class=" d-flex justify-content-between  flex-wrap">
+            {#            <div class="col-lg-5">#}
+            <h4 class="card-title">{{ title_chart_bart }}</h4>
+            {#            </div>#}
+            {#            <div class="col-lg-7">#}
+            {#                <div class="row">#}
+            {#                    <div class="col-lg-4 m-0 p-0">#}
+            {#                        <select class="form-control m-0" id="{{ id_select_chart_bart }}">#}
+            {#                            <option value="">Todos los años</option>#}
+            {#                            {% for year in year_list %}#}
+            {#                                <option value="{{ year }}">{{ year }}</option>#}
+            {#                            {% endfor %}#}
+            {#                        </select>#}
+            {#                    </div>#}
+            {#                    <div class="col-lg-4 m-0 p-0 pr-1">#}
+            {#                        <select class="form-control m-0" id="{{ id_select_chart_bart }}">#}
+            {#                            <option value="">Todos los meses</option>#}
+            {#                            {% for year in year_list %}#}
+            {#                                <option value="{{ year }}">{{ year }}</option>#}
+            {#                            {% endfor %}#}
+            {#                        </select>#}
+            {#                    </div>#}
+            {#                </div>#}
+            {#            </div>#}
+        </div>
+    </div>
+    <div class="card-body">
+        {#                                        <div id="dashboard-line-chart">#}
+        {#        <div id="id-commissionsPaidBarChart">#}
+        <div id="{{ id_chart_bart }}">
+        </div>
+    </div>
+</div>

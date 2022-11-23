@@ -58,6 +58,10 @@ class Institutions(ModelBaseAudited):
     def __str__(self):
         return '{}'.format(self.name)
 
+    def to_json_pure(self):
+        data = model_to_dict(self)
+
+
     def get_discount_decimal(self):
         return self.discount / 100
 
