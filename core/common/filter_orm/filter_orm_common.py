@@ -30,8 +30,8 @@ class FilterOrmCommon:
 
     @staticmethod
     def get_query_connector_tuple():
-        query_OR_1 = Q()
-        query_OR_1.connector = 'OR'
         query_AND_1 = Q()
         query_AND_1.connector = 'AND'
+        query_OR_1 = Q()
+        query_OR_1.connector = 'OR'
         return query_AND_1, query_OR_1

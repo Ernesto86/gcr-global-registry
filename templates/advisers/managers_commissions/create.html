@@ -1,0 +1,77 @@
+{% extends 'form.html' %}
+{% load crispy_forms_tags %}
+{% block container-main %}
+    <article class="container-fluid" style="margin-top: 3.5rem">
+        <div class="row">
+            <div class="col">
+                <nav id="siteBreadcrumb" aria-label="breadcrumb">
+                    <ol class="breadcrumb p-2">
+                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                        <li class="breadcrumb-item" aria-current="page"><a href="/institutions/">Instituciones</a></li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <form method="POST" action="" enctype="multipart/form-data" id="formConfigurateData">
+                    {% csrf_token %}
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Configuracion de datos : {{ form_action }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-row">
+                                <div class="form-group col-12 mb-0">
+                                    {{ form_2.managers_specific|as_crispy_field }}
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-6 mb-0">
+                                    {{ form_2.manager_percentage|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-6 mb-0">
+                                    {{ form_2.manager_percentage_max|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-success float-right ml-2" id="id-btnSave">
+                                <i class="fa fa-save"></i> Guardar Registro
+                            </button>
+                            <button type="button" class="btn btn-secondary float-right" onclick="window.location='{{ back_url }}'">
+                                <i class="fa fa-arrow-left"></i> Atras
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </article>
+{% endblock %}
+{% block jscript-2 %}
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function (e) {
+            const $manager_percentage_max = document.getElementById('id_manager_percentage_max')
+
+            const $manager_percentage = document.getElementById('id_manager_percentage')
+
+            $manager_percentage.addEventListener('change', (e) => {
+                if (parseInt(e.target.value) > parseInt($manager_percentage_max.value))
+                    alert("Excedió valor maximo: " + $manager_percentage_max.value)
+            })
+        });
+
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags.lower == 'success' %}
+                    fnToast("{{ message }}");
+                {% elif message.tags.lower == 'error'  %}
+                    fnToast("{{ message }}", 3);
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+    </script>
+{% endblock %}

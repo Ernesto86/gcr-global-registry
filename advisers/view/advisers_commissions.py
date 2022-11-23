@@ -7,6 +7,7 @@ from django.views.generic import ListView, CreateView, UpdateView
 
 from advisers.forms import AdvisersCommissionsForm, PeriodCommissionsForm
 from advisers.models import AdvisersCommissions, PeriodCommissions
+from core.common.filter_orm.filter_orm_common import FilterOrmCommon
 from core.util_functions import util_null_to_decimal
 from security.functions import addUserData
 
@@ -21,10 +22,11 @@ def validate_commissions_max(period_commissions, request):
 
 
 def advisers_commissions_save(request, *args, **kwargs):
+    period_commissions = PeriodCommissions.objects.filter(deleted=False).last()
     list_id_specific = request.POST.getlist('advisers_specific')
+    is_specific = True if list_id_specific else False
 
-    query_AND_1 = Q()
-    query_AND_1.connector = 'AND'
+    query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
     query_AND_1.children.append(("deleted", False))
 
     dict_update = {
@@ -34,18 +36,16 @@ def advisers_commissions_save(request, *args, **kwargs):
         'is_exclude': False
     }
 
-    if len(list_id_specific) > 0:
+    if is_specific:
         query_AND_1.children.append(("adviser_id__in", list_id_specific))
         dict_update['is_exclude'] = True
-
-    period_commissions = PeriodCommissions.objects.filter(deleted=False).last()
+    else:
+        period_commissions.advisers_percentage_period_1 = request.POST.get('advisers_percentage_period_1')
+        period_commissions.advisers_percentage_period_2 = request.POST.get('advisers_percentage_period_2')
+        period_commissions.advisers_percentage_period_3 = request.POST.get('advisers_percentage_period_3')
+        period_commissions.save()
 
     validate_commissions_max(period_commissions, request)
-
-    period_commissions.advisers_percentage_period_1 = request.POST.get('advisers_percentage_period_1')
-    period_commissions.advisers_percentage_period_2 = request.POST.get('advisers_percentage_period_2')
-    period_commissions.advisers_percentage_period_3 = request.POST.get('advisers_percentage_period_3')
-    period_commissions.save()
 
     AdvisersCommissions.objects.filter(
         query_AND_1
