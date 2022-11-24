@@ -52,25 +52,25 @@ const AppSystem = {
             prefix: 'id-',
         },
         alert: {
-            CONSTANT: {
-                alertSuffix: 'Alert',
-                titleSuffix: 'titleAlert',
-                contentSuffix: 'contentAlert'
-            },
             getConstructId: function (id, suffix) {
                 return `${AppSystem.handleComp.CONSTANT.prefix}${id}${suffix}`
             },
             alert: {
+                CONSTANT: {
+                    alertSuffix: 'Alert',
+                    titleSuffix: 'titleAlert',
+                    contentSuffix: 'contentAlert'
+                },
                 onlyShow: function ({id = ''}) {
-                    const $alert = document.getElementById(AppSystem.handleComp.alert.getConstructId(id, AppSystem.handleComp.alert.CONSTANT.alertSuffix))
+                    const $alert = document.getElementById(AppSystem.handleComp.alert.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.alertSuffix))
                     $alert.classList.remove('d-none')
                 },
                 show: function (data = {}) {
                     const {id = '', title = '', content = '', typeFeature = AppSystem.CONSTANT.typeFeature.info, withTitleDefault = true} = data
 
-                    const $alert = document.getElementById(AppSystem.handleComp.alert.getConstructId(id, AppSystem.handleComp.alert.CONSTANT.alertSuffix))
-                    const $title = document.getElementById(AppSystem.handleComp.alert.getConstructId(id, AppSystem.handleComp.alert.CONSTANT.titleSuffix))
-                    const $content = document.getElementById(AppSystem.handleComp.alert.getConstructId(id, AppSystem.handleComp.alert.CONSTANT.contentSuffix))
+                    const $alert = document.getElementById(AppSystem.handleComp.alert.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.alertSuffix))
+                    const $title = document.getElementById(AppSystem.handleComp.alert.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.titleSuffix))
+                    const $content = document.getElementById(AppSystem.handleComp.alert.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.contentSuffix))
 
                     let titleDefault = ''
 
@@ -103,23 +103,23 @@ const AppSystem = {
                     $alert.classList.remove('d-none')
                 },
                 hidden: function ({id = ''}) {
-                    const $alert = document.getElementById(AppSystem.handleComp.alert.getConstructId(id, AppSystem.handleComp.alert.CONSTANT.alertSuffix))
+                    const $alert = document.getElementById(AppSystem.handleComp.alert.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.alertSuffix))
                     $alert.classList.add('d-none')
                 }
             }
         },
         card: {
-            CONSTANT: {
-                alertSuffix: 'Alert',
-                titleSuffix: 'titleAlert',
-                contentSuffix: 'contentAlert'
-            },
             getConstructId: function (id, suffix) {
                 return `${AppSystem.handleComp.CONSTANT.prefix}${id}${suffix}`
             },
             cardWidgetValue: {
-                changeValue: function ({id = ''}) {
-                    
+                CONSTANT: {
+                    valueSuffix: 'CardWidgetValue',
+                },
+                changeValue: function (data = {}) {
+                    const {id = '', value = ''} = data
+                    const $h3 = document.getElementById(AppSystem.handleComp.card.getConstructId(id, AppSystem.handleComp.card.cardWidgetValue.CONSTANT.valueSuffix))
+                    $h3.innerHTML = value
                 }
             },
         },

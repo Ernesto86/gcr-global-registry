@@ -62,110 +62,26 @@
     </div>
 
     <div class="row d-flex justify-content-evenly">
-        <div class="col-lg-2">
-            <div class="card border-bottom border-5 border-primary">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div class="bg-soft-primary rounded p-3">
-                            <svg width="24px" height="24px" viewBox="0 0 24 24">
-                                <path fill="currentColor"
-                                      d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z"></path>
-                            </svg>
-                        </div>
-                        <div class="text-center">
-                            <span>Intituciones aprobadas</span>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-center align-items-center pt-2">
-                        {#                        <h3 class="counter"><b>{{ institutions_active_count }}</b></h3>#}
-                        <h3 class="counter"><b><span id="id-institutionsActiveCount"></span></b></h3>
-                    </div>
-                </div>
-            </div>
+        <div class="col-lg-3">
+            {% include 'v2/common/components/card/card_widget_value.html' with title_card_widget_value='Intituciones aprobadas' value_span_widget_value_id='institutionsActiveCount' %}
         </div>
-        <div class="col-lg-2">
-            <div class="card border-bottom border-5 border-primary">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div class="bg-soft-primary rounded p-3">
-                            <svg width="24px" height="24px" viewBox="0 0 24 24">
-                                <path fill="currentColor"
-                                      d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z"></path>
-                            </svg>
-                        </div>
-                        <div class="text-center">
-                            <span>Instituciones pendientes</span>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-center align-items-center pt-2">
-                        {#                        <h3 class="counter"><b>{{ institutions_disabled_count }}</b></h3>#}
-                        <h3 class="counter"><b><span id="id-institutionsDisabledCount"></span></b></h3>
-                    </div>
-                </div>
-            </div>
+        <div class="col-lg-3">
+            {% include 'v2/common/components/card/card_widget_value.html' with title_card_widget_value='Instituciones pendientes' value_span_widget_value_id='institutionsDisabledCount' %}
         </div>
-        <div class="col-lg-2">
-            <div class="card border-bottom border-5 border-primary">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div class="bg-soft-primary rounded p-3">
-                            <svg width="24px" height="24px" viewBox="0 0 24 24">
-                                <path fill="currentColor"
-                                      d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z"></path>
-                            </svg>
-                        </div>
-                        <div class="text-center">
-                            <span>Comisiones pagadas</span>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-center align-items-center pt-2">
-                        {#                        <h3 class="counter"><b>{{ value_commission_payment }}</b></h3>#}
-                        <h3 class="counter"><b><span id="id-valueCommissionPaid"></span></b></h3>
-                    </div>
-                </div>
-            </div>
+        <div class="col-lg-3">
+            {% include 'v2/common/components/card/card_widget_value.html' with title_card_widget_value='Comisiones pagadas gerente' value_span_widget_value_id='valueCommissionPaidManager' %}
         </div>
-        <div class="col-lg-2">
-            <div class="card border-bottom border-5 border-primary">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div class="bg-soft-primary rounded p-3">
-                            <svg width="24px" height="24px" viewBox="0 0 24 24">
-                                <path fill="currentColor"
-                                      d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z"></path>
-                            </svg>
-                        </div>
-                        <div class="text-center">
-                            <span>Comisiones x cobrar</span>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-center align-items-center pt-2">
-                        {#                        <h3 class="counter"><b>{{ value_commission_x_cobrar }}</b></h3>#}
-                        <h3 class="counter"><b><span id="id-valueCommissionXCobrar"></span></b></h3>
-                    </div>
-                </div>
-            </div>
+        <div class="col-lg-3">
+            {% include 'v2/common/components/card/card_widget_value.html' with title_card_widget_value='Comisiones pagadas asesor' value_span_widget_value_id='valueCommissionPaidAdviser' %}
         </div>
-        <div class="col-lg-2">
-            <div class="card border-bottom border-5 border-primary">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div class="bg-soft-primary rounded p-3">
-                            <svg width="24px" height="24px" viewBox="0 0 24 24">
-                                <path fill="currentColor"
-                                      d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z"></path>
-                            </svg>
-                        </div>
-                        <div class="text-center">
-                            <span>Total compras</span>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-center align-items-center pt-2">
-                        {#                        <h3 class="counter"><b>{{ order_subtotal }}</b></h3>#}
-                        <h3 class="counter"><b><span id="id-valueCommissionTotals"></span></b></h3>
-                    </div>
-                </div>
-            </div>
+        <div class="col-lg-3">
+            {% include 'v2/common/components/card/card_widget_value.html' with title_card_widget_value='Comisiones x cobrar gerente' value_span_widget_value_id='valueCommissionXCobrarManager' %}
+        </div>
+        <div class="col-lg-3">
+            {% include 'v2/common/components/card/card_widget_value.html' with title_card_widget_value='Comisiones x cobrar asesor' value_span_widget_value_id='valueCommissionXCobrarAdvisor' %}
+        </div>
+        <div class="col-lg-3">
+            {% include 'v2/common/components/card/card_widget_value.html' with title_card_widget_value='Total compras' value_span_widget_value_id='valueCommissionTotals' %}
         </div>
     </div>
 
@@ -192,6 +108,8 @@
                                 <th>Telefono</th>
                                 <th>Email</th>
                                 <th>Habilitado?</th>
+                                <th>Cantidad</th>
+                                <th>Subtotal</th>
                                 <th>Opciones</th>
                             </tr>
                             </thead>
@@ -207,17 +125,17 @@
     <div class="row">
         <div class="col-lg-6 col-md-12">
 
-            {% include 'advisers/dashboard_admin/card_chart_bar.html' with id_chart_bart='id-commissionsPaidBarChart' id_select_chart_bart='id-selectYearBarChartCommissionXCobrar' title_chart_bart='Comisiones pagadas' %}
+            {% include 'v2/common/components/chart/chart_simple_bar.html' with title_chart_simple_bart='Comisiones pagadas' id_chart_simple_bart='id-commissionsPaidBarChart' %}
 
         </div>
         <div class="col-lg-6 col-md-12">
 
-            {% include 'advisers/dashboard_admin/card_chart_bar.html' with id_chart_bart='id-commissionsXCobrarBarChart' id_select_chart_bart='id-selectYearBarChartCommissionXCobrar' title_chart_bart='Comisiones x cobrar' %}
+            {% include 'v2/common/components/chart/chart_simple_bar.html' with title_chart_simple_bart='Comisiones x cobrar' id_chart_simple_bart='id-commissionsXCobrarBarChart' %}
 
         </div>
         <div class="col-lg-12 col-md-12">
 
-            {% include 'advisers/dashboard_admin/card_chart_bar.html' with id_chart_bart='id-commissionsTotalsBarChart' id_select_chart_bart='id-selectYearBarChartCommissionTotals' title_chart_bart='Comisiones totales' %}
+            {% include 'v2/common/components/chart/chart_simple_bar.html' with title_chart_simple_bart='Comisiones totales' id_chart_simple_bart='id-commissionsTotalsBarChart' %}
 
         </div>
     </div>
@@ -270,11 +188,6 @@
             const objD = {
                 CONSTANT: {},
                 elem: {
-                    $institutionsActiveCount: document.getElementById('id-institutionsActiveCount'),
-                    $institutionsDisabledCount: document.getElementById('id-institutionsDisabledCount'),
-                    $valueCommissionPaid: document.getElementById('id-valueCommissionPaid'),
-                    $valueCommissionXCobrar: document.getElementById('id-valueCommissionXCobrar'),
-                    $valueCommissionTotals: document.getElementById('id-valueCommissionTotals'),
                     $institutionBody: document.getElementById('id-institutionBody'),
 
                     $tableInstitution: document.querySelector('#id-institutionTable > tbody'),
@@ -377,17 +290,12 @@
                 }
             }
 
-            const getOptionBarChart = (labels, values, max) => {
+            const getOptionBarChart = (labels, series) => {
                 const variableColors = IQUtils.getVariableColor()
-                const colors = [variableColors.primary]
+                const colors = [variableColors.primary, "#6410F1"]
                 return {
-                    series: [
-                        {
-                            name: "Sales",
-                            data: values,
-                        },
-                    ],
-                    colors: colors,
+                    series,
+                    colors,
                     chart: {
                         height: "300px",
                         type: "bar",
@@ -402,18 +310,9 @@
                         show: true,
                         strokeDashArray: 7,
                     },
-                    markers: {
-                        size: 6,
-                        colors: "#FFFFFF",
-                        strokeColors: colors,
-                        strokeWidth: 2,
-                        strokeOpacity: 0.9,
-                        strokeDashArray: 0,
-                        fillOpacity: 0,
-                        shape: "circle",
-                        radius: 2,
-                        offsetX: 0,
-                        offsetY: 0,
+                    fill: {
+                        opacity: 1,
+                        {#colors: ["#EA6A12", "#6410F1"],#}
                     },
                     xaxis: {
                         categories: labels,
@@ -430,11 +329,11 @@
                 }
             }
 
-            const getValueCommissionInfoChart = (payment_paid_list) => {
+            const getValueCommissionInfoChart = (value_commission_list) => {
                 let labels = []
                 let values = []
 
-                payment_paid_list.map(
+                value_commission_list.map(
                     payment_paid => {
                         return payment_paid.value_presenter_list.map(elem => {
                             labels = [...labels, elem.label]
@@ -443,7 +342,7 @@
                     }
                 )
 
-                payment_paid_list.map(
+                value_commission_list.map(
                     payment_paid => {
                         return payment_paid.value_presenter_list.map(elem => {
                             values = [...values, elem.value]
@@ -499,7 +398,9 @@
                     `
                 })
                 html += `<tr>
-                        <td colspan="7"></td>
+                        <td colspan="5"></td>
+                        <td>${data.subtotal}</td>
+                        <td>${data.commission}</td>
                         <td>${data.commission_manager}</td>
                         <td>${data.commission_adviser}</td>
                     </tr>
@@ -525,7 +426,7 @@
                 formData.append("adviser_id", adviserId)
 
                 AppSystem.fun.showLoadingUi()
-                AppSystem.handleComp.alert.hidden({})
+                AppSystem.handleComp.alert.alert.hidden({})
 
                 const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
                     location.pathname,
@@ -535,15 +436,17 @@
                 AppSystem.fun.hiddenLoadingUi()
 
                 if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
-                    AppSystem.handleComp.alert.show({content: message, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                    AppSystem.handleComp.alert.alert.show({content: message, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
                     return
                 }
 
-                objD.elem.$institutionsActiveCount.innerText = data.institutions_active_count
-                objD.elem.$institutionsDisabledCount.innerText = data.institutions_disabled_count
-                objD.elem.$valueCommissionPaid.innerText = data.value_commission_paid
-                objD.elem.$valueCommissionXCobrar.innerText = data.value_commission_x_cobrar
-                objD.elem.$valueCommissionTotals.innerText = data.value_commission_totals
+                AppSystem.handleComp.card.cardWidgetValue.changeValue({id: 'institutionsActiveCount', value: data.institutions_active_count})
+                AppSystem.handleComp.card.cardWidgetValue.changeValue({id: 'institutionsDisabledCount', value: data.institutions_disabled_count})
+                AppSystem.handleComp.card.cardWidgetValue.changeValue({id: 'valueCommissionPaidManager', value: data.value_commission_paid_manager})
+                AppSystem.handleComp.card.cardWidgetValue.changeValue({id: 'valueCommissionPaidAdviser', value: data.value_commission_paid_adviser})
+                AppSystem.handleComp.card.cardWidgetValue.changeValue({id: 'valueCommissionXCobrarManager', value: data.value_commission_x_cobrar_manager})
+                AppSystem.handleComp.card.cardWidgetValue.changeValue({id: 'valueCommissionXCobrarAdvisor', value: data.value_commission_x_cobrar_adviser})
+                AppSystem.handleComp.card.cardWidgetValue.changeValue({id: 'valueCommissionTotals', value: data.value_commission_totals})
 
                 objD.elem.$institutionBody.innerHTML = data.institutions_list.map(elem => {
                     return `
@@ -557,9 +460,9 @@
                             <td>${elem.address}</td>
                             <td>${elem.telephone}</td>
                             <td>${elem.email}</td>
-                            <td class="text-center">
-
-                            </td>
+                            <td class="text-center"></td>
+                            <td>${elem.count}</td>
+                            <td>${elem.subtotal}</td>
                             <td class="text-center">
                                 <div class="bd-content">
                                     <a
@@ -591,27 +494,65 @@
                 if (objD.elem.barChartCommissionTotals)
                     objD.elem.barChartCommissionTotals.destroy()
 
-                const paidInfoChart = getValueCommissionInfoChart(data.payment_paid_list)
-                const xCobrarInfoChart = getValueCommissionInfoChart(data.payment_x_cobrar_list)
+                const paidManagerInfoChart = getValueCommissionInfoChart(data.payment_paid_manager_list)
+                const paidAdviserInfoChart = getValueCommissionInfoChart(data.payment_paid_adviser_list)
+                const managerSeries = [
+                    {
+                        name: "Comisiones pagadas gerente",
+                        data: paidManagerInfoChart.values,
+                    },
+                    {
+                        name: "Comisiones pagadas asesor",
+                        data: paidAdviserInfoChart.values,
+                    },
+                ]
+
+                const xCobrarManagerInfoChart = getValueCommissionInfoChart(data.payment_x_cobrar_manager_list)
+                const xCobrarAdviserInfoChart = getValueCommissionInfoChart(data.payment_x_cobrar_adviser_list)
+                const adviserSeries = [
+                    {
+                        name: "Comisiones x cobrar gerente",
+                        data: xCobrarManagerInfoChart.values,
+                    },
+                    {
+                        name: "Comisiones x cobrar asesor",
+                        data: xCobrarAdviserInfoChart.values,
+                    },
+                ]
+
                 const totalsInfoChart = getValueCommissionInfoChart(data.payment_totals_list)
+                const totalsSeries = [
+                    {
+                        name: "Total compras",
+                        data: totalsInfoChart.values,
+                    },
+                ]
 
                 objD.elem.barChartCommissionPaid = new ApexCharts(
                     objD.elem.ctxCommissionsPaidBarChart,
-                    getOptionBarChart(paidInfoChart.labels, paidInfoChart.values, paidInfoChart.max)
+                    getOptionBarChart(
+                        paidManagerInfoChart.labels,
+                        managerSeries,
+                    )
                 )
                 objD.elem.barChartCommissionXCobrar = new ApexCharts(
                     objD.elem.ctxCommissionsXCobrarBarChart,
-                    getOptionBarChart(xCobrarInfoChart.labels, xCobrarInfoChart.values, xCobrarInfoChart.max)
+                    getOptionBarChart(
+                        xCobrarManagerInfoChart.labels,
+                        adviserSeries,
+                    )
                 )
                 objD.elem.barChartCommissionTotals = new ApexCharts(
                     objD.elem.ctxCommissionsTotalsBarChart,
-                    getOptionBarChart(totalsInfoChart.labels, totalsInfoChart.values, totalsInfoChart.max)
+                    getOptionBarChart(
+                        totalsInfoChart.labels,
+                        totalsSeries,
+                    )
                 )
 
                 objD.elem.barChartCommissionPaid.render()
                 objD.elem.barChartCommissionXCobrar.render()
                 objD.elem.barChartCommissionTotals.render()
-
             }
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -652,6 +593,7 @@
                     event.preventDefault()
 
                     await getDetailPaymentSpecific(targetPaid.dataset.institutionid, 'paid')
+                    return
                 }
 
                 if (targetXCobrar) {
@@ -663,12 +605,5 @@
             });
         })
 
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags.lower == 'success' %}
-                    fnToast("{{ message }}");
-                {% endif %}
-            {% endfor %}
-        {% endif %}
     </script>
 {% endblock %}

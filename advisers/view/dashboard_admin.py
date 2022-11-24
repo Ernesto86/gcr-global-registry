@@ -1,13 +1,13 @@
 import datetime
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView
-from django.db.models import Sum
-from django.http import JsonResponse
+from django.db.models import Count, Sum
 from django.forms import model_to_dict
+from django.http import JsonResponse
+from django.views.generic import TemplateView
 
 from advisers.manager.payment_adviser_commissions_manager import PaymentAdviserCommissionsManager
-from advisers.models import Advisers, PaymentAdviserCommissionsDetails, PaymentAdviserCommissions, Managers
+from advisers.models import Advisers, PaymentAdviserCommissions, Managers
 from core.common.filter_orm.filter_orm_common import FilterOrmCommon
 from core.common.filter_query.filter_query_common import FilterQueryCommon
 from core.constants import MESES
@@ -66,8 +66,9 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
 
         return query_AND_1
 
-    def get_commission_paid(self, country_id, manager_id, adviser_id, year, year_list, year_selected):
+    def get_commission_paid(self, country_id, manager_id, adviser_id, year, year_list, year_selected, is_manager=False):
         payment_paid_list = []
+        aggregate_common = {}
 
         payment_adviser_commissions_list = self.get_payment_adviser_commissions_list(
             year, year_list, year_selected
@@ -75,7 +76,13 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
 
         query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
         query_AND_1.children.append(('deleted', False))
-        query_AND_1.children.append(('pay_manager', True))
+
+        if is_manager:
+            aggregate_common['sum'] = Sum('commissions_managers_value')
+            query_AND_1.children.append(('pay_manager', True))
+        else:
+            aggregate_common['sum'] = Sum('commissions_advisers_value')
+            query_AND_1.children.append(('pay_adviser', True))
 
         self.get_filter_orm(
             query_AND_1, country_id, manager_id, adviser_id
@@ -93,13 +100,13 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
                             date_issue__year=year_selected,
                             date_issue__month=mes[0],
                         ).aggregate(
-                            sum=Sum('commissions_managers_value')
+                            **aggregate_common
                         )['sum']
                     )
 
                     value_presenter_list.append(
                         {
-                            'payment_adviser_commissions': model_to_dict(payment_adviser_commissions),
+                            'payment_commissions': model_to_dict(payment_adviser_commissions),
                             'label': mes[1],
                             'value': value_commission
                         }
@@ -109,7 +116,7 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
                     OrderInstitutionQuotas.objects.filter(
                         query_AND_1
                     ).aggregate(
-                        sum=Sum('commissions_managers_value')
+                        **aggregate_common
                     )['sum']
                 )
 
@@ -122,15 +129,16 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
 
             payment_paid_list.append(
                 {
-                    'payment_adviser_commissions': model_to_dict(payment_adviser_commissions),
+                    'payment_commissions': model_to_dict(payment_adviser_commissions),
                     'value_presenter_list': value_presenter_list
                 }
             )
 
         return payment_paid_list
 
-    def get_commission_x_cobrar(self, country_id, manager_id, adviser_id, year, year_list, year_selected):
+    def get_commission_x_cobrar(self, country_id, manager_id, adviser_id, year, year_list, year_selected, is_manager=False):
         payment_paid_list = []
+        aggregate_common = {}
 
         payment_adviser_commissions_list = self.get_payment_adviser_commissions_list(
             year, year_list, year_selected
@@ -138,7 +146,13 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
 
         query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
         query_AND_1.children.append(('deleted', False))
-        query_AND_1.children.append(('pay_manager', False))
+
+        if is_manager:
+            aggregate_common['sum'] = Sum('commissions_managers_value')
+            query_AND_1.children.append(('pay_manager', False))
+        else:
+            aggregate_common['sum'] = Sum('commissions_advisers_value')
+            query_AND_1.children.append(('pay_adviser', False))
 
         self.get_filter_orm(
             query_AND_1, country_id, manager_id, adviser_id
@@ -156,13 +170,13 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
                             date_issue__year=year_selected,
                             date_issue__month=mes[0],
                         ).aggregate(
-                            sum=Sum('commissions_managers_value')
+                            **aggregate_common
                         )['sum']
                     )
 
                     value_presenter_list.append(
                         {
-                            'payment_adviser_commissions': model_to_dict(payment_adviser_commissions),
+                            'payment_commissions': model_to_dict(payment_adviser_commissions),
                             'label': mes[1],
                             'value': value_commission
                         }
@@ -172,7 +186,7 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
                     OrderInstitutionQuotas.objects.filter(
                         query_AND_1,
                     ).aggregate(
-                        sum=Sum('commissions_managers_value')
+                        **aggregate_common
                     )['sum']
                 )
 
@@ -185,7 +199,7 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
 
             payment_paid_list.append(
                 {
-                    'payment_adviser_commissions': model_to_dict(payment_adviser_commissions),
+                    'payment_commissions': model_to_dict(payment_adviser_commissions),
                     'value_presenter_list': value_presenter_list
                 }
             )
@@ -224,7 +238,7 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
 
                     value_presenter_list.append(
                         {
-                            'payment_adviser_commissions': model_to_dict(payment_adviser_commissions),
+                            'payment_commissions': model_to_dict(payment_adviser_commissions),
                             'label': mes[1],
                             'value': value_commission
                         }
@@ -247,7 +261,7 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
 
             payment_paid_list.append(
                 {
-                    'payment_adviser_commissions': model_to_dict(payment_adviser_commissions),
+                    'payment_commissions': model_to_dict(payment_adviser_commissions),
                     'value_presenter_list': value_presenter_list
                 }
             )
@@ -332,7 +346,7 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
             data['institutions_active_count'] = Institutions.objects.filter(query_AND_1, status=True).count()
             data['institutions_disabled_count'] = Institutions.objects.filter(query_AND_1, status=False).count()
 
-            data['value_commission_paid'] = util_null_to_decimal(
+            data['value_commission_paid_manager'] = util_null_to_decimal(
                 OrderInstitutionQuotas.objects.filter(
                     value_commission_query_AND_1,
                     pay_manager=True,
@@ -340,12 +354,28 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
                     sum=Sum('commissions_managers_value')
                 )['sum']
             )
-            data['value_commission_x_cobrar'] = util_null_to_decimal(
+            data['value_commission_paid_adviser'] = util_null_to_decimal(
+                OrderInstitutionQuotas.objects.filter(
+                    value_commission_query_AND_1,
+                    pay_adviser=True,
+                ).aggregate(
+                    sum=Sum('commissions_advisers_value')
+                )['sum']
+            )
+            data['value_commission_x_cobrar_manager'] = util_null_to_decimal(
                 OrderInstitutionQuotas.objects.filter(
                     value_commission_query_AND_1,
                     pay_manager=False,
                 ).aggregate(
                     sum=Sum('commissions_managers_value')
+                )['sum']
+            )
+            data['value_commission_x_cobrar_adviser'] = util_null_to_decimal(
+                OrderInstitutionQuotas.objects.filter(
+                    value_commission_query_AND_1,
+                    pay_adviser=False,
+                ).aggregate(
+                    sum=Sum('commissions_advisers_value')
                 )['sum']
             )
             data['value_commission_totals'] = util_null_to_decimal(
@@ -356,21 +386,41 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
                 )['sum']
             )
 
-            data['payment_paid_list'] = self.get_commission_paid(
+            data['payment_paid_manager_list'] = self.get_commission_paid(
                 country_id,
                 manager_id,
                 adviser_id,
                 year,
                 year_list,
-                year_selected
+                year_selected,
+                is_manager=True
             )
-            data['payment_x_cobrar_list'] = self.get_commission_x_cobrar(
+            data['payment_paid_adviser_list'] = self.get_commission_paid(
                 country_id,
                 manager_id,
                 adviser_id,
                 year,
                 year_list,
-                year_selected
+                year_selected,
+                is_manager=False
+            )
+            data['payment_x_cobrar_manager_list'] = self.get_commission_x_cobrar(
+                country_id,
+                manager_id,
+                adviser_id,
+                year,
+                year_list,
+                year_selected,
+                is_manager=True
+            )
+            data['payment_x_cobrar_adviser_list'] = self.get_commission_x_cobrar(
+                country_id,
+                manager_id,
+                adviser_id,
+                year,
+                year_list,
+                year_selected,
+                is_manager=False
             )
             data['payment_totals_list'] = self.get_commission_totals(
                 country_id,
@@ -381,21 +431,29 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
                 year_selected
             )
 
+            FIELDS = {
+                'id': 'id',
+                'name': 'name',
+                'alias': 'alias',
+                'type_registration': 'type_registration__name',
+                'representative': 'representative__name',
+                'identification': 'identification',
+                'country': 'country',
+                'address': 'address',
+                'telephone': 'telephone',
+                'email': 'email',
+            }
             data['institutions_list'] = [
-                x
+                {
+                    **model_to_dict(x, fields=FIELDS),
+                    'subtotal': x.subtotal,
+                    'count': x.count,
+                }
                 for x in Institutions.objects.filter(
                     query_AND_1
-                ).values(
-                    'id',
-                    'name',
-                    'alias',
-                    'type_registration',
-                    'representative',
-                    'identification',
-                    'country',
-                    'address',
-                    'telephone',
-                    'email',
+                ).annotate(
+                    count=Count(['id']),
+                    subtotal=Sum('orderinstitutionquotas__subtotal')
                 )
             ]
 
