@@ -431,7 +431,7 @@
                 formData.append("adviser_id", adviserId)
 
                 AppSystem.fun.showLoadingUi()
-                AppSystem.handleComp.alert.hidden({})
+                AppSystem.handleComp.alert.alert.hidden({})
 
                 const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
                     location.pathname,
