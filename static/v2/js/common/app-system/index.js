@@ -51,10 +51,12 @@ const AppSystem = {
         CONSTANT: {
             prefix: 'id-',
         },
-        alert: {
+        fun: {
             getConstructId: function (id, suffix) {
                 return `${AppSystem.handleComp.CONSTANT.prefix}${id}${suffix}`
-            },
+            }
+        },
+        alert: {
             alert: {
                 CONSTANT: {
                     alertSuffix: 'Alert',
@@ -62,7 +64,7 @@ const AppSystem = {
                     contentSuffix: 'contentAlert'
                 },
                 onlyShow: function ({id = ''}) {
-                    const $alert = document.getElementById(AppSystem.handleComp.alert.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.alertSuffix))
+                    const $alert = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.alertSuffix))
                     $alert.classList.remove('d-none')
                 },
                 show: function (data = {}) {
@@ -103,22 +105,19 @@ const AppSystem = {
                     $alert.classList.remove('d-none')
                 },
                 hidden: function ({id = ''}) {
-                    const $alert = document.getElementById(AppSystem.handleComp.alert.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.alertSuffix))
+                    const $alert = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.alertSuffix))
                     $alert.classList.add('d-none')
                 }
             }
         },
         card: {
-            getConstructId: function (id, suffix) {
-                return `${AppSystem.handleComp.CONSTANT.prefix}${id}${suffix}`
-            },
             cardWidgetValue: {
                 CONSTANT: {
                     valueSuffix: 'CardWidgetValue',
                 },
                 changeValue: function (data = {}) {
                     const {id = '', value = ''} = data
-                    const $h3 = document.getElementById(AppSystem.handleComp.card.getConstructId(id, AppSystem.handleComp.card.cardWidgetValue.CONSTANT.valueSuffix))
+                    const $h3 = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, AppSystem.handleComp.card.cardWidgetValue.CONSTANT.valueSuffix))
                     $h3.innerHTML = value
                 }
             },
