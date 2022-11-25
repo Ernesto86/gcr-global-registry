@@ -65,6 +65,13 @@ class Institutions(ModelBaseAudited):
     def get_discount_decimal(self):
         return self.discount / 100
 
+
+    def get_type_register_enabled_list(self):
+        code = self.type_registration.code
+
+        return InsTypeRegistries.objects.filter(code__gte=code).order_by('code')
+
+
     class Meta:
         verbose_name = 'Institución'
         verbose_name_plural = 'Instituciones'
