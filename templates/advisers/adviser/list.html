@@ -60,30 +60,7 @@
                 repeat: {},
                 loadFirst: {},
                 model: {},
-                fun: {
-                    submitForm: async () => {
-                        const formData = new FormData(objD.elem.$form)
-                        formData.append("action", objElevate.action)
-
-                        AppSystem.fun.showLoadingUi()
-                        AppSystem.handleComp.alert.alert.hidden({})
-
-                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
-                            location.pathname,
-                            formData
-                        )
-
-                        AppSystem.fun.hiddenLoadingUi()
-
-                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
-                            let errors = data?.errors?.user
-                            AppSystem.handleComp.alert.alert.show({title: message, content: errors, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
-                            return
-                        }
-
-                        window.location = objElevate.backUrl
-                    }
-                }
+                fun: {}
             }
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

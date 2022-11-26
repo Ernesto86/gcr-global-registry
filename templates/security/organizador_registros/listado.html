@@ -1,29 +1,25 @@
-{% extends 'list.html' %}
-{% block title-list %}
-<div class="mb-1 pt-3 pb-3 pl-3 bg-gradient-dark text-white" role="alert" >
-     <h4 class="font-weight-bold">Registros de {{ nameregister.name|title }} - {{ nameregister.detail|title }}</h4>
-</div>
-{% endblock %}
-{% block table-header-columns %}
-    <th style="color: black; font-size: 1.1rem" scope="col">Identificación</th>
-    <th style="color: black; font-size: 1.1rem" scope="col">Estudiante</th>
-    <th style="color: black; font-size: 1.1rem" scope="col">Titulo o Certificado</th>
-    <th style="color: black; font-size: 1.1rem" scope="col">Pais</th>
-    <th style="color: black; font-size: 1.1rem" scope="col">Fecha de Emisión</th>
-    <th style="color: black; font-size: 1.1rem" scope="col">Código Internacional de Registro</th>
-    <th style="color: black; font-size: 1.1rem" scope="col">Correo Electrónico</th>
+{% extends 'v2/base/crud/list/list.html' %}
+
+{% block list-table-head-colums %}
+    <th>Identificación</th>
+    <th>Estudiante</th>
+    <th>Titulo o Certificado</th>
+    <th>Pais</th>
+    <th>Fecha de Emisión</th>
+    <th>Código Internacional de Registro</th>
+    <th>Correo Electrónico</th>
 {% endblock %}
 
-{% block table-body-rows %}
-     {% for student_registers  in StudentRegisters %}
+{% block list-table-body-rows %}
+    {% for student_registers  in StudentRegisters %}
         <tr>
-            <td style="color: black">{{ student_registers.student.dni }}</td>
-            <td style="color: black">{{ student_registers.student }}</td>
-            <td style="color: black">{{ student_registers.certificate }}</td>
-            <td style="color: black">{{ student_registers.country }}</td>
-            <td style="color: black">{{ student_registers.date_issue }}</td>
-            <td style="color: black">{{ student_registers.code_international_register }}</td>
-            <td style="color: black">{{ student_registers.student.email }}</td>
+            <td>{{ student_registers.student.dni }}</td>
+            <td>{{ student_registers.student }}</td>
+            <td>{{ student_registers.certificate }}</td>
+            <td>{{ student_registers.country }}</td>
+            <td>{{ student_registers.date_issue }}</td>
+            <td>{{ student_registers.code_international_register }}</td>
+            <td>{{ student_registers.student.email }}</td>
         </tr>
     {% endfor %}
 {% endblock %}
