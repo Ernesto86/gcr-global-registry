@@ -7,7 +7,7 @@
 
         <div class="card-header">
             <h3 class="card-title">
-                {{ title }}
+                {{ title_label }}
             </h3>
         </div>
 
@@ -18,8 +18,8 @@
                 {% block list-table-before %}
                 {% endblock %}
 
-                <table class=" {% block list-table-class %}table table-striped table-sm{% endblock %}">
-                    <thead>
+                <table class="{% block list-table-class %}table table-striped table-sm{% endblock %}" id="id-table">
+                    <thead class="table-primary">
                     <tr>
                         {% block list-table-head-colums %}
                         {% endblock %}

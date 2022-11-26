@@ -1,0 +1,126 @@
+{% extends 'v2/base/crud/list/list.html' %}
+
+{% block list-table-head-colums %}
+    <th>Codigo</th>
+    <th>DNI</th>
+    <th>Nombre</th>
+    <th class="text-center">Opciones</th>
+{% endblock %}
+
+{% block url_create %}{% url "institution_create" %}{% endblock %}
+
+{% block list-table-body-rows %}
+    {% for object in advisers %}
+        <tr>
+            <td>{{ object.code }}</td>
+            <td>{{ object.dni }}</td>
+            <td>{{ object.names }}</td>
+            <td class="text-center">
+                <div class="btn-group" role="group">
+                    <a
+                            href="{% url 'advisers:adviser_update' object.id %}"
+                            class="btn btn-primary btn-sm"
+                            data-toggle="tooltip"
+                    >
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    <a
+                            href="#"
+                            rel="rel-action-delete"
+                            class="btn btn-danger btn-sm"
+                            data-id="{{ object.id }}"
+                            data-toggle="tooltip"
+                    >
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block base-body-js %}
+
+    <script>
+        const objElevate = {
+            action: '{{ action }}',
+            backUrl: '{{ back_url | safe }}',
+            deleteUrl: `{{ request.path }}/delete`
+
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function (e) {
+            const objD = {
+                CONSTANT: {},
+                elem: {
+                    $table: document.querySelector('#id-table > tbody')
+                },
+                repeat: {},
+                loadFirst: {},
+                model: {},
+                fun: {
+                    submitForm: async () => {
+                        const formData = new FormData(objD.elem.$form)
+                        formData.append("action", objElevate.action)
+
+                        AppSystem.fun.showLoadingUi()
+                        AppSystem.handleComp.alert.alert.hidden({})
+
+                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                            location.pathname,
+                            formData
+                        )
+
+                        AppSystem.fun.hiddenLoadingUi()
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                            let errors = data?.errors?.user
+                            AppSystem.handleComp.alert.alert.show({title: message, content: errors, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                            return
+                        }
+
+                        window.location = objElevate.backUrl
+                    }
+                }
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+
+            objD.elem.$table.addEventListener('click', async (event) => {
+                const target = event.target.closest('a[rel="rel-action-delete"]');
+
+                if (target) {
+                    event.preventDefault();
+                    const id = target.dataset.id
+
+                    AppSystem.fun.showLoadingUi()
+
+                    const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                        `${objElevate.deleteUrl}/${id}`,
+                        {},
+                        {
+                            method: ClientHttpFetch.CONSTANT.verboseMethod.DELETE.description
+                        }
+                    )
+
+                    AppSystem.fun.hiddenLoadingUi()
+
+                    if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                        AppSystem.handleComp.alert.alert.show({title: message, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                        return
+                    }
+
+                    target.closest('tr').remove()
+                }
+            });
+
+        })
+
+    </script>
+{% endblock %}

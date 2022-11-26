@@ -70,9 +70,9 @@ const AppSystem = {
                 show: function (data = {}) {
                     const {id = '', title = '', content = '', typeFeature = AppSystem.CONSTANT.typeFeature.info, withTitleDefault = true} = data
 
-                    const $alert = document.getElementById(AppSystem.handleComp.alert.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.alertSuffix))
-                    const $title = document.getElementById(AppSystem.handleComp.alert.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.titleSuffix))
-                    const $content = document.getElementById(AppSystem.handleComp.alert.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.contentSuffix))
+                    const $alert = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.alertSuffix))
+                    const $title = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.titleSuffix))
+                    const $content = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.contentSuffix))
 
                     let titleDefault = ''
 

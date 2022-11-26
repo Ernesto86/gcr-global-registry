@@ -1,0 +1,71 @@
+{% extends 'v2/base/crud/form/form.html' %}
+
+{% block base-body-js %}
+
+    <script>
+        const objElevate = {
+            action: '{{ action }}',
+            back_url: '{{ back_url | safe }}'
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function (e) {
+            const objD = {
+                CONSTANT: {},
+                elem: {
+                    $form: document.getElementById('id-form')
+                },
+                repeat: {},
+                loadFirst: {},
+                model: {},
+                fun: {
+                    submitForm: async () => {
+                        const formData = new FormData(objD.elem.$form)
+                        formData.append("action", objElevate.action)
+
+                        AppSystem.fun.showLoadingUi()
+                        AppSystem.handleComp.alert.alert.hidden({})
+
+                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                            location.pathname,
+                            formData
+                        )
+
+                        AppSystem.fun.hiddenLoadingUi()
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+
+                            let errorHtml = '<ul class="ms-5 d-block">'
+                            Object.values(data?.errors).map(elem => {
+                                elem.map(element => {
+                                    errorHtml += `<li>${element}</li>`
+                                })
+                            })
+                            errorHtml += '</ul>'
+
+                            AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                            return
+                        }
+
+                        window.location = objElevate.back_url
+                    }
+                }
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+
+
+            objD.elem.$form.addEventListener('submit', (e) => {
+                e.preventDefault()
+
+                objD.fun.submitForm()
+            })
+        })
+
+    </script>
+{% endblock %}

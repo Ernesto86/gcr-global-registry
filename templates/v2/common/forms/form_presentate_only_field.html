@@ -1,0 +1,9 @@
+{% load widget_tweaks %}
+
+{% load security_extras %}
+
+{% if field|is_checkbox %}
+    <br>{{ field }}
+{% else %}
+    {{ field|add_class:'form-control'|attr:"autocomplete:off" }}
+{% endif %}

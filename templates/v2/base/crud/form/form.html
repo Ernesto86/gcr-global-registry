@@ -8,17 +8,24 @@
 
         <div class="card">
 
-            <div class="card-header">
-                <h3 class="card-title">
-                    {{ title }}
+            <div class="card-header bg-primary">
+                <h3 class="card-title text-white text-center mb-3">
+                    {{ title_label }}
                 </h3>
             </div>
 
             <div class="card-body">
 
+                <div class="row pb-2">
+                    <div class="col-lg-12">
+                        {% include 'v2/common/components/alert/alert.html' with type_feature_alert=4 hidden_alert=True %}
+                    </div>
+                </div>
+
+                {% csrf_token %}
+
                 {% block form-card-body %}
-                    {% csrf_token %}
-                    {#                    {% include "component/form/form_presentate_all_field.html" with form=form %}#}
+                    {% include "v2/common/forms/form_presentate_all_field.html" %}
                 {% endblock %}
 
             </div>
@@ -36,7 +43,7 @@
                         {% endblock %}
 
                         {% block card-footer-bottom-cancelated %}
-                            <a href="{{ success_url }}{{ to_back }}" class="btn btn-danger">
+                            <a href="{{ back_url }}{{ to_back }}" class="btn btn-danger">
                                 <i class="fas fa-times"></i> Cancelar
                             </a>
                         {% endblock %}

@@ -34,13 +34,13 @@ class Advisers(ModelBaseAudited):
     names = models.CharField(max_length=100, verbose_name="Apellidos y nombres", blank=True, null=True, editable=False)
     last_name = models.CharField(max_length=100, verbose_name="Apellidos")
     first_name = models.CharField(max_length=100, verbose_name="Nombres")
-    dni = models.CharField(max_length=20, blank=True, null=True)
+    dni = models.CharField(max_length=20, blank=True, null=True, unique=True)
     address = models.CharField(max_length=1024, verbose_name="Dirección", blank=True, null=True)
     code_postal = models.CharField(max_length=10, verbose_name="Cod. postal", blank=True, null=True)
     telephone = models.CharField(max_length=20, verbose_name="Teléfono", blank=True, null=True)
     cell_phone = models.CharField(max_length=20, verbose_name="Celular", blank=True, null=True)
-    email = models.CharField(max_length=150, verbose_name="Email", blank=True, null=True)
-    email_alternate = models.CharField(max_length=150, verbose_name="Email alterno", blank=True, null=True)
+    email = models.EmailField(max_length=150, verbose_name="Email", blank=True, null=True)
+    email_alternate = models.EmailField(max_length=150, verbose_name="Email alterno", blank=True, null=True)
 
     def __str__(self):
         return '{}'.format(self.names)
@@ -49,6 +49,20 @@ class Advisers(ModelBaseAudited):
         verbose_name = 'Asesor'
         verbose_name_plural = 'Asesores'
         ordering = ('code',)
+
+    def create_commission(self):
+
+        period_commission = PeriodCommissions.objects.filter(deleted=False).last()
+        if period_commission is None:
+            raise NameError("No tiene periodo comision configurada")
+
+        AdvisersCommissions.objects.create(
+            period_commissions_id=period_commission.id,
+            adviser_id=self.id,
+            commissions_period_1=period_commission.advisers_percentage_period_1,
+            commissions_period_2=period_commission.advisers_percentage_period_2,
+            commissions_period_3=period_commission.advisers_percentage_period_3,
+        )
 
     def save(self, *args, **kwargs):
 

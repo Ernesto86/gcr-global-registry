@@ -50,7 +50,8 @@ THIRD_PARTY_APPS = [
     "rest_framework_simplejwt",
     "django_filters",
     "django_countries",
-    "phonenumber_field"
+    "phonenumber_field",
+    'widget_tweaks',
 ]
 
 LOCAL_APPS = [

@@ -2,6 +2,7 @@ from django import forms
 
 from advisers.choices import TL_YEAR, TL_MONTH
 from advisers.models import AdvisersCommissions, PeriodCommissions, Advisers, PaymentAdviserCommissions, ManagersCommissions, Managers
+from core.common.form.form_common import FormCommon
 
 
 class AdvisersCommissionsForm(forms.ModelForm):
@@ -88,3 +89,14 @@ class PaymentAdviserCommissionsForm(forms.ModelForm):
             'month': forms.Select(attrs={'class': "select2 select2-design"}),
             'year': forms.Select(attrs={'class': "select2 select2-design"}),
         }
+
+
+class AdviserForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        FormCommon.update_required_field(self.fields)
+
+    class Meta:
+        model = Advisers
+        fields = '__all__'
+        exclude = ('deleted', 'manager', 'code')

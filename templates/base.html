@@ -118,6 +118,21 @@
                     </div>
                 </li>
 
+                <!-- Nav Item - Pages Collapse Menu -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePagesMtto" aria-expanded="true" aria-controls="collapsePagesMtto">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <b>Mantenimientos</b>
+                    </a>
+                    <div id="collapsePagesMtto" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" href="/students/students-registers">Gerente</a>
+                            <div class="collapse-divider"></div>
+                            <a class="collapse-item" href="{% url "advisers:adviser_list" %}">Asesor</a>
+                        </div>
+                    </div>
+                </li>
+
                 <!-- Nav Item - Charts -->
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'transactions:shopping_cart' %}">

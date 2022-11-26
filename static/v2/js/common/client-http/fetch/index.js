@@ -166,7 +166,7 @@ const ClientHttpFetch = {
                     let message = ""
 
                     try {
-                        const responseJson = await error.json()
+                        responseJson = await error.json()
                         message = responseJson.message
                     } catch (errorParse) {
                         message = error.statusText

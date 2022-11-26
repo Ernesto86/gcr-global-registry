@@ -1,5 +1,6 @@
 from django.urls import path
 
+from advisers.view.adviser import AdviserListView, AdviserCreateView, AdviserUpdateView, AdviserDeleteView
 from advisers.view.advisers_commissions import AdvisersCommissionsListView, AdvisersCommissionsCreateView, AdvisersCommissionsUpdateView
 from advisers.view.dashboard_admin import DashboardAdminView
 from advisers.view.dashboard_advisor import DashboardAdvisorView
@@ -10,6 +11,11 @@ from advisers.view.payment_adviser_commissions import PaymentAdviserCommissionsL
 app_name = 'advisers'
 
 urlpatterns = [
+    path('advisers', AdviserListView.as_view(), name='adviser_list'),
+    path('advisers/create', AdviserCreateView.as_view(), name='adviser_create'),
+    path('advisers/update/<int:pk>', AdviserUpdateView.as_view(), name='adviser_update'),
+    path('advisers/delete/<int:pk>', AdviserDeleteView.as_view(), name='adviser_delete'),
+
     path('dashboard-advisor', DashboardAdvisorView.as_view(), name='dashboard_advisor'),
     path('dashboard-manager', DashboardManagerView.as_view(), name='dashboard_manager'),
     path('dashboard-admin', DashboardAdminView.as_view(), name='dashboard_admin'),
