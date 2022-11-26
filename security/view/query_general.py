@@ -1,8 +1,14 @@
+import json
+import os
+
+import requests
 from django.shortcuts import render
 from django.views.generic.base import View
+
+from core.common.filter_query.filter_query_common import FilterQueryCommon
 from institutions.models import InsTypeRegistries
-from students.models import StudentRegisters, Students
 from security.functions import addUserData
+from students.models import StudentRegisters, Students
 from system.models import SysCountries
 
 
@@ -13,6 +19,7 @@ class QueryGeneralView(View):
         context = {}
         addUserData(self.request, context)
         context['sys_country_list'] = SysCountries.objects.filter(deleted=False)
+        context['recaptcha_site_key'] = os.environ.get('RECAPTCHA_SITE_KEY', '')
         return context
 
     def get(self, request):
@@ -22,11 +29,39 @@ class QueryGeneralView(View):
     def post(self, request):
         context = self.context_common()
         country = self.request.POST.get("country", None)
+        recaptcha = FilterQueryCommon.get_param_validate(self.request.POST.get("g-recaptcha-response", None))
+        recaptcha_secret_key = os.environ.get('RECAPTCHA_SECRET_KEY', '')
         context['country'] = int(country) if country else country
 
         dni = self.request.POST.get("identification", "")
         context['identification'] = dni
-        context['character'] = self.request.POST.get("character", "")
+
+        recaptcha_data = {
+            "secret": recaptcha_secret_key,
+            "response": recaptcha
+        }
+
+        try:
+            response = requests.post(
+                'https://www.google.com/recaptcha/api/siteverify?secret={}&response={}'.format(
+                    recaptcha_secret_key,
+                    recaptcha
+                ),
+                data=json.dumps(recaptcha_data)
+            )
+        except Exception as e:
+            context['errors'] = ["Error de captcha"]
+            return render(request, self.template_name, context)
+
+        if response.status_code != 200:
+            context['errors'] = ["Error de captcha"]
+            return render(request, self.template_name, context)
+
+        response_json = response.json()
+
+        if not response_json['success']:
+            context['errors'] = ["Error de captcha"]
+            return render(request, self.template_name, context)
 
         context['student_registers_list'] = []
         context['student'] = None

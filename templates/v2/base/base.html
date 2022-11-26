@@ -39,19 +39,26 @@
 {#    {% include 'v2/base/components/partials/loader.html' %}#}
 {#</div>#}
 
-{% include 'v2/base/components/partials/sidebar.html' %}
+{% block base-sidebar %}
+    {% include 'v2/base/components/partials/sidebar.html' %}
+{% endblock %}
 
 <main class="main-content">
     <div class="position-relative {% if isBanner %} iq-banner {% endif %}">
 
-        {% include 'v2/base/components/partials/pro/header.html' %}
+        {% block base-header %}
+            {% include 'v2/base/components/partials/pro/header.html' %}
+        {% endblock %}
 
-        {% if isBanner %}
-            {% include 'v2/base/components/partials/sub-header.html' %}
-        {% endif %}
+        {% block base-sub-header %}
+            {% if isBanner %}
+                {% include 'v2/base/components/partials/sub-header.html' %}
+            {% endif %}
+        {% endblock %}
 
     </div>
     <div class="content-inner container-fluid pb-0" id="page_layout">
+
         {% block content %}
         {% endblock %}
 
@@ -71,6 +78,7 @@
 <script src="/static/lib/js.cookie.min.js"></script>
 <script src="/static/v2/js/common/app-system/index.js"></script>
 <script src="/static/v2/js/common/client-http/fetch/index.js"></script>
+<script src="/static/v2/js/common/form/form/index.js"></script>
 
 {% block scripts %}
 {% endblock %}
