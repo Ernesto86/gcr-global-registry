@@ -258,7 +258,7 @@ class DashboardManagerView(LoginRequiredMixin, TemplateView):
             if option_view == 'paid':
                 data.update(
                     PaymentAdviserCommissionsManager.get_detail_adviser_payment(
-                        PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0],
+                        PaymentAdviserCommissions.TYPE_FUNCTIONARY[2][0],
                         manager.id,
                         institution_id=institution_id,
                         pay_manager=True
@@ -268,7 +268,7 @@ class DashboardManagerView(LoginRequiredMixin, TemplateView):
             elif option_view == 'xcobrar':
                 data.update(
                     PaymentAdviserCommissionsManager.get_detail_adviser_payment(
-                        PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0],
+                        PaymentAdviserCommissions.TYPE_FUNCTIONARY[2][0],
                         manager.id,
                         institution_id=institution_id,
                         pay_manager=False

@@ -1,301 +1,358 @@
-{% extends 'form.html' %}
+{% extends 'v2/base/crud/form/form.html' %}
+
 {% load crispy_forms_tags %}
-{% block container-main %}
-    <article class="container-fluid" style="margin-top: 3.5rem">
-        <div class="row">
-            <div class="col">
-                <nav id="siteBreadcrumb" aria-label="breadcrumb">
-                    <ol class="breadcrumb p-2">
-                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
-                        <li class="breadcrumb-item" aria-current="page"><a href="/institutions/">Instituciones</a></li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <form method="POST" action="" enctype="multipart/form-data" id="id-form">
-                    {% csrf_token %}
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h5>Configuracion de datos : {{ form_action }}</h5>
-                            <div class="alert alert-danger d-none" role="alert" id="id-alert">
-                                A simple danger alert—check it out!
-                            </div>
-                        </div>
-                        <div class="card-body">
-                            <div class="form-row">
-                                <div class="form-group col-4 mb-0">
-                                    {{ form.type_functionary|as_crispy_field }}
-                                </div>
-                                <div class="form-group col-4 mb-0">
-                                    {{ form.year|as_crispy_field }}
-                                </div>
-                                <div class="form-group col-4 mb-0">
-                                    {{ form.month|as_crispy_field }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <button class="btn btn-success ml-2" type="button" id="id-btnSave">
-                                <i class="fas fa-save"></i> Guardar registro
-                            </button>
-                            <button class="btn btn-success float-right ml-2" id="id-btnCalculate">
-                                <i class="fas fa-calculator"></i> Calcular
-                            </button>
-                            <button type="button" class="btn btn-secondary float-right" onclick="window.location='{{ back_url }}'">
-                                <i class="fa fa-arrow-left"></i> Atras
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        <table class="table" id="id-table">
-                            <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Valor de comision</th>
-                                <th>Opciones</th>
-                            </tr>
-                            </thead>
-                            <tbody id="id-detailBody">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </article>
+
+{% block form-card-footer %}
+    <button class="btn btn-primary ml-2" type="button" id="id-btnSave">
+        <i class="fas fa-save"></i> Guardar registro
+    </button>
+    <button type="button" class="btn btn-secondary float-end" onclick="window.location='{{ back_url }}'">
+        <i class="fa fa-arrow-left"></i> Atras
+    </button>
+    <button class="btn btn-success float-end mx-3" id="id-btnCalculate">
+        <i class="fas fa-calculator"></i> Calcular
+    </button>
 {% endblock %}
 
-{% block frmodal %}
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="id-modalTitle">Detalle</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table class="table">
+{% block form-after-card %}
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <table class="table" id="id-table">
                         <thead>
                         <tr>
-                            <th>Numero de compra</th>
-                            <th>Institucion</th>
-                            <th>Fecha de compra</th>
-                            <th>% comision asesor</th>
-                            <th>% comision gerente</th>
-                            <th>Subtotal</th>
-                            <th>Comision</th>
-                            <th>Comision gerente</th>
-                            <th>Comision asesor</th>
+                            <th>Nombre</th>
+                            <th>Valor de comision</th>
+                            <th>Opciones</th>
                         </tr>
                         </thead>
-                        <tbody id="id-detailAdviserBody">
+                        <tbody id="id-detailBody">
                         </tbody>
                     </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
 {% endblock %}
 
-{% block jscript-2 %}
+{% block content-modal %}
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-fullscreen-xl-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="id-modalTitle">Detalle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive mt-4">
+                        <table id="basic-table" class="table table-striped mb-0" role="grid">
+                            <thead class="table-primary">
+                            <tr>
+                                <th>Nº</th>
+                                <th>Institucion</th>
+                                <th>Fecha compra</th>
+                                <th>% asesor</th>
+                                <th>% gerente</th>
+                                <th>Subtotal</th>
+                                <th>Comision</th>
+                                <th>C. gerente</th>
+                                <th>C. asesor</th>
+                            </tr>
+                            </thead>
+                            <tbody id="id-detailAdviserBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{##}
+{#    <!-- Modal -->#}
+{#    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">#}
+{#        <div class="modal-dialog modal-xl">#}
+{#            <div class="modal-content">#}
+{#                <div class="modal-header">#}
+{#                    <h5 class="modal-title" id="id-modalTitle">Detalle</h5>#}
+{#                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">#}
+{#                        <span aria-hidden="true">&times;</span>#}
+{#                    </button>#}
+{#                </div>#}
+{#                <div class="modal-body">#}
+{#                    <table class="table">#}
+{#                        <thead>#}
+{#                        <tr>#}
+{#                            <th>Numero de compra</th>#}
+{#                            <th>Institucion</th>#}
+{#                            <th>Fecha de compra</th>#}
+{#                            <th>% comision asesor</th>#}
+{#                            <th>% comision gerente</th>#}
+{#                            <th>Subtotal</th>#}
+{#                            <th>Comision</th>#}
+{#                            <th>Comision gerente</th>#}
+{#                            <th>Comision asesor</th>#}
+{#                        </tr>#}
+{#                        </thead>#}
+{#                        <tbody id="id-detailAdviserBody">#}
+{#                        </tbody>#}
+{#                    </table>#}
+{#                </div>#}
+{#                <div class="modal-footer">#}
+{#                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+{% endblock %}
+
+{% block base-body-js %}
     <script>
-        const form = document.getElementById('id-form');
-        let c = console.log
-        const alert = document.getElementById('id-alert');
-
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////  ELEVATED  ////////////////////////////////////////////////////////
         const objElevate = {
-            action: '{{ action }}'
+            action: '{{ action }}',
         }
+    </script>
 
-
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////  FUNCIONES  ///////////////////////////////////////////////////////
-        const getDetailPaymentSpecific = async (object_id) => {
-            const formData = new FormData()
-            formData.append("action", 'view_detail')
-            formData.append("type_functionary", document.getElementById('id_type_functionary').value)
-            formData.append("year", document.getElementById('id_year').value)
-            formData.append("month", document.getElementById('id_month').value)
-            formData.append("object_id", object_id)
-
-            const [status, json] = await mFetch(`{{ request.path }}`, formData, 'POST');
-
-            if (status !== 200)
-                return console.log(json)
-
-            let html = ''
-
-            json.order_institution_quotas_list.forEach(elem => {
-                html += `
-                        <tr>
-                            <td>${elem.number}</td>
-                            <td>${elem.institution.name}</td>
-                            <td>${elem.date_issue}</td>
-                            <td>${elem.commissions_advisers_percentage}</td>
-                            <td>${elem.commissions_managers_percentage}</td>
-                            <td>${elem.subtotal}</td>
-                            <td>${elem.commission_adviser_clean}</td>
-                            <td>${elem.commission_manager}</td>
-                            <td>${elem.commission_adviser}</td>
-                        </tr>
-                    `
-            })
-            html += `<tr>
-                    <td colspan="7"></td>
-                    <td>${json.commission_manager}</td>
-                    <td>${json.commission_adviser}</td>
-                </tr>`
-
-            document.getElementById('id-detailAdviserBody').innerHTML = html
-            document.getElementById('id-modalTitle').innerText = `
-                Detalle de comisiones de: ${
-                json.adviser
-                    ? `${json.adviser.first_name} ${json.adviser.last_name}`
-                    : json.manager
-                        ? `${json.manager.first_name} ${json.manager.last_name}`
-                        : "Error"
-            }
-            `
-
-            $('#exampleModal').modal('show')
-        }
-
-        const loadDataTable = () => {
-            var tblDetail = $('#id-table').DataTable({
-                responsive: true,
-                autoWidth: false,
-                destroy: true,
-                deferRender: true,
-                ajax: {
-                    url: location.pathname,
-                    type: 'POST',
-                    headers: {
-                        'X-CSRFToken': Cookies.get('csrftoken')
-                    },
-                    data: {
-                        action: 'calculate',
-                        type_functionary: document.getElementById('id_type_functionary').value,
-                        year: document.getElementById('id_year').value,
-                        month: document.getElementById('id_month').value,
-                    },
-                    dataSrc: "calculate_payment_commissions.payment_commissions_details_list"
+    <script>
+        document.addEventListener('DOMContentLoaded', function (e) {
+            const objD = {
+                CONSTANT: {},
+                elem: {
+                    $typeFunctionary: document.getElementById('id_type_functionary'),
+                    $month: document.getElementById('id_month'),
+                    $year: document.getElementById('id_year'),
+                    $form: document.getElementById('id-form'),
+                    $table: document.getElementById('id-table'),
+                    $detailBody: document.getElementById('id-detailBody'),
                 },
-                columns: [
-                    {data: "adviser.first_name"},
-                    {data: "value_commission"},
-                    {data: "value_commission"},
-                ],
-                columnDefs: [
-                    {
-                        targets: [0],
-                        class: 'text-center',
-                        render: function (data, type, row) {
-                            // Todo: Arregla == 0
-                            return row.type_functionary == 0
-                                ? `${row.adviser.first_name} ${row.adviser.last_name}`
-                                : `${row.manager.first_name} ${row.manager.last_name}`
+                repeat: {},
+                loadFirst: {},
+                model: {},
+                fun: {
+                    loadDataTable: async () => {
+                        const formData = new FormData(objD.elem.$form)
+                        formData.append("action", 'calculate')
+
+                        objD.elem.$detailBody.innerHTML = ''
+
+                        AppSystem.fun.showLoadingUi()
+                        AppSystem.handleComp.alert.alert.hidden({})
+
+                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                            location.pathname,
+                            formData
+                        )
+
+                        AppSystem.fun.hiddenLoadingUi()
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                            let errorHtml = '<ul class="ms-5 d-block">'
+                            data?.errors.map(elem => `<li>${elem}</li>`)
+                            errorHtml += '</ul>'
+
+                            AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                            return
                         }
-                    },
-                    {
-                        targets: [-1],
-                        class: 'text-center',
-                        render: function (data, type, row) {
-                            let buttons = '';
-                            buttons += `
-                                <a rel="relBtnDetail" data-toggle="tooltip" class="btn btn-success btn-xs btn-flat">
+
+                        let html = ''
+
+                        data.calculate_payment_commissions.payment_commissions_details_list.forEach(elem => {
+                            c(elem)
+                            const nameFuncionary = elem.type_functionary === 0
+                                ? `${elem.adviser.first_name} ${elem.adviser.last_name}`
+                                : `${elem.manager.first_name} ${elem.manager.last_name}`
+
+                            const buttons = `
+                                <a rel="relBtnDetail" data-toggle="tooltip" data-object='${JSON.stringify(elem)}' class="btn btn-success btn-xs btn-flat">
                                     <i class="fas fa-list white" aria-hidden="true"></i>
                                 </a>
                             `
-                            return buttons;
-                        }
+
+                            html += `
+                                <tr>
+                                    <td>${nameFuncionary}</td>
+                                    <td>${elem.value_commission}</td>
+                                    <td>${buttons}</td>
+                                </tr>
+                            `
+                        })
+
+                        objD.elem.$detailBody.innerHTML = html
                     },
-                ],
-                rowCallback: function (row, data, index) {
+                    createCommission: async () => {
+                        const formData = new FormData(objD.elem.$form)
+                        formData.append("action", objElevate.action)
 
-                },
-                initComplete: function (settings, json) {
+                        AppSystem.fun.showLoadingUi()
+                        AppSystem.handleComp.alert.alert.hidden({})
 
+                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                            location.pathname,
+                            formData,
+                        )
+
+                        AppSystem.fun.hiddenLoadingUi()
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                            let errorHtml = '<ul class="ms-5 d-block">'
+                            data?.errors.map(elem => `<li>${elem}</li>`)
+                            errorHtml += '</ul>'
+
+                            AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                            return
+                        }
+
+                        window.location = '{{ back_url }}'
+                    },
+                    getNextPayment: async () => {
+                        const formData = new FormData(objD.elem.$form)
+                        formData.append("action", 'get_next_date_payment')
+
+                        AppSystem.fun.showLoadingUi()
+                        AppSystem.handleComp.alert.alert.hidden({})
+
+                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                            location.pathname,
+                            formData,
+                        )
+
+                        AppSystem.fun.hiddenLoadingUi()
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                            let errorHtml = '<ul class="ms-5 d-block">'
+                            data?.errors.map(elem => errorHtml += `<li>${elem}</li>`)
+                            {#FormCommon.fun.getErrorList(data?.errors).map(elem => `<li>${elem}</li>`)#}
+                            errorHtml += '</ul>'
+
+                            AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                            return
+                        }
+
+                        objD.elem.$month.value = data.month.toString()
+                        objD.elem.$year.value = data.year.toString()
+
+                        await objD.fun.loadDataTable()
+
+                    },
+                    getDetailPaymentSpecific: async (object_id) => {
+                        const formData = new FormData(objD.elem.$form)
+                        formData.append("action", 'view_detail')
+                        formData.append("object_id", object_id)
+
+                        AppSystem.fun.showLoadingUi()
+                        AppSystem.handleComp.alert.alert.hidden({})
+
+                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                            location.pathname,
+                            formData,
+                        )
+
+                        AppSystem.fun.hiddenLoadingUi()
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                            let errorHtml = '<ul class="ms-5 d-block">'
+                            data?.errors.map(elem => errorHtml += `<li>${elem}</li>`)
+                            errorHtml += '</ul>'
+
+                            AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                            return
+                        }
+
+                        let html = ''
+
+                        c("los èrez; ", data)
+
+                        data.order_institution_quotas_list.forEach(elem => {
+                            html += `
+                                <tr>
+                                    <td>${elem.number}</td>
+                                    <td>${elem.institution.name}</td>
+                                    <td>${elem.date_issue}</td>
+                                    <td>${elem.commissions_advisers_percentage}</td>
+                                    <td>${elem.commissions_managers_percentage}</td>
+                                    <td>${elem.subtotal}</td>
+                                    <td>${elem.commission_adviser_clean}</td>
+                                    <td>${elem.commission_manager}</td>
+                                    <td>${elem.commission_adviser}</td>
+                                </tr>
+                            `
+                        })
+                        html += `<tr>
+                                    <td colspan="7"></td>
+                                    <td>${data.commission_manager}</td>
+                                    <td>${data.commission_adviser}</td>
+                                </tr>`
+
+                        document.getElementById('id-detailAdviserBody').innerHTML = html
+                        document.getElementById('id-modalTitle').innerText = `
+                            Detalle de comisiones de: ${
+                            data.adviser
+                                ? `${data.adviser.first_name} ${data.adviser.last_name}`
+                                : data.manager
+                                    ? `${data.manager.first_name} ${data.manager.last_name}`
+                                    : "Error"
+                        }
+            `
+                        $('#exampleModal').modal('show')
+                    }
                 }
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+            if (objElevate.action === 'edit' || objElevate.action === 'view_detail') {
+
+                if (objElevate.action === 'view_detail') {
+                    document.getElementById('id-btnSave').classList.add('d-none')
+                    document.getElementById('id-btnCalculate').classList.add('d-none')
+                }
+
+                {#objD.elem.$typeFunctionary.disabled = true#}
+                {#objD.elem.$year.disabled = true#}
+                {#objD.elem.$month.disabled = true#}
+
+                objD.fun.loadDataTable()
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+
+
+            objD.elem.$form.addEventListener('submit', (e) => {
+                e.preventDefault()
+
+                objD.fun.loadDataTable()
             })
-                .off('click')
-                .on('click', 'a[rel="relBtnDetail"]', function () {
-                    let tr = $(this).closest('tr')
-                    const data = tblDetail.row(tr).data()
 
-                    // Todo: arreglar == 0
-                    getDetailPaymentSpecific(
-                        parseInt(document.getElementById('id_type_functionary').value) === 0
-                            ? data.adviser.id
-                            : data.manager.id
+            document.getElementById('id-btnSave').addEventListener("click", async (e) => {
+                await objD.fun.createCommission()
+            })
+
+            objD.elem.$typeFunctionary.addEventListener("change", async (e) => {
+                if (!e.target.value)
+                    return
+                await objD.fun.getNextPayment()
+            })
+
+            document.addEventListener('click', (event) => {
+                const target = event.target.closest('a[rel="relBtnDetail"]');
+
+                if (target) {
+                    event.preventDefault()
+                    const adviserManager = JSON.parse(target.dataset.object)
+
+                    objD.fun.getDetailPaymentSpecific(
+                        parseInt(objD.elem.$typeFunctionary.value) === 0
+                            ? adviserManager.adviser.id
+                            : adviserManager.manager.id
                     )
-                })
-        }
+                }
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
-
-        if (objElevate.action === 'edit' || objElevate.action === 'view_detail') {
-
-            if (objElevate.action === 'view_detail') {
-                document.getElementById('id-btnSave').classList.add('d-none')
-                document.getElementById('id-btnCalculate').classList.add('d-none')
-            }
-
-            document.getElementById('id_type_functionary').disabled = true
-            document.getElementById('id_year').disabled = true
-            document.getElementById('id_month').disabled = true
-
-            loadDataTable()
-        }
-
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
-
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            form.classList.add('was-validated');
-            e.preventDefault();
-            e.stopPropagation();
-
-            loadDataTable()
-
-        })
-
-
-        document.getElementById('id-btnSave').addEventListener("click", async (e) => {
-            const formData = new FormData()
-            formData.append("action", objElevate.action)
-            formData.append("type_functionary", document.getElementById('id_type_functionary').value)
-            formData.append("year", document.getElementById('id_year').value)
-            formData.append("month", document.getElementById('id_month').value)
-
-            const [status, json] = await mFetch(`{{ request.path }}`, formData, 'POST');
-
-            if (status !== 200) {
-
-                alert.innerText = json.errors.join(',');
-                alert.classList.remove('d-none');
-
-                return console.log(json)
-            }
-            window.location = '{{ back_url }}'
-
+            })
         })
     </script>
 {% endblock %}

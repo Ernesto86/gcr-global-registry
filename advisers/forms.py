@@ -82,7 +82,7 @@ class PeriodCommissionsManagerForm(forms.ModelForm):
 class PaymentAdviserCommissionsForm(forms.ModelForm):
     class Meta:
         model = PaymentAdviserCommissions
-        fields = '__all__'
+        fields = ('type_functionary', 'month', 'year')
 
         widgets = {
             'type_functionary': forms.Select(attrs={'class': "select2 select2-design"}),

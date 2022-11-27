@@ -94,6 +94,7 @@ class Advisers(ModelBaseAudited):
 
 class PaymentAdviserCommissions(ModelBaseAudited):
     TYPE_FUNCTIONARY = (
+        (None, '------------'),
         (0, 'ASERSOR'),
         (1, 'GERENTE'),
     )

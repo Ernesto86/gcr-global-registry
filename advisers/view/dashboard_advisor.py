@@ -57,7 +57,7 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
             if option_view == 'paid':
                 data.update(
                     PaymentAdviserCommissionsManager.get_detail_adviser_payment(
-                        PaymentAdviserCommissions.TYPE_FUNCTIONARY[0][0],
+                        PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0],
                         advisers.id,
                         institution_id=institution_id,
                         pay_adviser=True
@@ -67,7 +67,7 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
             elif option_view == 'xcobrar':
                 data.update(
                     PaymentAdviserCommissionsManager.get_detail_adviser_payment(
-                        PaymentAdviserCommissions.TYPE_FUNCTIONARY[0][0],
+                        PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0],
                         advisers.id,
                         institution_id=institution_id,
                         pay_adviser=False
@@ -296,7 +296,7 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
             ).aggregate(sum=Sum('subtotal'))['sum']
         )
         order_institution_quotas_subtotal = PaymentAdviserCommissionsManager.get_detail_adviser_payment_acummulate(
-            PaymentAdviserCommissions.TYPE_FUNCTIONARY[0][0],
+            PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0],
             advisers.id
         )
         context['value_commission_x_cobrar'] = order_institution_quotas_subtotal['commission_adviser']

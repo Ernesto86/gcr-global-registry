@@ -4,57 +4,63 @@
 {% block content %}
 
     <form method="POST" action="" enctype="multipart/form-data" id="id-form">
-        <input type="hidden" name="action" value="{{ action }}">
+        <fieldset aria-label="Disabled fieldset example">
+            <input type="hidden" name="action" value="{{ action }}">
 
-        <div class="card">
+            <div class="card">
 
-            <div class="card-header bg-primary">
-{#                <h3 class="card-title text-white text-center mb-3">#}
-{#                    {{ title_label }}#}
-{#                </h3>#}
-            </div>
+                <div class="card-header bg-primary">
+                    {#                <h3 class="card-title text-white text-center mb-3">#}
+                    {#                    {{ title_label }}#}
+                    {#                </h3>#}
+                </div>
 
-            <div class="card-body">
-                <h3 class="card-title text-center mb-3">
-                    {{ title_label }}
-                </h3>
-                <div class="row pb-2">
-                    <div class="col-lg-12">
-                        {% include 'v2/common/components/alert/alert.html' with type_feature_alert=4 hidden_alert=True %}
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-3">
+                        {{ title_label }}
+                    </h3>
+                    <div class="row pb-2">
+                        <div class="col-lg-12">
+                            {% include 'v2/common/components/alert/alert.html' with type_feature_alert=4 hidden_alert=True %}
+                        </div>
                     </div>
-                </div>
 
-                {% csrf_token %}
+                    {% csrf_token %}
 
-                {% block form-card-body %}
-                    {% include "v2/common/forms/form_presentate_all_field.html" %}
-                {% endblock %}
-
-            </div>
-
-            {% block form-wrapper-card-footer %}
-
-                <div class="card-footer">
-                    {% block form-card-footer %}
-
-                        {% block card-footer-bottom-save %}
-                            <button type="submit" form="id-form" class="btn btn-primary">
-                                <i class="fas fa-save"></i>
-                                Guardar registro
-                            </button>
-                        {% endblock %}
-
-                        {% block card-footer-bottom-cancelated %}
-                            <a href="{{ back_url }}{{ to_back }}" class="btn btn-danger">
-                                <i class="fas fa-times"></i> Cancelar
-                            </a>
-                        {% endblock %}
-
+                    {% block form-card-body %}
+                        {% include "v2/common/forms/form_presentate_all_field.html" %}
                     {% endblock %}
+
                 </div>
 
-            {% endblock %}
-        </div>
+                {% block form-wrapper-card-footer %}
+
+                    <div class="card-footer">
+                        {% block form-card-footer %}
+
+                            {% block card-footer-bottom-save %}
+                                <button type="submit" form="id-form" class="btn btn-primary">
+                                    <i class="fas fa-save"></i>
+                                    Guardar registro
+                                </button>
+                            {% endblock %}
+
+                            {% block card-footer-bottom-cancelated %}
+                                <a href="{{ back_url }}{{ to_back }}" class="btn btn-danger">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </a>
+                            {% endblock %}
+
+                        {% endblock %}
+                    </div>
+
+                {% endblock %}
+            </div>
+        </fieldset>
     </form>
+
+    {% block form-after-card %}
+
+    {% endblock %}
 
 {% endblock %}
