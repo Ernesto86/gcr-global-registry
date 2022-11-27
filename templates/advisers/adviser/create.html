@@ -20,7 +20,7 @@
                 loadFirst: {},
                 model: {},
                 fun: {
-                    submitForm: async () => {
+                    submit: async () => {
                         const formData = new FormData(objD.elem.$form)
                         formData.append("action", objElevate.action)
 
@@ -59,7 +59,7 @@
             objD.elem.$form.addEventListener('submit', (e) => {
                 e.preventDefault()
 
-                objD.fun.submitForm()
+                objD.fun.submit()
             })
         })
 

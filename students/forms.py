@@ -2,6 +2,7 @@ import datetime
 
 from django import forms
 
+from core.common.form.form_common import FormCommon
 from students.models import StudentRegisters, Students
 
 
@@ -53,6 +54,11 @@ class StudentRegistersForm(forms.ModelForm):
 
 
 class StudentRegistersSearchForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs['autofocus'] = True
+        FormCommon.update_all_field(self.fields)
+
     identification = forms.CharField(widget=forms.TextInput(), label='Identificación del estudiante', required=True)
     name = forms.CharField(
         widget=forms.TextInput(

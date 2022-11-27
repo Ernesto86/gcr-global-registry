@@ -1,73 +1,86 @@
-{% extends 'base.html' %}
+{% extends 'v2/base/crud/template/template.html' %}
+
 {% block header %}
     {% include 'header.html' %}
 {% endblock %}
 
+{% block template-content %}
 
-
-{% block container-main %}
-    <div class="container-fluid" style="margin: 5rem;  ">
-        <h4 class="border-bottom-3 font-weight-bold"><b>INGRESO INTERNACIONAL DE REGISTROS INSTITUCIONAL</b></h4>
-        <hr>
-        <p class="font-weight-bold">
-            <b>
-                Bienvenidos al portal de ingreso internacional de registros de títulos y certificaciones de su institución. Aquí podrá ingresar los
-                certificados que ha emitido a sus estudiantes. Le recordamos que la información ingresada se encuentra bajo estricta responsabilidad de
-                su institución.
-            </b>
-        </p>
-        <div class="row d-flex justify-content-center align-items-center">
-            <div class="col-lg-5 col-md">
-                <a href="{% url "students:students_registers_search" %}" class="btn btn-primary text-white" style="font-size: 1.4rem">
+    <h4 class="font-weight-bold"><b>{{ title_label }}</b></h4>
+    <hr>
+    <p class="font-weight-bold">
+        <b>
+            Bienvenidos al portal de ingreso internacional de registros de títulos y certificaciones de su institución. Aquí podrá ingresar los
+            certificados que ha emitido a sus estudiantes. Le recordamos que la información ingresada se encuentra bajo estricta responsabilidad de
+            su institución.
+        </b>
+    </p>
+    <div class="row d-flex justify-content-evenly align-items-center pt-5">
+        <div class="col-lg-5 col-md">
+            <div class="text-center d-flex justify-content-between">
+                <a href="{% url "students:students_registers_search" %}" class="btn btn-primary text-white fs-4">
                     <i class="fa fa-plus"></i>
-                    <b>Agregar nuevo registro</b>
+                    <b>Nuevo registro</b>
                 </a>
-                <p class="mt-5 text-justify">
-                    <b>
-                        *Le recordamos que debe ser cuidadoso al ingresar la
-                        información de sus registros, puesto que debido a nuestro
-                        proceso de seguridad de la información respaldado bajo nuestro
-                        sistema de blockchain, la información no podrá ser modificada
-                        posterior a su ingreso y deberá ingresar un ticket de ayuda el
-                        mismo que puede tomar un lapso de 15 días en ser atendido y
-                        verificado.
-                    </b>
-                </p>
+                <a class="btn btn-primary text-white fs-4" href="{% url "transactions:shopping_cart" %}">
+                    <i class="fas fa-cart-plus"></i>
+                    <b>Obtén más Registros</b>
+                </a>
             </div>
-            <div class="col-lg-2 col-md">
+            <p class="mt-5" style="text-align: justify">
+                <b>
+                    *Le recordamos que debe ser cuidadoso al ingresar la
+                    información de sus registros, puesto que debido a nuestro
+                    proceso de seguridad de la información respaldado bajo nuestro
+                    sistema de blockchain, la información no podrá ser modificada
+                    posterior a su ingreso y deberá ingresar un ticket de ayuda el
+                    mismo que puede tomar un lapso de 15 días en ser atendido y
+                    verificado.
+                </b>
+            </p>
+        </div>
+        <div class="col-lg-5 col-md">
+            <div class="col-lg-12">
+                <div class="card border-bottom border-5 border-primary">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div class="bg-soft-primary rounded p-3">
+                                <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                    <path fill="currentColor"
+                                          d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z"></path>
+                                </svg>
+                            </div>
+                            <div class="text-center">
+                                <b><p class="text-black">REGISTROS INGRESADOS</p></b>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center align-items-center pt-2">
+                            <h1 class="text-white badge bg-dark rounded-pill fs-3">{{ institution_quotes_type_register_sum.quotas }}</h1>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-5 col-md">
-                <div
-                        style="border-radius:25px; background: #1D1CE5"
-                        class="alert alert-light mb-0 mt-5 text-center register shadow-lg"
-                        role="alert"
-                >
-                    <p class="display-4 text-center white">
-                        <b class="circle">
-                            <span class="badge badge-light rounded-pill">{{ institution_quotes_type_register_sum.quotas }}</span>
-                        </b>
-                    </p>
-                    <p class="white"><b>REGISTROS INGRESADOS</b></p>
+            <div class="col-lg-12">
+                <div class="card border-bottom border-5 border-success">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div class="bg-soft-primary rounded p-3">
+                                <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                    <path fill="currentColor"
+                                          d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z"></path>
+                                </svg>
+                            </div>
+                            <div class="text-center">
+                                <b><p class="text-black">REGISTROS DISPONIBLES</p></b>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-center align-items-center pt-2">
+                            <h1 class="text-white badge bg-dark rounded-pill fs-3">{{ institution_quotes_type_register_sum.quotas_balance }}</h1>
+                        </div>
+                    </div>
                 </div>
-                <div
-                        style="border-radius:25px; background: red"
-                        class="alert alert-light mb-0 mt-5 text-center register shadow-lg"
-                        role="alert"
-                >
-                    <p class="display-4 text-center white">
-                        <b class="circle">
-                            <span class="badge badge-light rounded-pill">{{ institution_quotes_type_register_sum.quotas_balance }}</span>
-                        </b>
-                    </p>
-                    <p class="white"><b>REGISTROS DISPONIBLES</b></p>
-                </div>
-                <p class="text-center mt-5">
-                    <a class="btn btn-primary text-white" style="font-size: 1.4rem" href="{% url "transactions:shopping_cart" %}">
-                        <i class="fas fa-cart-plus"></i>
-                        <b>Obtén más Registros</b>
-                    </a>
-                </p>
             </div>
         </div>
     </div>
+
 {% endblock %}

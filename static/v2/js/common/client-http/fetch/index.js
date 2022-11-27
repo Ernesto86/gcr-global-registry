@@ -171,8 +171,8 @@ const ClientHttpFetch = {
                     } catch (errorParse) {
                         message = error.statusText
                     }
-
-                    return new ErrorResponse(responseJson.status, message, responseJson)
+                    c(error.status)
+                    return new ErrorResponse(error.status, message, responseJson)
 
                 } else {
 
