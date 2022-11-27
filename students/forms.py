@@ -73,19 +73,15 @@ class StudentRegistersSearchForm(forms.Form):
 class StudentsForm(forms.ModelForm):
     class Meta:
         model = Students
-        fields = "__all__"
-        # fields = (
-        #     'student',
-        #     'type_register',
-        #     'certificate',
-        #     'country',
-        #     'date_issue',
-        #     'code_international_register'
-        # )
+        fields = (
+            'dni',
+            'first_name',
+            'last_name',
+            'country',
+            'gender',
+            'email'
+        )
         widgets = {
-            # 'student': forms.Select(attrs={
-            #     'readonly': True
-            # }),
             'country': forms.Select(
                 attrs={
                     'class': 'select2-design',
@@ -96,23 +92,5 @@ class StudentsForm(forms.ModelForm):
                 attrs={
                     'required': True
                 },
-            ),
-            # 'country': forms.Select(
-            #     attrs={
-            #         'class': 'select2-design',
-            #         'required': True
-            #     }
-            # ),
-            # 'date_issue': forms.DateInput(
-            #     attrs={
-            #         'class': 'date-piker',
-            #         'type': 'date',
-            #         'required': True,
-            #         'value': datetime.datetime.now().date()
-            #     }
-            # ),
-            # 'code_international_register': forms.TextInput(attrs={
-            #     'readonly': True,
-            # }),
+            )
         }
-
