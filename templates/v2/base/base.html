@@ -44,31 +44,41 @@
     {% include 'v2/base/components/partials/sidebar.html' %}
 {% endblock %}
 
-<main class="main-content">
-    <div class="position-relative {% if isBanner %} iq-banner {% endif %}">
+{% block base-main-content %}
 
-        {% block base-header %}
-            {% include 'v2/base/components/partials/pro/header.html' %}
+    <main class="main-content">
+        <div class="position-relative {% if isBanner %} iq-banner {% endif %}">
+
+            {% block base-header %}
+                {% include 'v2/base/components/partials/pro/header.html' %}
+            {% endblock %}
+
+            {% block base-sub-header %}
+                {% if isBanner %}
+                    {% include 'v2/base/components/partials/sub-header.html' %}
+                {% endif %}
+            {% endblock %}
+
+        </div>
+
+        {% block base-wrapper-content %}
+
+            <div class="content-inner container-fluid pb-0" id="page_layout">
+
+                {% block content %}
+                {% endblock %}
+
+                {% block content-modal %}
+                {% endblock %}
+
+            </div>
+
         {% endblock %}
 
-        {% block base-sub-header %}
-            {% if isBanner %}
-                {% include 'v2/base/components/partials/sub-header.html' %}
-            {% endif %}
-        {% endblock %}
+        {% include 'v2/base/components/partials/footer.html' %}
+    </main>
 
-    </div>
-    <div class="content-inner container-fluid pb-0" id="page_layout">
-
-        {% block content %}
-        {% endblock %}
-
-        {% block content-modal %}
-        {% endblock %}
-
-    </div>
-    {% include 'v2/base/components/partials/footer.html' %}
-</main>
+{% endblock %}
 
 {% include 'v2/base/components/widgets/setting-offcanvas.html' %}
 
