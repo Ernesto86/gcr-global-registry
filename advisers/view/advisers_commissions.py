@@ -26,6 +26,8 @@ def advisers_commissions_save(request, *args, **kwargs):
     list_id_specific = request.POST.getlist('advisers_specific')
     is_specific = True if list_id_specific else False
 
+    validate_commissions_max(period_commissions, request)
+
     query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
     query_AND_1.children.append(("deleted", False))
 
@@ -40,12 +42,11 @@ def advisers_commissions_save(request, *args, **kwargs):
         query_AND_1.children.append(("adviser_id__in", list_id_specific))
         dict_update['is_exclude'] = True
     else:
+        print("debe estar llegando", request.POST.get('advisers_percentage_period_1'))
         period_commissions.advisers_percentage_period_1 = request.POST.get('advisers_percentage_period_1')
         period_commissions.advisers_percentage_period_2 = request.POST.get('advisers_percentage_period_2')
         period_commissions.advisers_percentage_period_3 = request.POST.get('advisers_percentage_period_3')
         period_commissions.save()
-
-    validate_commissions_max(period_commissions, request)
 
     AdvisersCommissions.objects.filter(
         query_AND_1
@@ -106,14 +107,7 @@ class AdvisersCommissionsCreateView(CreateView):
         context['back_url'] = reverse_lazy('advisers:advisers_commissions_list')
         context['title_label'] = "Actualizacion masiva"
         period_commissions = PeriodCommissions.objects.filter(deleted=False).last()
-        context['form_2'] = PeriodCommissionsForm(
-            instance=period_commissions,
-            initial={
-                'advisers_percentage_period_1': period_commissions.advisers_percentage_max_period_1,
-                'advisers_percentage_period_2': period_commissions.advisers_percentage_max_period_2,
-                'advisers_percentage_period_3': period_commissions.advisers_percentage_max_period_3,
-            }
-        )
+        context['form_2'] = PeriodCommissionsForm(instance=period_commissions)
         context['form_action'] = 'Crear'
         return context
 
