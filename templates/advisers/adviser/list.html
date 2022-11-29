@@ -7,7 +7,7 @@
     <th class="text-center">Opciones</th>
 {% endblock %}
 
-{% block url_create %}{% url "institution_create" %}{% endblock %}
+{#{% block url_create %}{% url "institution_create" %}{% endblock %}#}
 
 {% block list-table-body-rows %}
     {% for object in advisers %}
@@ -81,9 +81,7 @@
                     const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
                         `${objElevate.deleteUrl}/${id}`,
                         {},
-                        {
-                            method: ClientHttpFetch.CONSTANT.verboseMethod.DELETE.description
-                        }
+                        {method: ClientHttpFetch.CONSTANT.verboseMethod.DELETE.description}
                     )
 
                     AppSystem.fun.hiddenLoadingUi()

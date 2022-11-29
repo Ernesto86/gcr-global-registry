@@ -63,6 +63,8 @@ class AdvisersCommissionsListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         addUserData(self.request, context)
+        context['title_label'] = "Listo de comisiones de asesores"
+        context['create_url'] = reverse_lazy('advisers:advisers_commissions_create')
         return context
 
     def get_queryset(self, **kwargs):
@@ -102,6 +104,7 @@ class AdvisersCommissionsCreateView(CreateView):
         context = super().get_context_data()
         addUserData(self.request, context)
         context['back_url'] = reverse_lazy('advisers:advisers_commissions_list')
+        context['title_label'] = "Actualizacion masiva"
         period_commissions = PeriodCommissions.objects.filter(deleted=False).last()
         context['form_2'] = PeriodCommissionsForm(
             instance=period_commissions,
@@ -142,6 +145,7 @@ class AdvisersCommissionsUpdateView(UpdateView):
         addUserData(self.request, context)
         context['back_url'] = reverse_lazy('advisers:advisers_commissions_list')
         advisers_commissions = self.get_object()
+        context['title_label'] = "Actualizacion masiva"
         context['form_2'] = PeriodCommissionsForm(
             instance=PeriodCommissions.objects.filter(deleted=False).last(),
             initial={
