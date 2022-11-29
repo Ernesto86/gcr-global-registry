@@ -50,7 +50,14 @@ class DashboardManagerView(LoginRequiredMixin, TemplateView):
             deleted=False,
         )
 
-        return payment_adviser_commissions_list
+        payment_adviser_commissions_final_list = []
+
+        for year in list(set(payment_adviser_commissions_list.filter().values_list('year', flat=True))):
+            payment_adviser_commissions_final_list.append(
+                payment_adviser_commissions_list.filter(year=year).first()
+            )
+
+        return payment_adviser_commissions_final_list
 
     def get_commission_paid(self, manager_id, adviser_id, year, year_list, is_per_year, year_selected):
         payment_paid_list = []

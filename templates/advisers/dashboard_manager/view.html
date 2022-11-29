@@ -502,12 +502,14 @@
                     objD.elem.barChartCommissionTotals.destroy()
 
                 const paidInfoChart = getValueCommissionInfoChart(data.payment_paid_list)
+
                 objD.elem.barChartCommissionPaid = new ApexCharts(
                     objD.elem.ctxCommissionsPaidBarChart,
                     getOptionBarChart(paidInfoChart.labels, paidInfoChart.values, paidInfoChart.max)
                 )
                 objD.elem.barChartCommissionPaid.render()
 
+                ce(data.payment_x_cobrar_list)
                 const xCobrarInfoChart = getValueCommissionInfoChart(data.payment_x_cobrar_list)
                 objD.elem.barChartCommissionXCobrar = new ApexCharts(
                     objD.elem.ctxCommissionsXCobrarBarChart,
