@@ -1,532 +1,438 @@
-{% extends 'form.html' %}
-{% load crispy_forms_tags %}
-{% block container-main %}
-    <article class="container-fluid" style="margin-top: 3.5rem">
-        <div class="row">
-            <div class="col">
-                <nav id="siteBreadcrumb" aria-label="breadcrumb">
-                    <ol class="breadcrumb p-2">
-                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
-                        <li class="breadcrumb-item" aria-current="page"><a
-                                href="/institutions/configuration">Configuración de datos</a></li>
-                    </ol>
-                </nav>
-            </div>
+{% extends 'v2/base/crud/template/template.html' %}
+
+{% block template-content %}
+    <div class="row">
+        <div class="col-lg-12">
+            {% include 'v2/common/components/alert/alert.html' with type_feature_alert=4 hidden_alert=True %}
         </div>
-        <div class="row">
-            <div class="col">
-                <form method="POST" action="" enctype="multipart/form-data" id="formConfigurateData">
-                    {% csrf_token %}
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h5>{{ advisers }} </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row d-flex justify-content-center">
+    </div>
 
-                                <!-- Earnings (Monthly) Card Example -->
-                                <div class="col-xl-2 col-md-6 mb-4">
-                                    <div class="card border-left-primary shadow h-100 py-2">
-                                        <div class="card-body">
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col mr-2">
-                                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                        Instituciones aprobadas
-                                                    </div>
-                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ institutions_active_count }}</div>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-2 col-md-6 mb-4">
-                                    <div class="card border-left-primary shadow h-100 py-2">
-                                        <div class="card-body">
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col mr-2">
-                                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                        Instituciones pendientes
-                                                    </div>
-                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ institutions_disabled_count }}</div>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Earnings (Annual) Card Example -->
-                                <div class="col-xl-2 col-md-6 mb-4">
-                                    <div class="card border-left-success shadow h-100 py-2">
-                                        <div class="card-body">
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col mr-2">
-                                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                        Comisiones pagadas
-                                                    </div>
-                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ value_commission_payment }}</div>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Earnings (Annual) Card Example -->
-                                <div class="col-xl-2 col-md-6 mb-4">
-                                    <div class="card border-left-success shadow h-100 py-2">
-                                        <div class="card-body">
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col mr-2">
-                                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                        Comisiones x cobrar
-                                                    </div>
-                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ value_commission_x_cobrar }}</div>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Earnings (Annual) Card Example -->
-                                <div class="col-xl-2 col-md-6 mb-4">
-                                    <div class="card border-left-success shadow h-100 py-2">
-                                        <div class="card-body">
-                                            <div class="row no-gutters align-items-center">
-                                                <div class="col mr-2">
-                                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                        Total compras
-                                                    </div>
-                                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ order_subtotal }}</div>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="row mt-5">
-                                <div class="col-12">
-                                    <div class="card">
-                                        <div class="table-responsive card-body">
-
-                                            <h3>Instituciones</h3>
-
-                                            <table
-                                                    class="table table-striped table-sm sm-0"
-                                                    id="id-table-institution"
-                                            >
-                                                <thead class="text-center text-sm-center bg-success white">
-                                                <tr>
-                                                    <th>Nombre</th>
-                                                    <th>Alias</th>
-                                                    <th>Tipo de registro</th>
-                                                    <th>Representante</th>
-                                                    <th>Identificacion</th>
-                                                    <th>Pais</th>
-                                                    <th>Direccion</th>
-                                                    <th>Telefono</th>
-                                                    <th>Email</th>
-                                                    <th>Habilitado?</th>
-                                                    <th>Opciones</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody class="table-sm">
-                                                {% for object in institutions_list %}
-                                                    <tr>
-                                                        <td>{{ object.name }}</td>
-                                                        <td>{{ object.alias }}</td>
-                                                        <td>{{ object.type_registration }}</td>
-                                                        <td>{{ object.representative }}</td>
-                                                        <td>{{ object.identification }}</td>
-                                                        <td>{{ object.country }}</td>
-                                                        <td>{{ object.address }}</td>
-                                                        <td>{{ object.telephone }}</td>
-                                                        <td>{{ object.email }}</td>
-                                                        <td class="text-center">
-                                                            {% include "component/badge/badge_presentate.html" with badge_type=1 badge_value_bool=object.status badge_text_bool=True %}
-                                                        </td>
-                                                        <td class="text-center">
-                                                            <a type="button" class="btn btn-warning black" rel="action-view-paid" data-institutionid="{{ object.id }}">
-                                                                <i class="fas fa-eye black"></i> <span style="color: black">Pagadas</span>
-                                                            </a>
-                                                            <a type="button" class="btn btn-warning" rel="action-view-x-cobrar" data-institutionid="{{ object.id }}">
-                                                                <i class="fas fa-eye black"></i> <span style="color: black">X cobrar</span>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                {% endfor %}
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row mt-5">
-                                <div class="col-6">
-                                    {% include 'advisers/dashboard_advisor/card_chart_bar.html' with id_chart_bart='id-barChartCommissionPaid' id_select_chart_bart='id-selectYearBarChartCommissionPaid' title_chart_bart='Comisiones pagadas' %}
-                                </div>
-                                <div class="col-6">
-                                    {% include 'advisers/dashboard_advisor/card_chart_bar.html' with id_chart_bart='id-barChartCommissionXCobrar' id_select_chart_bart='id-selectYearBarChartCommissionXCobrar' title_chart_bart='Comisiones cobradas' %}
-                                </div>
-                                <div class="col-12 mt-2">
-                                    {% include 'advisers/dashboard_advisor/card_chart_bar.html' with id_chart_bart='id-barChartCommissionTotals' id_select_chart_bart='id-selectYearBarChartCommissionTotals' title_chart_bart='Comisiones totales' %}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <button type="button" class="btn btn-secondary float-right" onclick="window.location='{{ back_url }}'">
-                                <i class="fa fa-arrow-left"></i> Atras
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+    <div class="row d-flex justify-content-evenly">
+        <div class="col-lg-4">
+            {% include 'v2/common/components/card/card_widget_value.html' with title_card_widget_value='Instituciones aprobadas' value_span_widget_value=institutions_active_count %}
         </div>
-    </article>
-{% endblock %}
+        <div class="col-lg-4">
+            {% include 'v2/common/components/card/card_widget_value.html' with title_card_widget_value='Instituciones pendientes' value_span_widget_value=institutions_disabled_count %}
+        </div>
+        <div class="col-lg-4">
+            {% include 'v2/common/components/card/card_widget_value.html' with title_card_widget_value='Comisiones pagadas' value_span_widget_value=value_commission_payment %}
+        </div>
+        <div class="col-lg-4">
+            {% include 'v2/common/components/card/card_widget_value.html' with title_card_widget_value='Comisiones x cobrar' value_span_widget_value=value_commission_x_cobrar %}
+        </div>
+        <div class="col-lg-4">
+            {% include 'v2/common/components/card/card_widget_value.html' with title_card_widget_value='Total compras' value_span_widget_value=order_subtotal %}
+        </div>
+    </div>
 
-{% block frmodal %}
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="id-modalTitle">Detalle</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table class="table">
-                        <thead>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="table-responsive card-body">
+                    <h3>Instituciones</h3>
+                    <table
+                            class="table table-striped table-sm sm-0"
+                            id="id-table-institution"
+                    >
+                        <thead class="text-center text-sm-center bg-success white">
                         <tr>
-                            <th>Numero de compra</th>
-                            <th>Institucion</th>
-                            <th>Fecha de compra</th>
-                            <th>% comision asesor</th>
-                            <th>% comision gerente</th>
-                            <th>Subtotal</th>
-                            <th>Comision</th>
-                            <th>Comision gerente</th>
-                            <th>Comision asesor</th>
+                            <th>Nombre</th>
+                            <th>Alias</th>
+                            <th>Tipo de registro</th>
+                            <th>Representante</th>
+                            <th>Identificacion</th>
+                            <th>Pais</th>
+                            <th>Direccion</th>
+                            <th>Telefono</th>
+                            <th>Email</th>
+                            <th>Habilitado?</th>
+                            <th>Opciones</th>
                         </tr>
                         </thead>
-                        <tbody id="id-detailAdviserBody">
+                        <tbody class="table-sm">
+                        {% for object in institutions_list %}
+                            <tr>
+                                <td>{{ object.name }}</td>
+                                <td>{{ object.alias }}</td>
+                                <td>{{ object.type_registration }}</td>
+                                <td>{{ object.representative }}</td>
+                                <td>{{ object.identification }}</td>
+                                <td>{{ object.country }}</td>
+                                <td>{{ object.address }}</td>
+                                <td>{{ object.telephone }}</td>
+                                <td>{{ object.email }}</td>
+                                <td class="text-center">
+                                    {% include "component/badge/badge_presentate.html" with badge_type=1 badge_value_bool=object.status badge_text_bool=True %}
+                                </td>
+                                <td class="text-center">
+                                    <a
+                                            class="btn btn-icon btn-primary"
+                                            rel="action-view-paid"
+                                            data-institutionid="{{ object.id }}"
+                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Comisiones pagadas"
+                                    >
+                                        <span class="btn-inner"><i class="fas fa-eye black"></i></span>
+                                    </a>
+                                    <a
+                                            class="btn btn-icon btn-outline-secondary"
+                                            rel="action-view-x-cobrar"
+                                            data-institutionid="{{ object.id }}"
+                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Comisiones x cobrar"
+                                    >
+                                        <span class="btn-inner"><i class="fas fa-eye black"></i></span>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 col-md-12">
+
+            {% include 'advisers/dashboard_advisor/card_chart_bar.html' with id_chart_bart='id-barChartCommissionPaid' id_select_chart_bart='id-selectYearBarChartCommissionPaid' title_chart_bart='Comisiones pagadas' %}
+
+        </div>
+        <div class="col-lg-6 col-md-12">
+
+            {% include 'advisers/dashboard_advisor/card_chart_bar.html' with id_chart_bart='id-barChartCommissionXCobrar' id_select_chart_bart='id-selectYearBarChartCommissionXCobrar' title_chart_bart='Comisiones cobradas' %}
+
+        </div>
+        <div class="col-lg-12 col-md-12">
+
+            {% include 'advisers/dashboard_advisor/card_chart_bar.html' with id_chart_bart='id-barChartCommissionTotals' id_select_chart_bart='id-selectYearBarChartCommissionTotals' title_chart_bart='Comisiones totales' %}
+
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block content-modal %}
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-fullscreen-xl-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalle de comisiones del Asesor : <span class="badge bg-primary" id="id-modalTitle"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive mt-4">
+                        <table class="table table-striped mb-0" role="grid">
+                            <thead class="table-primary">
+                            <tr>
+                                <th>Nº</th>
+                                <th>Institucion</th>
+                                <th>Fecha compra</th>
+                                <th>% asesor</th>
+                                <th>% gerente</th>
+                                <th>Subtotal</th>
+                                <th>Comision</th>
+                                <th>C. gerente</th>
+                                <th>C. asesor</th>
+                            </tr>
+                            </thead>
+                            <tbody id="id-detailAdviserBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
 {% endblock %}
 
-{% block jscript %}
-
-    <script src="/static/js/demo/chart-bar-demo.js"></script>
+{% block base-body-js %}
 
     <script>
-        const $tableInstitution = document.querySelector('#id-table-institution > tbody');
-        const $selectYearBarChartCommissionPaid = document.getElementById('id-selectYearBarChartCommissionPaid');
-        const $selectYearBarChartCommissionXCobrar = document.getElementById('id-selectYearBarChartCommissionXCobrar');
-        const $selectYearBarChartCommissionTotals = document.getElementById('id-selectYearBarChartCommissionTotals');
+        const objElevate = {}
+    </script>
 
-        const ctxBarChartCommissionPaid = document.getElementById("id-barChartCommissionPaid");
-        const ctxBarChartCommissionXCobrar = document.getElementById("id-barChartCommissionXCobrar");
-        const ctxBarChartCommissionTotals = document.getElementById("id-barChartCommissionTotals");
+    <script>
 
-        let barChartCommissionPaid = undefined
-        let barChartCommissionXCobrar = undefined
-        let barChartCommissionTotals = undefined
+        document.addEventListener('DOMContentLoaded', function (e) {
+            const objD = {
+                CONSTANT: {},
+                elem: {
+                    $tableInstitution: document.querySelector('#id-table-institution > tbody'),
+                    $selectYearBarChartCommissionPaid: document.getElementById('id-selectYearBarChartCommissionPaid'),
+                    $selectYearBarChartCommissionXCobrar: document.getElementById('id-selectYearBarChartCommissionXCobrar'),
+                    $selectYearBarChartCommissionTotals: document.getElementById('id-selectYearBarChartCommissionTotals'),
 
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////  ELEVATED  ////////////////////////////////////////////////////////
+                    ctxBarChartCommissionPaid: document.getElementById("id-barChartCommissionPaid"),
+                    ctxBarChartCommissionXCobrar: document.getElementById("id-barChartCommissionXCobrar"),
+                    ctxBarChartCommissionTotals: document.getElementById("id-barChartCommissionTotals"),
 
-
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////  FUNCIONES  ///////////////////////////////////////////////////////
-
-        const getChart = (type, ctx, labels, values, max) => {
-            return new Chart(ctx, {
-                type,
-                data: {
-                    labels,
-                    datasets: [{
-                        label: "Revenue",
-                        backgroundColor: "#4e73df",
-                        hoverBackgroundColor: "#25e55c",
-                        borderColor: "#4e73df",
-                        data: values,
-                    }],
+                    barChartCommissionPaid: undefined,
+                    barChartCommissionXCobrar: undefined,
+                    barChartCommissionTotals: undefined,
                 },
-                options: {
-                    maintainAspectRatio: false,
-                    layout: {
-                        padding: {
-                            left: 10,
-                            right: 25,
-                            top: 25,
-                            bottom: 0
+                repeat: {},
+                loadFirst: {},
+                model: {},
+                fun: {
+                    getOptionBarChart: (labels, values, max) => {
+                        const variableColors = IQUtils.getVariableColor()
+                        const colors = [variableColors.primary]
+                        return {
+                            series: [
+                                {
+                                    name: "Sales",
+                                    data: values,
+                                },
+                            ],
+                            colors: colors,
+                            chart: {
+                                height: "300px",
+                                type: "bar",
+                                toolbar: {
+                                    show: false,
+                                },
+                            },
+                            stroke: {
+                                width: 3,
+                            },
+                            grid: {
+                                show: true,
+                                strokeDashArray: 7,
+                            },
+                            markers: {
+                                size: 6,
+                                colors: "#FFFFFF",
+                                strokeColors: colors,
+                                strokeWidth: 2,
+                                strokeOpacity: 0.9,
+                                strokeDashArray: 0,
+                                fillOpacity: 0,
+                                shape: "circle",
+                                radius: 2,
+                                offsetX: 0,
+                                offsetY: 0,
+                            },
+                            xaxis: {
+                                categories: labels,
+                                axisBorder: {
+                                    show: false,
+                                },
+                                axisTicks: {
+                                    show: false,
+                                },
+                                tooltip: {
+                                    enabled: false,
+                                },
+                            },
                         }
                     },
-                    scales: {
-                        xAxes: [{
-                            time: {
-                                unit: 'month'
-                            },
-                            gridLines: {
-                                display: false,
-                                drawBorder: false
-                            },
-                            ticks: {
-                                maxTicksLimit: 6
-                            },
-                            maxBarThickness: 75,
-                        }],
-                        yAxes: [{
-                            ticks: {
-                                min: 0,
-                                max,
-                                maxTicksLimit: 5,
-                                padding: 10,
-                                callback: function (value, index, values) {
-                                    return number_format(value);
-                                }
-                            },
-                            gridLines: {
-                                color: "rgb(234, 236, 244)",
-                                zeroLineColor: "rgb(234, 236, 244)",
-                                drawBorder: false,
-                                borderDash: [2],
-                                zeroLineBorderDash: [2]
-                            }
-                        }],
-                    },
-                    legend: {
-                        display: false
-                    },
-                    tooltips: {
-                        titleMarginBottom: 10,
-                        titleFontColor: '#6e707e',
-                        titleFontSize: 14,
-                        backgroundColor: "rgb(255,255,255)",
-                        bodyFontColor: "#858796",
-                        borderColor: '#dddfeb',
-                        borderWidth: 1,
-                        xPadding: 15,
-                        yPadding: 15,
-                        displayColors: false,
-                        caretPadding: 10,
-                        callbacks: {
-                            label: function (tooltipItem, chart) {
-                                const datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                                return datasetLabel + ': $' + number_format(tooltipItem.yLabel);
-                            }
+                    getChartBarValue: async (action, year) => {
+                        const formData = new FormData()
+                        formData.append("action", action)
+                        formData.append("year", year)
+                        let labels = []
+                        let values = []
+
+                        AppSystem.fun.showLoadingUi()
+                        AppSystem.handleComp.alert.alert.hidden({})
+
+                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                            location.pathname,
+                            formData
+                        )
+
+                        AppSystem.fun.hiddenLoadingUi()
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                            AppSystem.handleComp.alert.show({content: message, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                            return
                         }
+
+                        data.payment_paid_list.map(
+                            payment_paid => {
+                                return payment_paid.value_presenter_list.map(elem => {
+                                    labels = [...labels, elem.label]
+                                    return elem.label
+                                })
+                            }
+                        )
+
+                        data.payment_paid_list.map(
+                            payment_paid => {
+                                return payment_paid.value_presenter_list.map(elem => {
+                                    values = [...values, elem.value]
+                                    return elem.value
+                                })
+                            }
+                        )
+
+                        const max = Math.max(...values);
+
+                        return {
+                            labels,
+                            values,
+                            max
+                        }
+                    },
+                    getChartCommissionPaid: async (action, {year = undefined}) => {
+                        try {
+                            if (objD.elem.barChartCommissionPaid)
+                                objD.elem.barChartCommissionPaid.destroy()
+
+                            const {labels, values, max} = await objD.fun.getChartBarValue(action, year)
+
+                            objD.elem.barChartCommissionPaid = new ApexCharts(
+                                objD.elem.ctxBarChartCommissionPaid,
+                                objD.fun.getOptionBarChart(labels, values, max)
+                            )
+                            objD.elem.barChartCommissionPaid.render()
+                        } catch (e) {
+                            ce("exception: graph payment", e)
+                        }
+                    },
+                    getChartCommissionXCobrar: async (action, {year = undefined}) => {
+                        try {
+                            if (objD.elem.barChartCommissionXCobrar)
+                                objD.elem.barChartCommissionXCobrar.destroy()
+
+                            const {labels, values, max} = await objD.fun.getChartBarValue(action, year)
+
+                            objD.elem.barChartCommissionXCobrar = new ApexCharts(
+                                objD.elem.ctxBarChartCommissionXCobrar,
+                                objD.fun.getOptionBarChart(labels, values, max)
+                            )
+                            objD.elem.barChartCommissionXCobrar.render()
+                        } catch (e) {
+                            ce("exception: graph payment", e)
+                        }
+                    },
+                    getChartCommissionTotals: async (action, {year = undefined}) => {
+                        try {
+                            if (objD.elem.barChartCommissionTotals)
+                                objD.elem.barChartCommissionTotals.destroy()
+
+                            const {labels, values, max} = await objD.fun.getChartBarValue(action, year)
+
+                            objD.elem.barChartCommissionTotals = new ApexCharts(
+                                objD.elem.ctxBarChartCommissionTotals,
+                                objD.fun.getOptionBarChart(labels, values, max)
+                            )
+                            objD.elem.barChartCommissionTotals.render()
+                        } catch (e) {
+                            ce("exception: graph payment", e)
+                        }
+                    },
+                    getDetailPaymentSpecific: async (institutionId, optionView) => {
+                        const formData = new FormData()
+                        formData.append("action", 'view_detail_institution')
+                        formData.append("institution_id", institutionId)
+                        formData.append("option_view", optionView)
+
+                        AppSystem.fun.showLoadingUi()
+                        AppSystem.handleComp.alert.alert.hidden({})
+
+                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                            location.pathname,
+                            formData
+                        )
+
+                        AppSystem.fun.hiddenLoadingUi()
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                            AppSystem.handleComp.alert.show({content: message, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                            return
+                        }
+
+                        let html = ''
+
+                        data.order_institution_quotas_list.forEach(elem => {
+                            html += `
+                                    <tr>
+                                        <td>${elem.number}</td>
+                                        <td>${elem.institution.name}</td>
+                                        <td>${elem.date_issue}</td>
+                                        <td>${elem.commissions_advisers_percentage}</td>
+                                        <td>${elem.commissions_managers_percentage}</td>
+                                        <td>${elem.subtotal}</td>
+                                        <td>${elem.commission_adviser_clean}</td>
+                                        <td>${elem.commission_manager}</td>
+                                        <td>${elem.commission_adviser}</td>
+                                    </tr>
+                                `
+                        })
+                        html += `<tr>
+                                <td colspan="7"></td>
+                                <td>${data.commission_manager}</td>
+                                <td>${data.commission_adviser}</td>
+                            </tr>`
+
+                        document.getElementById('id-detailAdviserBody').innerHTML = html
+                        document.getElementById('id-modalTitle').innerText = `${data.adviser.first_name} ${data.adviser.last_name}`
+
+                        $('#exampleModal').modal('show')
                     },
                 }
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+            objD.fun.getChartCommissionPaid('commission_paid', {})
+
+            objD.fun.getChartCommissionXCobrar('commission_x_cobrar', {})
+
+            objD.fun.getChartCommissionTotals('commission_totals', {})
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+
+            objD.elem.$selectYearBarChartCommissionPaid.addEventListener('change', (e) => {
+                objD.fun.getChartCommissionPaid('commission_paid', {
+                    year: e.target.value === ''
+                        ? null
+                        : e.target.value
+                })
+            })
+
+            objD.elem.$selectYearBarChartCommissionXCobrar.addEventListener('change', (e) => {
+                objD.fun.getChartCommissionXCobrar('commission_x_cobrar', {
+                    year: e.target.value === ''
+                        ? null
+                        : e.target.value
+                })
+            })
+
+            objD.elem.$selectYearBarChartCommissionTotals.addEventListener('change', (e) => {
+                objD.fun.getChartCommissionTotals('commission_totals', {
+                    year: e.target.value === ''
+                        ? null
+                        : e.target.value
+                })
+            })
+
+            objD.elem.$tableInstitution.addEventListener('click', async (event) => {
+                const targetPaid = event.target.closest('a[rel="action-view-paid"]');
+                const targetXCobrar = event.target.closest('a[rel="action-view-x-cobrar"]');
+
+                if (targetPaid) {
+                    event.preventDefault();
+
+                    await objD.fun.getDetailPaymentSpecific(targetPaid.dataset.institutionid, 'paid')
+
+                }
+
+                if (targetXCobrar) {
+                    event.preventDefault();
+
+                    await objD.fun.getDetailPaymentSpecific(targetXCobrar.dataset.institutionid, 'xcobrar')
+
+                }
+
             });
-        }
 
-        const getChartBarValue = async (action, year) => {
-            const formData = new FormData()
-            formData.append("action", action)
-            formData.append("year", year)
-            let labels = []
-            let values = []
-
-            const [status, json] = await mFetch(`{{ request.path }}`, formData, 'POST');
-
-            if (status !== 200) {
-                console.log(json)
-                throw "Exception http"
-            }
-
-            json.payment_paid_list.map(
-                payment_paid => {
-                    return payment_paid.value_presenter_list.map(elem => {
-                        labels = [...labels, elem.label]
-                        return elem.label
-                    })
-                }
-            )
-
-            json.payment_paid_list.map(
-                payment_paid => {
-                    return payment_paid.value_presenter_list.map(elem => {
-                        values = [...values, elem.value]
-                        return elem.value
-                    })
-                }
-            )
-
-            const max = Math.max(...values);
-
-            return {
-                labels,
-                values,
-                max
-            }
-        }
-
-        const getChartCommissionPaid = async (action, {year = undefined}) => {
-            try {
-                if (barChartCommissionPaid)
-                    barChartCommissionPaid.destroy()
-
-                const {labels, values, max} = await getChartBarValue(action, year)
-
-                barChartCommissionPaid = getChart('bar', ctxBarChartCommissionPaid, labels, values, max)
-            } catch (e) {
-            }
-        }
-
-        const getChartCommissionXCobrar = async (action, {year = undefined}) => {
-            try {
-                if (barChartCommissionXCobrar)
-                    barChartCommissionXCobrar.destroy()
-
-                const {labels, values, max} = await getChartBarValue(action, year)
-
-                barChartCommissionXCobrar = getChart('bar', ctxBarChartCommissionXCobrar, labels, values, max)
-            } catch (e) {
-            }
-        }
-
-        const getChartCommissionTotals = async (action, {year = undefined}) => {
-            try {
-                if (barChartCommissionTotals)
-                    barChartCommissionTotals.destroy()
-
-                const {labels, values, max} = await getChartBarValue(action, year)
-
-                barChartCommissionTotals = getChart('bar', ctxBarChartCommissionTotals, labels, values, max)
-            } catch (e) {
-            }
-        }
-
-        const getDetailPaymentSpecific = async (institutionId, optionView) => {
-            const formData = new FormData()
-            formData.append("action", 'view_detail_institution')
-            formData.append("institution_id", institutionId)
-            formData.append("option_view", optionView)
-
-            const [status, json] = await mFetch(`{{ request.path }}`, formData, 'POST');
-
-            if (status !== 200)
-                return console.log(json)
-
-            let html = ''
-
-            json.order_institution_quotas_list.forEach(elem => {
-                html += `
-                        <tr>
-                            <td>${elem.number}</td>
-                            <td>${elem.institution.name}</td>
-                            <td>${elem.date_issue}</td>
-                            <td>${elem.commissions_advisers_percentage}</td>
-                            <td>${elem.commissions_managers_percentage}</td>
-                            <td>${elem.subtotal}</td>
-                            <td>${elem.commission_adviser_clean}</td>
-                            <td>${elem.commission_manager}</td>
-                            <td>${elem.commission_adviser}</td>
-                        </tr>
-                    `
-            })
-            html += `<tr>
-                    <td colspan="7"></td>
-                    <td>${json.commission_manager}</td>
-                    <td>${json.commission_adviser}</td>
-                </tr>`
-
-            document.getElementById('id-detailAdviserBody').innerHTML = html
-            document.getElementById('id-modalTitle').innerText = `Detalle de comisiones de: ${json.adviser.first_name} ${json.adviser.last_name}`
-
-            $('#exampleModal').modal('show')
-        }
-
-
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
-
-        getChartCommissionPaid('commission_paid', {})
-
-        getChartCommissionXCobrar('commission_x_cobrar', {})
-
-        getChartCommissionTotals('commission_totals', {})
-
-        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
-
-        $selectYearBarChartCommissionPaid.addEventListener('change', (e) => {
-            getChartCommissionPaid('commission_paid', {
-                year: e.target.value === ''
-                    ? null
-                    : e.target.value
-            })
         })
-
-        $selectYearBarChartCommissionXCobrar.addEventListener('change', (e) => {
-            getChartCommissionXCobrar('commission_x_cobrar', {
-                year: e.target.value === ''
-                    ? null
-                    : e.target.value
-            })
-        })
-
-        $selectYearBarChartCommissionTotals.addEventListener('change', (e) => {
-            getChartCommissionTotals('commission_totals', {
-                year: e.target.value === ''
-                    ? null
-                    : e.target.value
-            })
-        })
-
-        $tableInstitution.addEventListener('click', async (event) => {
-            const targetPaid = event.target.closest('a[rel="action-view-paid"]');
-            const targetXCobrar = event.target.closest('a[rel="action-view-x-cobrar"]');
-
-            if (targetPaid) {
-                event.preventDefault();
-
-                await getDetailPaymentSpecific(targetPaid.dataset.institutionid, 'paid')
-
-            }
-
-            if (targetXCobrar) {
-                event.preventDefault();
-
-                await getDetailPaymentSpecific(targetXCobrar.dataset.institutionid, 'xcobrar')
-
-            }
-
-        });
-
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags.lower == 'success' %}
-                    fnToast("{{ message }}");
-                {% endif %}
-            {% endfor %}
-        {% endif %}
     </script>
 {% endblock %}

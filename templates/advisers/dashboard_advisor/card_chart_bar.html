@@ -1,18 +1,21 @@
-<div class="card shadow">
+<div class="card card-block card-stretch card-height">
     <div class="card-header">
-        <h4 class="m-0 font-weight-bold text-secondary text-center">{{ title_chart_bart }}</h4>
-        <div class="ml-5 float-right">
-            <select class="form-control" id="{{ id_select_chart_bart }}">
-                <option value="">Todos los años</option>
-                {% for year in year_list %}
-                    <option value="{{ year }}">{{ year }}</option>
-                {% endfor %}
-            </select>
+        <div class=" d-flex justify-content-between  flex-wrap">
+            <h4 class="card-title">{{ title_chart_bart }}</h4>
+            <div class="ml-5 float-end">
+                <div class="form-floating custom-form-floating custom-form-floating-sm form-group mb-3">
+                    <select class="form-control" id="{{ id_select_chart_bart }}">
+                        <option value="">Todos...</option>
+                        {% for year in year_list %}
+                            <option value="{{ year }}">{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                    <label>Año</label>
+                </div>
+            </div>
         </div>
     </div>
     <div class="card-body">
-        <div class="chart-bar">
-            <canvas id="{{ id_chart_bart }}"></canvas>
-        </div>
+        <div id="{{ id_chart_bart }}"></div>
     </div>
 </div>

@@ -183,7 +183,7 @@ class PaymentAdviserCommissionsManager:
             commission_clean = detail.get_commission_adviser_clear()
             commission_sum += commission_clean
             commission_adviser_sum += detail.commissions_advisers_value
-            commission_manager_sum += detail.commissions_advisers_value
+            commission_manager_sum += detail.commissions_managers_value
             subtotal_sum += detail.subtotal
 
             order_institution_quotas_list.append(
@@ -192,7 +192,7 @@ class PaymentAdviserCommissionsManager:
                     'date_issue': detail.date_issue.date(),
                     'number': detail.number,
                     'commission_adviser_clean': commission_clean,
-                    'commission_manager': detail.commissions_advisers_value,
+                    'commission_manager': detail.commissions_managers_value,
                     'commission_adviser': detail.commissions_advisers_value,
                     'institution': {
                         'name': detail.institution.name
