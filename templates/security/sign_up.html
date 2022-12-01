@@ -1,100 +1,160 @@
-{% extends 'base.html' %}
-{% load crispy_forms_tags %}
-{% block header %}
-    {% include 'header.html' %}
+{% extends 'v2/base/base.html' %}
+
+{% block base-sidebar %}
+
 {% endblock %}
 
-{% block sidebar-navbar %}{% endblock %}
+{% block base-header %}
 
-{% block container-main %}
-    <div class="container-fluid">
-        <div class="row" style="background: white">
-            <aside class="col-lg-4 col-md" style="background: #f8f9fc; margin-left: -24px;">
-                <div class="card vh-100" style="background: #f8f9fc">
-                    <div class="card-body" style="margin-top: 8%; background:  #f8f9fc">
-                        <form id="id-form-consulta" class="form-signin p-4" method="POST">
-                            {% csrf_token %}
-                            <div class="text-center">
-                                <!--i class="{{ logo_in }} text-primary"></i-->
-                                <img src="/static/img/logo/logo-global-2.jpeg" height="70">
-                            </div>
+{% endblock %}
 
-                            <div class="divider-text mt-4"></div>
+{% block base-sub-header %}
+{% endblock %}
 
-                            <div class="p-1" style="min-height: 1.5rem">
-                                <div id="id-alert" class="alert alert-danger p-1 text-center d-none" role="alert">
-                                    This is a danger alert—check it out!
-                                </div>
-                            </div>
-
-                            <div class="form-group mt-0">
-                                <div class="col-xs-6">
-                                     {{ form.username|as_crispy_field }}
-                                </div>
-                            </div>
-                            <div class="form-group mt-0">
-                                <div class="col-xs-6">
-                                     {{ form.email|as_crispy_field }}
-                                </div>
-                            </div>
-
-                            <div class="form-group mt-0">
-                                <div class="col-xs-6">
-                                    {{ form.password1|as_crispy_field }}
-                                </div>
-                            </div>
-
-                            <div class="form-group mt-0">
-                                <div class="col-xs-6">
-                                    {{ form.password2|as_crispy_field }}
-                                </div>
-                            </div>
-
-
-                            <div class="checkbox mb-2">
-                                <div class="custom-control custom-switch">
-                                    <input type="checkbox" name="norobot" class="custom-control-input" id="switch1" required>
-                                    <label class="custom-control-label" for="switch1">No soy un Robot</label>
-                                     {% if messages %}
-                                        {% for message in messages %}
-                                        <p class="text-danger">
-                                            <strong>{{ message }}</strong>
-                                        </p>
-                                        {% endfor %}
-                                    {% endif %}
-
-                                </div>
-                            </div>
-
-                            <button id="id-btnlogin" class="btn btn-lg btn-warning btn-block p-1">
-                                <i class="fa fa-sign-in-alt"></i> Registarse
-                            </button>
-                        </form>
-                    </div>
+{% block base-main-content %}
+    <div class="wrapper">
+        <div class="iq-auth-page">
+            <nav class="navbar iq-auth-logo">
+                <div class="container-fluid">
+                    <a href="../../dashboard/" class="iq-link d-flex align-items-center">
+                        <img
+                                src="/static/img/logo/logo-global-2.jpeg"
+                                height="120"
+                        >
+                    </a>
                 </div>
-            </aside>
-            <article class="col-lg-8 col-md" style="margin-left: -24px;">
-                <div class="card vh-100" style="; border: none !important;">
-                    <div class="card-body center" style="margin-top: 10%">
-                        <!--img src="/static/img/logo/logo-400px.png"-->
-                        <div class="embed-responsive">
-                            <!--iframe width="560" height="315" src="https://www.youtube.com/embed/afEQ940nAbU?controls=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe-->
-                            <img src="/static/img/fondo/login4.svg" class="img-fluid">
+            </nav>
+            <div class="iq-banner-logo d-none d-lg-block d-flex justify-content-center align-items-center flex-column">
+                <div>
+                </div>
+            </div>
+            <div class="container-inside">
+                <div class="main-circle circle-small"></div>
+                <div class="main-circle circle-medium"></div>
+                <div class="main-circle circle-large"></div>
+                <div class="main-circle circle-xlarge"></div>
+                <div class="main-circle circle-xxlarge"></div>
+            </div>
+            <div class="row d-flex align-items-center iq-auth-container w-100">
+                <div class="col-10 col-xl-4 offset-xl-7 offset-1">
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="id-form" method="post">
+                                {% csrf_token %}
+                                <h3 class="text-center">Registrate</h3>
+                                <p class="text-center">Crea una cuenta en {{ system_name }}</p>
+                                <div class="row pb-2">
+                                    <div class="col-lg-12">
+                                        {% include 'v2/common/components/alert/alert.html' with type_feature_alert=4 hidden_alert=True %}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="{{ form.username.id_for_label }}">{{ form.username.label }}:</label>
+                                    {{ form.username }}
+                                    {{ form.username.errors }}
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="{{ form.email.id_for_label }}">{{ form.email.label }}:</label>
+                                    {{ form.email }}
+                                    {{ form.email.errors }}
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label"
+                                           for="{{ form.password1.id_for_label }}">{{ form.password1.label }}:</label>
+                                    {{ form.password1 }}
+                                    {{ form.password1.errors }}
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label"
+                                           for="{{ form.password2.id_for_label }}">{{ form.password2.label }}:</label>
+                                    {{ form.password2 }}
+                                    {{ form.password2.errors }}
+                                </div>
+                                <div class="form-group row pt-2 pb-5">
+                                    <div class="col-sm-10">
+                                        <div id="id-recaptchaSimple" required class="g-recaptcha"
+                                             data-sitekey="{{ recaptcha_site_key }}"></div>
+                                    </div>
+                                </div>
+                                <div class="text-center pb-3">
+                                    <button type="button" id="id-save" class="btn btn-primary">Registrarse</button>
+                                </div>
+                                <p class="text-center">
+                                    Ya tienes cuenta
+                                    <a href="/security/login" class="ms-2">Volver a login</a>
+                                </p>
+                            </form>
                         </div>
                     </div>
                 </div>
-            </article>
+            </div>
         </div>
     </div>
 {% endblock %}
-{% block jscript %}
+
+
+{% block base-body-js %}
+
     <script>
+        let messageError = ""
         {% if messages %}
             {% for message in messages %}
                 {% if message.tags.lower == 'error' %}
-                    fnToast("{{ message }}", 3);
+                    messageError = "{{ message }}"
                 {% endif %}
             {% endfor %}
         {% endif %}
+
+        const objElevate = {
+            messageError
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function (e) {
+            const objD = {
+                CONSTANT: {},
+                elem: {
+                    $form: document.getElementById('id-form'),
+                    $password1: document.getElementById('id_password1'),
+                    $password2: document.getElementById('id_password2'),
+                },
+                repeat: {},
+                loadFirst: {},
+                model: {},
+                fun: {
+                    submit: async () => {
+                        const response = grecaptcha.getResponse()
+
+                        if (response.length === 0)
+                            return AppSystem.handleComp.alert.alert.show({title: "Captcha es obligatorio.",})
+
+                        if (objD.elem.$password1.value !== objD.elem.$password2.value)
+                            return AppSystem.handleComp.alert.alert.show({title: "Los password no son iguales.",})
+
+                        if (objD.elem.$password1.value.length < 6)
+                            return AppSystem.handleComp.alert.alert.show({title: "La contraseña debe ser mayor a 6 caracteres."})
+
+                        objD.elem.$form.submit()
+
+                    }
+                }
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+            if (objElevate.messageError)
+                AppSystem.handleComp.alert.alert.show({title: objElevate.messageError,})
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+            document.getElementById('id-save').addEventListener('click', (e) => {
+                objD.fun.submit()
+            })
+
+        });
     </script>
 {% endblock %}
+
+

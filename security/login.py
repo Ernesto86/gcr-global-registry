@@ -43,12 +43,11 @@ class LoginAuthView(LoginView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Inicio de Sesión'
         addUserData(self.request, context)
-        context['recaptcha_site_key'] = os.environ.get('RECAPTCHA_SITE_KEY', '')
+        context['recaptcha_site_key'] = RecaptchaService.get_recaptcha_site_key()
         return context
 
     def post(self, request, *args, **kwargs):
         data = {'errors': []}
-
         recaptcha = FilterQueryCommon.get_param_validate(self.request.POST.get("g-recaptcha-response", None))
 
         validate_recaptcha = RecaptchaService(recaptcha).validate_facade()

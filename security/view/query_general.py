@@ -21,7 +21,7 @@ class QueryGeneralView(View):
         context = {}
         addUserData(self.request, context)
         context['sys_country_list'] = SysCountries.objects.filter(deleted=False)
-        context['recaptcha_site_key'] = os.environ.get('RECAPTCHA_SITE_KEY', '')
+        context['recaptcha_site_key'] = RecaptchaService.get_recaptcha_site_key()
         return context
 
     def get(self, request):

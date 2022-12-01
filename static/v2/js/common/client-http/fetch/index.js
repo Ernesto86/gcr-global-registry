@@ -172,7 +172,13 @@ const ClientHttpFetch = {
                         message = error.statusText
                     }
 
-                    c( "data error response: " ,responseJson)
+                    // if (error.status === ClientHttpFetch.CONSTANT.statusCode.Forbidden) {
+                    //     if (message)
+                    //         message = "Tiene prohibición para realizar la siguiente accion."
+                    // }
+
+
+                    c("data error response: ", responseJson)
 
                     return new ErrorResponse(error.status, message, responseJson)
 

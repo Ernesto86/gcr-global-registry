@@ -21,6 +21,10 @@ class RecaptchaService:
     def __init__(self, response):
         self.response = response
 
+    @staticmethod
+    def get_recaptcha_site_key():
+        return os.environ.get('RECAPTCHA_SITE_KEY', '')
+
     def validate_facade(self):
         try:
             self.validate()

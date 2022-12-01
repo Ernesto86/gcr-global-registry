@@ -6,7 +6,7 @@ class FormCommon:
     @staticmethod
     def update_disabled_field(field_list, state=True):
         """
-            FUNCION QUE ME PERMITE HACER UN CAMPO COMO SOLO LECTURA
+            HACER UN CAMPO COMO DESACTIVADO
         """
         for key in field_list:
             field = field_list[key]
@@ -15,7 +15,7 @@ class FormCommon:
     @staticmethod
     def update_readonly_field(field_list, state=True):
         """
-            FUNCION QUE ME PERMITE HACER UN CAMPO COMO SOLO LECTURA
+            HACER UN CAMPO COMO SOLO LECTURA
         """
         for key in field_list:
             field = field_list[key]
@@ -24,19 +24,20 @@ class FormCommon:
     @staticmethod
     def update_required_field(field_list, state=True):
         """
-            FUNCION QUE ME PERMITE ATUALIZAR LOS CAMPOS DEACUERDO A UNA CONFIGURACION
+            ATUALIZAR LOS CAMPOS DEACUERDO A UNA CONFIGURACION
         """
         for key in field_list:
             field = field_list[key]
             field.widget.attrs['required'] = state
 
     @staticmethod
-    def update_all_field(lt_field, with_place_holder=False):
+    def update_all_field(lt_field, with_place_holder=False, with_place_holder_cover=True):
         """
-            FUNCION QUE ME PERMITE ATUALIZAR LOS CAMPOS DEACUERDO A UNA CONFIGURACION
+            ATUALIZAR LOS CAMPOS DEACUERDO A UNA CONFIGURACION
         """
         for key in lt_field:
             field = lt_field[key]
+            settings = {}
 
             class_cls = field.widget.attrs.get('class')
             style = field.widget.attrs.get('style')
@@ -52,8 +53,13 @@ class FormCommon:
                 else:
                     style = ' width: 100%; '
 
+            if with_place_holder_cover:
+                settings = {
+                    'placeholder': f'{CONSTANT_STANDARD_PRESENT if with_place_holder else ""} {field.label.lower()}',
+                }
+
             field.widget.attrs.update({
                 'class': class_cls,
-                'placeholder': f'{CONSTANT_STANDARD_PRESENT if with_place_holder else ""} {field.label.lower()}',
-                'style': style
+                'style': style,
+                **settings
             })

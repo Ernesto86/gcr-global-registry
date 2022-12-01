@@ -30,7 +30,6 @@
                     {#                    <img class="auth-image" src="/static/img/logo/01.png" alt="logo-img" loading="lazy" />#}
                     {#                    <img src="/static/img/logo/logo-global-2.jpeg" alt="logo-img" loading="lazy" style="top: 270px; position: absolute"/>#}
                 </div>
-
             </div>
             <div class="container-inside">
                 <div class="main-circle circle-small"></div>
@@ -49,6 +48,9 @@
                                 <div class="row pb-2">
                                     <div class="col-lg-12">
                                         {% include 'v2/common/components/alert/alert.html' with type_feature_alert=4 hidden_alert=True %}
+                                    </div>
+                                    <div class="col-lg-12">
+                                        {% include 'v2/common/components/alert/alert.html' with type_feature_alert=6 hidden_alert=True  alert_id='alertInfo' %}
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -71,9 +73,10 @@
                                     <a href="../../dashboard/auth-pro/reset-password.html">¿Olvidaste tu contraseña?</a>
                                 </div>
                                 <p class="text-center">
-                                    No tienes una cuenta?<a href="/security/sign-up" class="ms-2">
-                                    Click aki para registrarte.</a
-                                >
+                                    No tienes una cuenta?
+                                    <a href="/security/sign-up" class="ms-2">
+                                        Click aki para registrarte.
+                                    </a>
                                 </p>
                             </form>
                         </div>
@@ -87,15 +90,31 @@
 {% block base-body-js %}
 
     <script>
+        let messageError = ""
+        let messageInfo = ""
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags.lower == 'error' %}
+                    messageError = "{{ message }}"
+                {% endif %}
+                {% if message.tags.lower == 'info' %}
+                    messageInfo = "{{ message }}"
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
         const objElevate = {
-            successUrl: '{{ success_url }}'
+            messageError,
+            messageInfo
         }
     </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function (e) {
             const objD = {
-                CONSTANT: {},
+                CONSTANT: {
+                    alertInfoId: 'alertInfo'
+                },
                 elem: {
                     $form: document.getElementById('id-form'),
                 },
@@ -109,7 +128,10 @@
                         const response = grecaptcha.getResponse()
 
                         if (response.length === 0)
-                            return AppSystem.handleComp.alert.alert.show({title: "Captcha es obligatorio.", typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                            return AppSystem.handleComp.alert.alert.show({
+                                title: "Captcha es obligatorio.",
+                                typeFeature: AppSystem.CONSTANT.typeFeature.danger
+                            })
 
 
                         AppSystem.fun.showLoadingUi()
@@ -127,10 +149,14 @@
                             grecaptcha.reset()
 
                             let errorHtml = '<ul class="ms-5 d-block">'
-                            data?.errors.map(elem => errorHtml += `<li>${elem}</li>`)
+                            data?.errors?.map(elem => errorHtml += `<li>${elem}</li>`)
                             errorHtml += '</ul>'
 
-                            AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                            AppSystem.handleComp.alert.alert.show({
+                                title: message,
+                                content: errorHtml,
+                                typeFeature: AppSystem.CONSTANT.typeFeature.danger
+                            })
                             return
                         }
 
@@ -141,6 +167,16 @@
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+            if (objElevate.messageError)
+                AppSystem.handleComp.alert.alert.show({title: objElevate.messageError,})
+
+            if (objElevate.messageInfo)
+                AppSystem.handleComp.alert.alert.show({
+                    title: objElevate.messageInfo,
+                    typeFeature: AppSystem.CONSTANT.typeFeature.info,
+                    id: objD.CONSTANT.alertInfoId
+                })
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
