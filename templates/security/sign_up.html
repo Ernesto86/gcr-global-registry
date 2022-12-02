@@ -16,17 +16,16 @@
         <div class="iq-auth-page">
             <nav class="navbar iq-auth-logo">
                 <div class="container-fluid">
-                    <a href="../../dashboard/" class="iq-link d-flex align-items-center">
-                        <img
-                                src="/static/img/logo/logo-global-2.jpeg"
-                                height="120"
-                        >
-                    </a>
+                    {#                                <a href="../../dashboard/" class="iq-link d-flex align-items-center">#}
+                    {#                                    <img#}
+                    {#                                            src="/static/img/logo/logo-global-2.jpeg"#}
+                    {#                                            height="120"#}
+                    {#                                    >#}
+                    {#                                </a>#}
                 </div>
             </nav>
-            <div class="iq-banner-logo d-none d-lg-block d-flex justify-content-center align-items-center flex-column">
-                <div>
-                </div>
+            <div class="iq-banner-logo d-none d-lg-block">
+                <img class="auth-image" src="/static/img/logo/sinnnnn.png" alt="logo-img" loading="lazy"/>
             </div>
             <div class="container-inside">
                 <div class="main-circle circle-small"></div>
@@ -35,13 +34,22 @@
                 <div class="main-circle circle-xlarge"></div>
                 <div class="main-circle circle-xxlarge"></div>
             </div>
-            <div class="row d-flex align-items-center iq-auth-container w-100">
+            <div class="row d-flex align-items-center iq-auth-container">
                 <div class="col-10 col-xl-4 offset-xl-7 offset-1">
                     <div class="card">
                         <div class="card-body">
                             <form id="id-form" method="post">
+                                <div class="row text-center">
+                                    <div class="col-lg-12">
+                                        <img
+                                                class="text-center"
+                                                src="/static/img/logo/logo-global-2.jpeg"
+                                                style="width: 265px"
+                                        >
+                                    </div>
+                                </div>
                                 {% csrf_token %}
-                                <h3 class="text-center">Registrate</h3>
+                                <h3 class="text-center pt-4">Registrate</h3>
                                 <p class="text-center">Crea una cuenta en {{ system_name }}</p>
                                 <div class="row pb-2">
                                     <div class="col-lg-12">
