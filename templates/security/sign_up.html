@@ -36,7 +36,7 @@
             </div>
             <div class="row d-flex align-items-center iq-auth-container">
                 <div class="col-10 col-xl-4 offset-xl-7 offset-1">
-                    <div class="card">
+                    <div class="card px-3 rounded-4">
                         <div class="card-body">
                             <form id="id-form" method="post">
                                 <div class="row text-center">
@@ -44,12 +44,12 @@
                                         <img
                                                 class="text-center"
                                                 src="/static/img/logo/logo-global-2.jpeg"
-                                                style="width: 265px"
+                                                style="width: 200px"
                                         >
                                     </div>
                                 </div>
                                 {% csrf_token %}
-                                <h3 class="text-center pt-4">Registrate</h3>
+                                <h3 class="text-center pt-2">Registrate</h3>
                                 <p class="text-center">Crea una cuenta en {{ system_name }}</p>
                                 <div class="row pb-2">
                                     <div class="col-lg-12">
@@ -66,26 +66,40 @@
                                     {{ form.email }}
                                     {{ form.email.errors }}
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label"
-                                           for="{{ form.password1.id_for_label }}">{{ form.password1.label }}:</label>
-                                    {{ form.password1 }}
-                                    {{ form.password1.errors }}
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label
+                                                    class="form-label"
+                                                    for="{{ form.password1.id_for_label }}"
+                                            >
+                                                {{ form.password1.label }}:
+                                            </label>
+                                            {{ form.password1 }}
+                                            {{ form.password1.errors }}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label
+                                                    class="form-label"
+                                                    for="{{ form.password2.id_for_label }}"
+                                            >
+                                                {{ form.password2.label }}:
+                                            </label>
+                                            {{ form.password2 }}
+                                            {{ form.password2.errors }}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="form-label"
-                                           for="{{ form.password2.id_for_label }}">{{ form.password2.label }}:</label>
-                                    {{ form.password2 }}
-                                    {{ form.password2.errors }}
-                                </div>
-                                <div class="form-group row pt-2 pb-5">
-                                    <div class="col-sm-10">
-                                        <div id="id-recaptchaSimple" required class="g-recaptcha"
-                                             data-sitekey="{{ recaptcha_site_key }}"></div>
+                                <div class="form-group row pt-2 pb-2">
+                                    <div class="d-flex justify-content-center mb-3">
+                                        <div id="id-recaptchaSimple" required class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="text-center pb-3">
-                                    <button type="button" id="id-save" class="btn btn-primary">Registrarse</button>
+                                    <button type="button" id="id-save" class="btn btn-primary rounded-5 w-100">Registrarse</button>
                                 </div>
                                 <p class="text-center">
                                     Ya tienes cuenta

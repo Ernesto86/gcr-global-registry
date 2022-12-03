@@ -26,7 +26,7 @@
             {#                <img class="auth-image" src="/static/img/logo/sinnnnn.png" alt="logo-img" loading="lazy"/>#}
             {#            </div>#}
             <div class="iq-banner-logo d-none d-lg-block">
-                <img class="auth-image"  src="/static/img/logo/sinnnnn.png" alt="logo-img" loading="lazy"/>
+                <img class="auth-image" src="/static/img/logo/sinnnnn.png" alt="logo-img" loading="lazy"/>
             </div>
             <div class="container-inside">
                 <div class="main-circle circle-small"></div>
@@ -37,7 +37,7 @@
             </div>
             <div class="row d-flex align-items-center iq-auth-container w-100">
                 <div class="col-10 col-xl-4 offset-xl-7 offset-1">
-                    <div class="card">
+                    <div class="card p-3 rounded-4">
                         <div class="card-body">
                             <form id="id-form">
                                 <div class="row text-center">
@@ -45,7 +45,7 @@
                                         <img
                                                 class="text-center"
                                                 src="/static/img/logo/logo-global-2.jpeg"
-                                                style="width: 265px"
+                                                style="width: 200px"
                                         >
                                     </div>
                                 </div>
@@ -68,17 +68,17 @@
                                     {{ form.password }}
                                 </div>
                                 <div class="form-group row pt-2 pb-5">
-                                    <div class="col-sm-10">
+                                    <div class="col-sm-12 d-flex justify-content-center text-center ">
                                         <div id="id-recaptchaSimple" class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
                                     </div>
                                 </div>
                                 <div class="text-center pb-3">
-                                    <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                                    <button type="submit" class="btn btn-primary rounded-5 w-100">Iniciar sesión</button>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <a href="../../dashboard/auth-pro/reset-password.html">¿Olvidaste tu contraseña?</a>
                                 </div>
-                                <p class="text-center">
+                                <p>
                                     No tienes una cuenta?
                                     <a href="/security/sign-up" class="ms-2">
                                         Click aki para registrarte.
