@@ -1,0 +1,301 @@
+{% extends 'form.html' %}
+{% load crispy_forms_tags %}
+{% block container-main %}
+    <article class="container-fluid" style="margin-top: 3.5rem">
+        <div class="row">
+            <div class="col">
+                <nav id="siteBreadcrumb" aria-label="breadcrumb">
+                    <ol class="breadcrumb p-2">
+                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                        <li class="breadcrumb-item" aria-current="page"><a href="/institutions/">Instituciones</a></li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <form method="POST" action="" enctype="multipart/form-data" id="id-form">
+                    {% csrf_token %}
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5>Configuracion de datos : {{ form_action }}</h5>
+                            <div class="alert alert-danger d-none" role="alert" id="id-alert">
+                                A simple danger alert—check it out!
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-row">
+                                <div class="form-group col-4 mb-0">
+                                    {{ form.type_functionary|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-4 mb-0">
+                                    {{ form.year|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-4 mb-0">
+                                    {{ form.month|as_crispy_field }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button class="btn btn-success ml-2" type="button" id="id-btnSave">
+                                <i class="fas fa-save"></i> Guardar registro
+                            </button>
+                            <button class="btn btn-success float-right ml-2" id="id-btnCalculate">
+                                <i class="fas fa-calculator"></i> Calcular
+                            </button>
+                            <button type="button" class="btn btn-secondary float-right" onclick="window.location='{{ back_url }}'">
+                                <i class="fa fa-arrow-left"></i> Atras
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <table class="table" id="id-table">
+                            <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Valor de comision</th>
+                                <th>Opciones</th>
+                            </tr>
+                            </thead>
+                            <tbody id="id-detailBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+{% endblock %}
+
+{% block frmodal %}
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="id-modalTitle">Detalle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Numero de compra</th>
+                            <th>Institucion</th>
+                            <th>Fecha de compra</th>
+                            <th>% comision asesor</th>
+                            <th>% comision gerente</th>
+                            <th>Subtotal</th>
+                            <th>Comision</th>
+                            <th>Comision gerente</th>
+                            <th>Comision asesor</th>
+                        </tr>
+                        </thead>
+                        <tbody id="id-detailAdviserBody">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jscript-2 %}
+    <script>
+        const form = document.getElementById('id-form');
+        let c = console.log
+        const alert = document.getElementById('id-alert');
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////  ELEVATED  ////////////////////////////////////////////////////////
+        const objElevate = {
+            action: '{{ action }}'
+        }
+
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////  FUNCIONES  ///////////////////////////////////////////////////////
+        const getDetailPaymentSpecific = async (object_id) => {
+            const formData = new FormData()
+            formData.append("action", 'view_detail')
+            formData.append("type_functionary", document.getElementById('id_type_functionary').value)
+            formData.append("year", document.getElementById('id_year').value)
+            formData.append("month", document.getElementById('id_month').value)
+            formData.append("object_id", object_id)
+
+            const [status, json] = await mFetch(`{{ request.path }}`, formData, 'POST');
+
+            if (status !== 200)
+                return console.log(json)
+
+            let html = ''
+
+            json.order_institution_quotas_list.forEach(elem => {
+                html += `
+                        <tr>
+                            <td>${elem.number}</td>
+                            <td>${elem.institution.name}</td>
+                            <td>${elem.date_issue}</td>
+                            <td>${elem.commissions_advisers_percentage}</td>
+                            <td>${elem.commissions_managers_percentage}</td>
+                            <td>${elem.subtotal}</td>
+                            <td>${elem.commission_adviser_clean}</td>
+                            <td>${elem.commission_manager}</td>
+                            <td>${elem.commission_adviser}</td>
+                        </tr>
+                    `
+            })
+            html += `<tr>
+                    <td colspan="7"></td>
+                    <td>${json.commission_manager}</td>
+                    <td>${json.commission_adviser}</td>
+                </tr>`
+
+            document.getElementById('id-detailAdviserBody').innerHTML = html
+            document.getElementById('id-modalTitle').innerText = `
+                Detalle de comisiones de: ${
+                json.adviser
+                    ? `${json.adviser.first_name} ${json.adviser.last_name}`
+                    : json.manager
+                        ? `${json.manager.first_name} ${json.manager.last_name}`
+                        : "Error"
+            }
+            `
+
+            $('#exampleModal').modal('show')
+        }
+
+        const loadDataTable = () => {
+            var tblDetail = $('#id-table').DataTable({
+                responsive: true,
+                autoWidth: false,
+                destroy: true,
+                deferRender: true,
+                ajax: {
+                    url: location.pathname,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRFToken': Cookies.get('csrftoken')
+                    },
+                    data: {
+                        action: 'calculate',
+                        type_functionary: document.getElementById('id_type_functionary').value,
+                        year: document.getElementById('id_year').value,
+                        month: document.getElementById('id_month').value,
+                    },
+                    dataSrc: "calculate_payment_commissions.payment_commissions_details_list"
+                },
+                columns: [
+                    {data: "adviser.first_name"},
+                    {data: "value_commission"},
+                    {data: "value_commission"},
+                ],
+                columnDefs: [
+                    {
+                        targets: [0],
+                        class: 'text-center',
+                        render: function (data, type, row) {
+                            // Todo: Arregla == 0
+                            return row.type_functionary == 0
+                                ? `${row.adviser.first_name} ${row.adviser.last_name}`
+                                : `${row.manager.first_name} ${row.manager.last_name}`
+                        }
+                    },
+                    {
+                        targets: [-1],
+                        class: 'text-center',
+                        render: function (data, type, row) {
+                            let buttons = '';
+                            buttons += `
+                                <a rel="relBtnDetail" data-toggle="tooltip" class="btn btn-success btn-xs btn-flat">
+                                    <i class="fas fa-list white" aria-hidden="true"></i>
+                                </a>
+                            `
+                            return buttons;
+                        }
+                    },
+                ],
+                rowCallback: function (row, data, index) {
+
+                },
+                initComplete: function (settings, json) {
+
+                }
+            })
+                .off('click')
+                .on('click', 'a[rel="relBtnDetail"]', function () {
+                    let tr = $(this).closest('tr')
+                    const data = tblDetail.row(tr).data()
+
+                    // Todo: arreglar == 0
+                    getDetailPaymentSpecific(
+                        parseInt(document.getElementById('id_type_functionary').value) === 0
+                            ? data.adviser.id
+                            : data.manager.id
+                    )
+                })
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+        if (objElevate.action === 'edit' || objElevate.action === 'view_detail') {
+
+            if (objElevate.action === 'view_detail') {
+                document.getElementById('id-btnSave').classList.add('d-none')
+                document.getElementById('id-btnCalculate').classList.add('d-none')
+            }
+
+            document.getElementById('id_type_functionary').disabled = true
+            document.getElementById('id_year').disabled = true
+            document.getElementById('id_month').disabled = true
+
+            loadDataTable()
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            form.classList.add('was-validated');
+            e.preventDefault();
+            e.stopPropagation();
+
+            loadDataTable()
+
+        })
+
+
+        document.getElementById('id-btnSave').addEventListener("click", async (e) => {
+            const formData = new FormData()
+            formData.append("action", objElevate.action)
+            formData.append("type_functionary", document.getElementById('id_type_functionary').value)
+            formData.append("year", document.getElementById('id_year').value)
+            formData.append("month", document.getElementById('id_month').value)
+
+            const [status, json] = await mFetch(`{{ request.path }}`, formData, 'POST');
+
+            if (status !== 200) {
+
+                alert.innerText = json.errors.join(',');
+                alert.classList.remove('d-none');
+
+                return console.log(json)
+            }
+            window.location = '{{ back_url }}'
+
+        })
+    </script>
+{% endblock %}
