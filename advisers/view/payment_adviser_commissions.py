@@ -4,11 +4,13 @@ from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
 from rest_framework import status as status_verbose
+from urllib.parse import urlencode
 
 from advisers.choices import TL_MONTH
 from advisers.forms import PaymentAdviserCommissionsForm
 from advisers.manager.payment_adviser_commissions_manager import PaymentAdviserCommissionsManager
 from advisers.models import PaymentAdviserCommissions, PaymentAdviserCommissionsDetails
+from core.common.filter_orm.filter_orm_common import FilterOrmCommon
 from security.functions import addUserData
 from transactions.models import OrderInstitutionQuotas
 
@@ -17,19 +19,32 @@ class PaymentAdviserCommissionsListView(LoginRequiredMixin, ListView):
     login_url = '/security/login'
     redirect_field_name = 'redirect_to'
     template_name = 'advisers/payment_adviser_commissions/list.html'
-    paginate_by = 30
+    paginate_by = 2
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         addUserData(self.request, context)
         context['title_label'] = "Listado de pagos".upper()
         context['create_url'] = reverse_lazy('advisers:payment_adviser_commissions_create')
+        context['clear_url'] = reverse_lazy('advisers:payment_adviser_commissions_list')
+
+        get_params = FilterOrmCommon.get_url_params(self.request.GET)
+        context.update(get_params)
+        context['url_params'] = urlencode(get_params)
         return context
 
     def get_queryset(self, **kwargs):
+        self.query_AND_1, self.query_OR_1 = FilterOrmCommon.get_query_connector_tuple()
         search = self.request.GET.get('search', '')
+
+        if search:
+            self.query_OR_1.children.append(("number__icontains", search))
+
+        FilterOrmCommon.get_filter_date_range(self.request.GET, 'date_payment', self.query_AND_1)
+
         return PaymentAdviserCommissions.objects.filter(
-            number__icontains=search,
+            self.query_AND_1,
+            self.query_OR_1,
             deleted=False,
         ).order_by('-created_at')
 

@@ -48,12 +48,10 @@ class FilterOrmCommon:
         return get_params
 
     @staticmethod
-    def get_filter_date_range(request_get, date_key, query_create: Q = None, ):
-        data = {}
+    def get_only_date_range(request_get):
 
         if 'date_init' in request_get:
             start_date = request_get.get('date_init', '')
-            print("start_date___: ", start_date)
             end_date = request_get.get('date_end', '')
             if start_date and end_date:
                 try:
@@ -63,7 +61,15 @@ class FilterOrmCommon:
                         datetime.datetime.combine(start_date, datetime.datetime.min.time()),
                         datetime.datetime.combine(end_date, datetime.datetime.max.time())
                     )
-                    # data[f'{date_key}__range'] = date_range
-                    query_create.children.append((f'{date_key}__range', date_range))
+                    return date_range
                 except:
                     pass
+        return None
+
+    @staticmethod
+    def get_filter_date_range(request_get, date_key, query_create: Q = None, ):
+
+        only_date_range = FilterOrmCommon.get_only_date_range(request_get)
+
+        if only_date_range:
+            query_create.children.append((f'{date_key}__range', only_date_range))

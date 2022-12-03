@@ -44,7 +44,7 @@ class OrganizadorRegistroListView(ListViewFilter, LoginRequiredMixin, ListView):
             self.query_OR_1.children.append(("student__email__icontains", search))
             self.query_OR_1.children.append(("student__dni__icontains", search))
 
-        FilterOrmCommon.get_filter_date_range(self.request.GET, 'created_at', self.query_AND_1)
+        FilterOrmCommon.get_filter_date_range(self.request.GET, 'date_issue', self.query_AND_1)
 
         return StudentRegisters.objects.select_related(
             "institution",
@@ -58,30 +58,3 @@ class OrganizadorRegistroListView(ListViewFilter, LoginRequiredMixin, ListView):
         ).order_by(
             "-date_issue"
         )
-
-        # search = self.request.GET.get('search', '')
-        #
-        # if search:
-        #     print("por akiiiiiiiissssss")
-        #     self.filter_date('fecha')
-        #     return StudentRegisters.objects.filter(
-        #         Q(name__icontains=search),
-        #         *self.queries()
-        #     ).order_by(
-        #         '-created_at'
-        #     )
-        # else:
-        #     print("por akiiiiiiiissssss2222")
-        #     typeregister = self.kwargs.get("typeregisterid")
-        #     return StudentRegisters.objects.select_related(
-        #         "institution",
-        #         "student",
-        #         "type_register",
-        #         "certificate",
-        #         "country"
-        #     ).filter(
-        #         type_register_id=typeregister,
-        #         institution__created_by=self.request.user.username
-        #     ).order_by(
-        #         "-date_issue"
-        #     )
