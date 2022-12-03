@@ -1,11 +1,12 @@
+from urllib.parse import urlencode
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
 
-from advisers.forms import ManagersCommissionsForm, PeriodCommissionsForm, PeriodCommissionsManagerForm
+from advisers.forms import ManagersCommissionsForm, PeriodCommissionsManagerForm
 from advisers.models import ManagersCommissions, PeriodCommissions
 from core.common.filter_orm.filter_orm_common import FilterOrmCommon
 from core.util_functions import util_null_to_decimal
@@ -57,12 +58,25 @@ class ManagersCommissionsListView(LoginRequiredMixin, ListView):
         addUserData(self.request, context)
         context['create_url'] = reverse_lazy("advisers:managers_commissions_create")
         context['title_label'] = 'Listado de comisiones de gerentes'
+        context['clear_url'] = reverse_lazy('advisers:managers_commissions_list')
+
+        get_params = FilterOrmCommon.get_url_params(self.request.GET)
+        context.update(get_params)
+        context['url_params'] = urlencode(get_params)
         return context
 
     def get_queryset(self, **kwargs):
+        self.query_AND_1, self.query_OR_1 = FilterOrmCommon.get_query_connector_tuple()
         search = self.request.GET.get('search', '')
+
+        if search:
+            self.query_OR_1.children.append(("manager__last_name__icontains", search))
+            self.query_OR_1.children.append(("manager__first_name__icontains", search))
+            self.query_OR_1.children.append(("manager__code__icontains", search))
+
         return ManagersCommissions.objects.filter(
-            Q(manager__last_name__icontains=search) | Q(manager__first_name__icontains=search) | Q(manager__code__icontains=search)
+            self.query_AND_1,
+            self.query_OR_1
         ).select_related(
             'manager'
         ).order_by(
