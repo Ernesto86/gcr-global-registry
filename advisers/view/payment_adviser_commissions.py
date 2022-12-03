@@ -22,7 +22,7 @@ class PaymentAdviserCommissionsListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         addUserData(self.request, context)
-        context['title_label'] = "Listado de pagos"
+        context['title_label'] = "Listado de pagos".upper()
         context['create_url'] = reverse_lazy('advisers:payment_adviser_commissions_create')
         return context
 

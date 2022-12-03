@@ -21,7 +21,7 @@ class OrganizadorRegistroListView(ListViewFilter, LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         addUserData(self.request, context)
         ins_type_registries = InsTypeRegistries.objects.get(id=self.kwargs.get("typeregisterid"))
-        context['title_label'] = f'Registros de {ins_type_registries.name} - {ins_type_registries.detail}'
+        context['title_label'] = f'Registros de {ins_type_registries.name} - {ins_type_registries.detail}'.upper()
         get_params = {k: v[0] for k, v in dict(self.request.GET).items()}
         context.update(get_params)
         try:

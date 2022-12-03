@@ -1,4 +1,5 @@
 from django.contrib import messages
+from urllib.parse import urlencode
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import redirect, render
@@ -59,19 +60,34 @@ class AdvisersCommissionsListView(LoginRequiredMixin, ListView):
     login_url = '/security/login'
     redirect_field_name = 'redirect_to'
     template_name = 'advisers/advisers_commissions/list.html'
-    paginate_by = 30
+    paginate_by = 1
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         addUserData(self.request, context)
-        context['title_label'] = "Listo de comisiones de asesores"
+        context['title_label'] = "Listado de comisiones de asesores"
         context['create_url'] = reverse_lazy('advisers:advisers_commissions_create')
+        context['clear_url'] = reverse_lazy('advisers:advisers_commissions_list')
+
+        get_params = FilterOrmCommon.get_url_params(self.request.GET)
+        context.update(get_params)
+        context['url_params'] = urlencode(get_params)
         return context
 
     def get_queryset(self, **kwargs):
+        self.query_AND_1, self.query_OR_1 = FilterOrmCommon.get_query_connector_tuple()
         search = self.request.GET.get('search', '')
+
+        if search:
+            self.query_OR_1.children.append(("adviser__last_name__icontains", search))
+            self.query_OR_1.children.append(("adviser__first_name__icontains", search))
+            self.query_OR_1.children.append(("adviser__code__icontains", search))
+
+        FilterOrmCommon.get_filter_date_range(self.request.GET, 'created_at', self.query_AND_1)
+
         return AdvisersCommissions.objects.filter(
-            Q(adviser__last_name__icontains=search) | Q(adviser__first_name__icontains=search) | Q(adviser__code__icontains=search)
+            self.query_AND_1,
+            self.query_OR_1
         ).select_related(
             'adviser'
         ).order_by(
