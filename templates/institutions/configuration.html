@@ -39,13 +39,37 @@
                                         </label>
                                     </div>
                                 </div>
-                                 <div class="form-group col-6 mb-0">
-                                    {{ form.adviser|as_crispy_field }}
+                                <div class="form-group col-4 mb-0">
+                                    <div id="div_id_adviser" class="form-group">
+                                        <label for="id_adviser" class="">
+                                            Asesor (Opcional)
+                                        </label>
+                                        <div>
+                                            <input type="text" name="adviser" maxlength="10" value="{{ form.instance.adviser.code }}" class="form-control textInput" placeholder="Ingreso codigo del Asesor" id="id_adviser">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group col-2 mb-0">
+                                   <div id="div_id_adviser" class="form-group">
+                                        <label for="id_adviser" class="">
+                                            Estado de Registro
+                                        </label>
+                                        <div>
+                                            {% if institution is not None %}
+                                               <h3 class="text-white"><span class="badge bg-{{ form.instance.get_bg_status }}">{{ form.instance.get_registration_status_display }}</span></h3>
+                                            {% else %}
+                                               <h3 class="text-white"><span class="badge bg-info">SOLICITANTE</span></h3>
+                                            {% endif %}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div class="form-group col-md mb-0">
+                                <div class="form-group col-6 mb-0">
                                     {{ form.name|as_crispy_field }}
+                                </div>
+                                <div class="form-group col-6 mb-0">
+                                    {{ form.country|as_crispy_field }}
                                 </div>
                             </div>
                             <div class="form-row">
@@ -94,7 +118,7 @@
 
                             <div class="form-row">
                                 <div class="form-group col-6 mb-0">
-                                    {{ form.type_registration|as_crispy_field }}
+                                    {{ form.representative_academic_level|as_crispy_field }}
                                 </div>
                                 <div class="form-group col-6 mb-0">
                                     <label>Grado Academico (Formato PDF)
@@ -188,6 +212,8 @@
             {% for message in messages %}
                 {% if message.tags.lower == 'success' %}
                     fnToast("{{ message }}");
+                {% else %}
+                    fnToast("{{ message }}", 3);
                 {% endif %}
             {% endfor %}
         {% endif %}

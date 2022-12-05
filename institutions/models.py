@@ -2,7 +2,7 @@ from django.db import models
 from django.forms import model_to_dict
 from core.models import ModelBase, ModelBaseAudited
 from core.util_functions import util_null_to_decimal
-
+from core.constants import RegistrationStatus
 
 class InsTypeRegistries(ModelBase):
     code = models.CharField(max_length=20, verbose_name="Código", blank=True, null=True)
@@ -31,11 +31,11 @@ class InsTypeRegistries(ModelBase):
 
         ModelBase.save(self)
 
-
 class Institutions(ModelBaseAudited):
     adviser = models.ForeignKey("advisers.Advisers", verbose_name="Asesor", on_delete=models.CASCADE, blank=True, null=True)
     type_registration = models.ForeignKey(InsTypeRegistries, verbose_name="Tipo de registro", on_delete=models.CASCADE, blank=True, null=True)
     country = models.ForeignKey("system.SysCountries", verbose_name="Pais", on_delete=models.CASCADE, blank=True, null=True)
+    representative_academic_level = models.ForeignKey("system.AcademicLevel", verbose_name="Nivel Académico", on_delete=models.PROTECT, blank=True, null=True)
     code = models.CharField(max_length=3, verbose_name="Código", blank=True, null=True)
     name = models.CharField(max_length=100, verbose_name="Nombre")
     alias = models.CharField(max_length=20, verbose_name="Alias", blank=True, null=True)
@@ -54,6 +54,12 @@ class Institutions(ModelBaseAudited):
     discount = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Descuento %", blank=True, null=True)
     date_approval = models.DateField(blank=True, null=True, verbose_name="Fecha de aprobacion")
     status = models.BooleanField(default=False)
+    registration_status = models.IntegerField(
+        verbose_name="Estado de Registro",
+        choices=RegistrationStatus.choices,
+        default=RegistrationStatus.PENDIENTE,
+        blank=True, null=True
+    )
 
     def __str__(self):
         return '{}'.format(self.name)
@@ -65,11 +71,13 @@ class Institutions(ModelBaseAudited):
     def get_discount_decimal(self):
         return self.discount / 100
 
-
     def get_type_register_enabled_list(self):
         code = self.type_registration.code
-
         return InsTypeRegistries.objects.filter(code__gte=code).order_by('code')
+
+    def get_bg_status(self):
+        status = ('', 'warning', 'success', 'danger', 'secondary', 'info')
+        return status[self.registration_status]
 
 
     class Meta:

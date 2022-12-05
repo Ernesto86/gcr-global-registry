@@ -34,6 +34,15 @@ class TypeModule(models.TextChoices):
     LIST_RESOURCE = "List Resource", _("Listar Recurso")
     ACTION_RESOURCE = "Action Resource", _("Accion Recurso")
     OTHER = "Other", _("Otro")
+
+class RegistrationStatus(models.IntegerChoices):
+    PENDIENTE = 1
+    APROBADO = 2
+    DENEGADO = 3
+    ANULADO = 4
+    NOAPLICA = 5
+
+
 # ESTADO_CIVIL = (
 #     (1, 'SOLTERO(A)'),
 #     (2, 'CASADO(A)'),

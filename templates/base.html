@@ -95,16 +95,8 @@
                     <br><b class="text-white">No se encontro modulos</b><br>
                 {% endfor %}
 
-                <!-- Divider -->
-                <hr class="sidebar-divider">
-
-                <!-- Heading -->
-                <div class="sidebar-heading">
-
-                </div>
-
                 <!-- Nav Item - Pages Collapse Menu -->
-                <li class="nav-item">
+                {% comment %} <li class="nav-item">
                     <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
                         <i class="fas fa-fw fa-folder"></i>
                         <b>Registros</b>
@@ -179,12 +171,10 @@
                             <a class="collapse-item" href="{% url 'advisers:managers_commissions_list' %}">Gerentes</a>
                         </div>
                     </div>
-                </li>
+                </li> {% endcomment %}
 
 
                 <!-- Divider -->
-                <hr class="sidebar-divider d-none d-md-block">
-
                 <!-- Sidebar Toggler (Sidebar) -->
                 <div class="text-center d-none d-md-inline">
                     <button class="rounded-circle border-0" id="sidebarToggle"></button>

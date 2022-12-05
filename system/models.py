@@ -34,6 +34,31 @@ class SysCountries(ModelBase):
 
         ModelBase.save(self)
 
+class AcademicLevel(ModelBase):
+    code = models.CharField(max_length=10, verbose_name="Código", blank=True, null=True)
+    name = models.CharField(max_length=191, verbose_name="Nombre")
+    name_short = models.CharField(max_length=50, verbose_name="Nombre corto", blank=True, null=True)
+
+    def __str__(self):
+        return "{}".format(self.name)
+
+    class Meta:
+        verbose_name = 'Nivel académico'
+        verbose_name_plural = 'Niveles académicos'
+        ordering = ['name']
+
+    def save(self, *args, **kwargs):
+        if self.code:
+            self.code = self.code.upper()
+
+        if self.name:
+            self.name = self.name.upper()
+
+        if self.name_short:
+            self.name_short = self.name_short.upper()
+
+        ModelBase.save(self)
+
 
 class SysParameters(ModelBase):
     code = models.CharField(max_length=50, verbose_name="Código", blank=True, null=True)

@@ -1,0 +1,320 @@
+{% extends 'list.html' %}
+{% block table-header-columns %}
+    <th>Codigo</th>
+    <th>Nombre</th>
+    <th>Asesor</th>
+    <th>Pais</th>
+    <th>Tipo Registro</th>
+    <th>Representante</th>
+    <th>Documentos</th>
+    <th>
+        <div class="btn-group show" role="group">
+        <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle btn-sm small" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            Estado
+        </button>
+        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(-1px, 29px, 0px);">
+            <a rel="action-filter-status" class="dropdown-item" href="#" data-statusid="">
+                TODOS
+            </a>
+            {% for s in status %}
+                <div class="divider-text m-0"></div>
+                <a rel="action-filter-status" class="dropdown-item" href="#" data-statusid="{{ s.0 }}">
+                    <i class="fa "></i> {{ s.1|upper }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+    </th>
+    <th class="text-center">Opciones</th>
+{% endblock %}
+
+{% block get-form-search %}
+    <form id="id-form-buscar" action="" method="GET">
+        <input type="hidden" name="status_id" value="{{ status_id }}" id="status-id">
+        {% csrf_token %}
+        <div class="form-row align-items-center">
+            <div class="col-md input-group col-md-4">
+                <input type="text" name="search" value="{{ search }}" class="form-control"
+                        placeholder="Buscar..">
+                <div class="input-group-append">
+                    <button class="btn btn-primary">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="input-group col-md-3">
+                <select id="id-select-country" name="country_id" class="custom-select" rel="action-select">
+                    <option value="">Seleccione pais</option>
+                    {% for c in countries %}
+                        <option value="{{ c.id }}" {% if c.id == country_id %}selected{% endif %}>{{ c.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+        </div>
+    </form>
+{% endblock %}
+
+{% block table-body-rows %}
+    {% for i in institutions %}
+        <tr>
+            <td class="text-center">{{ i.code }}</td>
+            <td>{{ i.name }}</td>
+            <td>{{ i.adviser.name }}</td>
+            <td>{{ i.country.name }}</td>
+            <td>{{ i.type_registration.name }}</td>
+            <td>{{ i.representative }}</td>
+            <td align="center">
+                <div class="btn-group" role="group">
+                    {% if i.logo %}
+                        <a href="{{ i.logo.url }}"
+                            target="_blank"
+                            class="btn btn-info btn-sm" data-toggle="tooltip"
+                            title="Descargar logo.">
+                            <i class="fa fa-file-image"></i>
+                        </a>
+                    {% endif %}
+
+                    {% if i.file_constitution %}
+                        <a href="{{ i.file_constitution.url }}"
+                            target="_blank"
+                            class="btn btn-primary btn-sm" data-toggle="tooltip"
+                            title="Descargar archivo de constitución">
+                            <i class="fa fa-file-pdf"></i>
+                        </a>
+                    {% endif %}
+
+                    {% if i.file_nomination %}
+                        <a href="{{ i.file_nomination.url }}"
+                            target="_blank" class="btn btn-success btn-sm" data-toggle="tooltip"
+                            title="Descargar archivo de nominación">
+                            <i class="fa fa-file-pdf"></i>
+                        </a>
+                    {% endif %}
+
+
+                    {% if i.file_title_academic %}
+                        <a href="{{ i.file_title_academic.url }}"
+                            target="_blank" class="btn btn-warning btn-sm" data-toggle="tooltip"
+                            title="Descargar titulo académico.">
+                            <i class="fa fa-address-card"></i>
+                        </a>
+                    {% else %}-
+                    {% endif %}
+                </div>
+            </td>
+            <td align="center">
+                <span class="badge badge-{{ i.get_bg_status }} badge-status">
+                 {{ i.get_registration_status_display|upper }}
+                </span>
+            </td>
+            <td class="text-center">
+                <div class="btn-group" role="group">
+                    <a href="#" rel="action-view" class="btn btn-info btn-sm" data-id="{{ i.id }}" data-toggle="tooltip"
+                       title="Ver datos">
+                        <i class="fa fa-eye"></i>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="9" align="center">
+                No se encontro registros
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block frmodal %}
+  <div class="modal fade bd-example-modal-lg" id="id-modal-institution-register" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">
+                        <i class="fa fa-laptop"></i> Gestión de aprobación de registros.
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <ul id="tabsJustified" class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a href="" data-target="#id-data-institution" data-toggle="tab"
+                               class="nav-link small text-uppercase active">
+                                Datos personales del estudiante
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="" data-target="#aprobacion-observaciones"
+                               data-toggle="tab"
+                               class="nav-link small text-uppercase">
+                                Aprobación de estado
+                            </a>
+                        </li>
+                    </ul>
+                    <br>
+                    <div id="tabsJustifiedContent" class="tab-content">
+                        <div id="id-data-institution" class="tab-pane fade active show" style="font-size: 13px">
+                            <table id="id-table-data-institution" class="table table-bordered table-sm sm-0" cellpadding="0" cellspacing="0">
+                                <thead class="table-active">
+                                <tr>
+                                    <th colspan="4">DATOS DE INSTITUCION</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <fieldset id="aprobacion-observaciones" class="tab-pane fade">
+                            <form id="id-form-aprobacion-modal">
+                                <input type="hidden" name="accion" value="aspirante_estado">
+                                <input type="hidden" name="institution_id" value="">
+                                <div class="form-row">
+                                    <div class="form-group col-md">
+                                        <label><b>Observaciones</b></label>
+                                        <div class="">
+                                            <textarea name="observacion" id="id-observacion" rows="4" maxlength="700"
+                                                      class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col">
+                                        <input class="custom-checkbox" type="checkbox" checked name="con_email">
+                                        <label><b>Con envio de correo</b></label>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="form-row text-center">
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-2">
+                                        <button rel="md-btn-accion" class="btn btn-success form-control mb-1"
+                                                value="2"
+                                                data-toggle="tooltip" data-original-title="Aceptar documentación">
+                                            <i class="fa fa-check-circle"></i> Aprobar
+                                        </button>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button rel="md-btn-accion" class="btn btn-danger form-control mb-1" value="3"
+                                                data-toggle="tooltip" data-original-title="Denegar documentación">
+                                            <i class="fa fa-minus-circle"></i> Denegar
+                                        </button>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button rel="md-btn-accion" class="btn btn-warning form-control mb-1" value="1"
+                                                data-toggle="tooltip"
+                                                data-original-title="Dejar en pendiente documentación">
+                                            <i class="fa fa-reply"></i> Pendiente
+                                        </button>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button rel="md-btn-accion" class="btn btn-secondary form-control mb-1" value="1"
+                                                data-toggle="tooltip"
+                                                data-original-title="Dejar en pendiente documentación">
+                                            <i class="fa fa-reply"></i> Anular
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </fieldset>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
+                            class="fa fa-arrow-left"></i> Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block jscript %}
+    <script>
+        const thead = document.querySelector('#id-table-data > thead');
+        const tbody= document.querySelector('#id-table-data > tbody');
+        const form = document.querySelector('#id-form-buscar');
+        const frmModal = document.querySelector('#id-modal-institution-register');
+        const frmModalTbody= document.querySelector('#id-table-data-institution > tbody');
+        const frmModalActions= document.querySelector('#id-form-aprobacion-modal');
+        const instanceModal = new bootstrap.Modal(frmModal);
+
+
+        thead.addEventListener('click', async (event) => {
+          const target = event.target.closest('a[rel="action-filter-status"]');
+          if (target) {
+              form.elements['status_id'].value = target.dataset.statusid;
+              form.submit();
+          }
+        });
+
+        tbody.addEventListener('click', async (event) => {
+          let target = event.target.closest('a[rel="action-view"]');
+          if (target) {
+            event.preventDefault();
+            const pk = target.dataset.id;
+            frmModalActions.elements['institution_id'].value = '';
+
+            const [status, json] = await mFetch(`{{ request.path }}/${pk}`, {}, 'GET');
+            if (status === 200) {
+
+                frmModalActions.elements['institution_id'].value = json.id;
+                frmModalTbody.innerHTML = `<tr class="">
+                    <td style="width: 30%;"><b>Codigo: </b>${json.code}</td>
+                    <td style="width: 40%;"><b>Nombre: </b>${json.name}</td>
+                    <td style="width: 30%;"><b>Estado: </b><span class="badge badge-${json.status_bg}">${json.registration_status}</span></td>
+                </tr>
+                <tr class="">
+                    <td style="width: 30%;"><b>Pais: </b>${json.country}</td>
+                    <td style="width: 40%;"><b>Asesor: </b>${json.adviser}</td>
+                    <td style="width: 30%;"><b>Tipo registro: </b>${json.type_registration}</td>
+                </tr>
+                <tr class="">
+                    <td style="width: 30%;"><b>Email: </b>${json.email}</td>
+                    <td style="width: 40%;"><b>Representante: </b>${json.representative}</td>
+                    <td style="width: 30%;"><b>Nivel academico: </b>${json.representative_academic_level}</td>
+                </tr>`;
+
+            } else {
+                frmModalTbody.innerHTML = '<tr class=""><td colspan="3" align="center"><b>No se encontro registros</b></td></tr>';
+            }
+
+            instanceModal.show();
+          }
+        });
+
+        form.addEventListener('change', async (event) => {
+          const target = event.target.closest('select[rel="action-select"]');
+          if (target) {
+              form.submit();
+          }
+        });
+
+        frmModalActions.addEventListener('click', async (event) => {
+          event.preventDefault();
+          const target = event.target.closest('button[rel="md-btn-accion"]');
+          if (target) {
+
+            const pk = frmModalActions.elements['institution_id'].value;
+            const statusId = target.value;
+            const data = new FormData();
+            data.append('status_id', statusId);
+            const [status, json] = await mFetch(`{{ request.path }}/${pk}`, data);
+            if (status === 200) {
+                fnToast('Se guardo correctamente..');
+                instanceModal.hide();
+                window.location.reload();
+            }else{
+                fnToast(json.message, 3);
+            }
+
+          }
+        });
+
+        $('[data-toggle="tooltip"]').tooltip();
+
+    </script>
+{% endblock %}
