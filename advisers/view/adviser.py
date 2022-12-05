@@ -7,6 +7,7 @@ from rest_framework import status
 
 from advisers.forms import AdviserForm
 from advisers.models import Advisers
+from core.common.filter_orm.filter_orm_common import FilterOrmCommon
 from security.functions import addUserData
 from core.util_functions import ListViewFilter
 from security.mixins import *
@@ -23,23 +24,28 @@ class AdviserListView(PermissionMixin, ListViewFilter, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         addUserData(self.request, context)
-        get_params = {k: v[0] for k, v in dict(self.request.GET).items()}
-        context.update(get_params)
-        try:
-            get_params.pop('page')
-        except:
-            pass
-        context['url_params'] = urlencode(get_params)
         context['create_url'] = reverse_lazy('advisers:adviser_create')
         context['title_label'] = "Listado de asesores"
+        context['clear_url'] = reverse_lazy('advisers:adviser_list')
+
+        get_params = FilterOrmCommon.get_url_params(self.request.GET)
+        context.update(get_params)
+        context['url_params'] = urlencode(get_params)
         return context
 
     def get_queryset(self, **kwargs):
+        self.query_AND_1, self.query_OR_1 = FilterOrmCommon.get_query_connector_tuple()
         search = self.request.GET.get('search', '')
-        self.filter_date('fecha')
+
+        if search:
+            self.query_OR_1.children.append(("last_name__icontains", search))
+            self.query_OR_1.children.append(("first_name__icontains", search))
+            self.query_OR_1.children.append(("code__icontains", search))
+            self.query_OR_1.children.append(("dni__icontains", search))
+
         return Advisers.objects.filter(
-            # Q(name__icontains=search),
-            # *self.queries()
+            self.query_AND_1,
+            self.query_OR_1
         ).order_by(
             '-created_at'
         )

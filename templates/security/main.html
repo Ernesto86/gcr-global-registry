@@ -1,45 +1,52 @@
-{% extends 'base.html' %}
-{% block header %}
-    {% include 'header.html' %}
+{% extends 'v2/base/base.html' %}
+
+{% block base-sidebar %}
+
 {% endblock %}
 
-{% block sidebar-navbar %}{% endblock %}
+{% block base-header %}
 
-{% block container-main %}
-    <div class="container-fluid card min-vh-100" style="margin-top: 3rem;">
+{% endblock %}
+
+{% block base-sub-header %}
+
+    {% include 'v2/common/components/header/sub-header.html' %}
+
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
         <div class="row">
-            <aside class="col-lg-12 col-md">
-                <div>
-                    <div class="card-body">
-                        <div class="text-center" style="margin-top: 2rem">
-                            <img src="/static/img/logo/gr-logo.png" height="120">
-                        </div>
-                        <div style="padding-left: 5%; padding-right: 5%; margin-top: 3rem" class="text-justify">
-                            <h4 class="font-weight-bold">
-                                Bienvenido a <b style="color: black">Global Registry</b>. Somos una comunidad internacional que busca impulsar el desarrollo educativo y profesional
+            <div class="col-lg-12">
+                <div class="card border-bottom border-4 border-0 border-primary" style="margin-top: -70px">
+                    <div class="card-header">
+                    </div>
+                    <div class="card-body" style="margin: 50px">
+                        <div style="text-align: justify">
+                            <h5 class="text-justify">
+                                Bienvenido a <b>Global Registry</b>. Somos una comunidad internacional que busca impulsar el desarrollo educativo y profesional
                                 de todas las personas a nivel global, permitiendo el registro y verificación de sus conocimientos adquiridos a través de
                                 nuestra plataforma con sistema Blockchain que permite manejar la información de la manera más segura posible.
-                            </h4>
+                            </h5>
 
-                            <h4 class="pt-4 font-weight-bold">
+                            <h5 class="mt-5">
                                 Si es una institución de educación puede proceder a ingresar a su usuario o crear uno. Si es un particular, puede proceder a
                                 consultar los registros de títulos y certificaciones internacionalmente reconocidos.
-                            </h4>
+                            </h5>
                         </div>
-
-                        <div class="text-center d-flex justify-content-center align-items-center" style="margin-top: 5rem" >
-                            <a id="id-btnlogin" href="{% url 'login' %}" class="btn btn-lg btn-primary mr-5" style="font-size: 26px; border-radius: 20px; width: 25rem; padding-top: 30px; padding-bottom: 30px">
+                        <div class="text-center py-5">
+                            <a href="{% url 'login' %}" class="btn btn-lg btn-primary rounded-5 mt-3">
                                 <b>Login or Sign up</b>
                             </a>
-
-                            <a id="id-btn-go-query" href="{% url 'query_general' %}" class="btn btn-lg btn-success" style="font-size: 26px; border-radius: 20px; width: 25rem ; padding-top: 11px; padding-bottom: 10px">
+                            <a href="{% url 'query_general' %}" class="btn btn-lg btn-success rounded-5 mt-3">
                                 <b>Consulta de Títulos y Certificados</b>
                             </a>
                         </div>
-                        <br>
                     </div>
                 </div>
-            </aside>
+            </div>
         </div>
     </div>
+
 {% endblock %}

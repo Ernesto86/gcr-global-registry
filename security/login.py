@@ -1,11 +1,18 @@
+import os
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.views import LoginView
 from django.http import JsonResponse
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from security.functions import addUserData
 from django.views.generic import RedirectView
+from rest_framework import status
+
+from core.common.filter_query.filter_query_common import FilterQueryCommon
+from core.services.recaptcha.recaptcha_service import RecaptchaService
+from security.functions import addUserData
+
 
 class LoginAuthView(LoginView):
     form_class = AuthenticationForm
@@ -36,16 +43,19 @@ class LoginAuthView(LoginView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Inicio de Sesión'
         addUserData(self.request, context)
+        context['recaptcha_site_key'] = RecaptchaService.get_recaptcha_site_key()
         return context
 
     def post(self, request, *args, **kwargs):
         data = {'errors': []}
-        status = 200
-        try:
-            norobot = request.POST.get('norobot', '')
-            if not norobot:
-                raise Exception("Login Fallido!, acceso No autorizado.")
+        recaptcha = FilterQueryCommon.get_param_validate(self.request.POST.get("g-recaptcha-response", None))
 
+        validate_recaptcha = RecaptchaService(recaptcha).validate_facade()
+        if not validate_recaptcha[0]:
+            data['errors'] = [validate_recaptcha[1]]
+            return JsonResponse(data, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
             cuenta = str(request.POST.get('username')).strip()
             password = str(request.POST.get('password')).strip()
 
@@ -53,26 +63,25 @@ class LoginAuthView(LoginView):
             if user is not None:
                 if user.is_active:
                     login(request, user)
+                    status_final = status.HTTP_200_OK
                     data['code'] = 'success'
                     data['message'] = 'Login user successful'
                 else:
-                    data['code'] = 'failed'
-                    status = 400
+                    status_final = status.HTTP_400_BAD_REQUEST
                     data['message'] = 'Login user session failed'
                     data['errors'].append('Login Fallido!, usuario no esta habilitado')
             else:
-                data['code'] = 'failed'
-                status = 400
+                status_final = status.HTTP_400_BAD_REQUEST
                 data['message'] = 'Login user session failed'
                 data['errors'].append('Login Fallido!, credenciales incorrectas.')
 
         except Exception as e:
-            status = 500
-            data['code'] = 'failed'
+            status_final = status.HTTP_500_INTERNAL_SERVER_ERROR
             data['message'] = 'Internal error in code'
             data['errors'].append(str(e))
 
-        return JsonResponse(data, status=status)
+        return JsonResponse(data, status=status_final)
+
 
 class LogoutRedirectView(RedirectView):
     pattern_name = 'login'

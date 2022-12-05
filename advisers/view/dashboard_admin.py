@@ -51,7 +51,14 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
             deleted=False,
         )
 
-        return payment_adviser_commissions_list
+        payment_adviser_commissions_final_list = []
+
+        for year in list(set(payment_adviser_commissions_list.filter().values_list('year', flat=True))):
+            payment_adviser_commissions_final_list.append(
+                payment_adviser_commissions_list.filter(year=year).first()
+            )
+
+        return payment_adviser_commissions_final_list
 
     def get_filter_orm(self, query_AND_1, country_id, manager_id, adviser_id):
 
@@ -280,7 +287,7 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
             if option_view == 'paid':
                 data.update(
                     PaymentAdviserCommissionsManager.get_detail_adviser_payment(
-                        PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0],
+                        PaymentAdviserCommissions.TYPE_FUNCTIONARY[2][0],
                         institution_id=institution_id,
                         pay_manager=True
                     )
@@ -289,7 +296,7 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
             elif option_view == 'xcobrar':
                 data.update(
                     PaymentAdviserCommissionsManager.get_detail_adviser_payment(
-                        PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0],
+                        PaymentAdviserCommissions.TYPE_FUNCTIONARY[2][0],
                         institution_id=institution_id,
                         pay_manager=False
                     )

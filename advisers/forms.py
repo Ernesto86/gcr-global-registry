@@ -6,6 +6,10 @@ from core.common.form.form_common import FormCommon
 
 
 class AdvisersCommissionsForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        FormCommon.update_required_field(self.fields)
+
     class Meta:
         model = AdvisersCommissions
         fields = '__all__'
@@ -18,6 +22,11 @@ class ManagersCommissionsForm(forms.ModelForm):
 
 
 class PeriodCommissionsForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        FormCommon.update_all_field(self.fields)
+
     class Meta:
         model = PeriodCommissions
         fields = '__all__'
@@ -58,13 +67,14 @@ class PeriodCommissionsForm(forms.ModelForm):
 
 
 class PeriodCommissionsManagerForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        FormCommon.update_all_field(self.fields)
+
     class Meta:
         model = PeriodCommissions
         fields = ('manager_percentage', 'manager_percentage_max')
         widgets = {
-            'manager_percentage': forms.TextInput(attrs={
-                'class': 'bg-light',
-            }),
             'manager_percentage_max': forms.TextInput(attrs={
                 'class': 'bg-light',
                 'readonly': True
@@ -82,7 +92,7 @@ class PeriodCommissionsManagerForm(forms.ModelForm):
 class PaymentAdviserCommissionsForm(forms.ModelForm):
     class Meta:
         model = PaymentAdviserCommissions
-        fields = '__all__'
+        fields = ('type_functionary', 'month', 'year')
 
         widgets = {
             'type_functionary': forms.Select(attrs={'class': "select2 select2-design"}),

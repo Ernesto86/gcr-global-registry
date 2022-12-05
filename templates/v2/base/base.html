@@ -13,6 +13,7 @@
 
     <script>
         const c = console.log
+        const ce = console.error
     </script>
 
     {% block head %}
@@ -39,28 +40,45 @@
 {#    {% include 'v2/base/components/partials/loader.html' %}#}
 {#</div>#}
 
-{% include 'v2/base/components/partials/sidebar.html' %}
+{% block base-sidebar %}
+    {% include 'v2/base/components/partials/sidebar.html' %}
+{% endblock %}
 
-<main class="main-content">
-    <div class="position-relative {% if isBanner %} iq-banner {% endif %}">
+{% block base-main-content %}
 
-        {% include 'v2/base/components/partials/pro/header.html' %}
+    <main class="main-content">
+        <div class="position-relative {% if isBanner %} iq-banner {% endif %}">
 
-        {% if isBanner %}
-            {% include 'v2/base/components/partials/sub-header.html' %}
-        {% endif %}
+            {% block base-header %}
+                {% include 'v2/base/components/partials/pro/header.html' %}
+            {% endblock %}
 
-    </div>
-    <div class="content-inner container-fluid pb-0" id="page_layout">
-        {% block content %}
+            {% block base-sub-header %}
+                {% if isBanner %}
+                    {% include 'v2/base/components/partials/sub-header.html' %}
+                {% endif %}
+            {% endblock %}
+
+        </div>
+
+        {% block base-wrapper-content %}
+
+            <div class="content-inner container-fluid pb-0" id="page_layout">
+
+                {% block content %}
+                {% endblock %}
+
+                {% block content-modal %}
+                {% endblock %}
+
+            </div>
+
         {% endblock %}
 
-        {% block content-modal %}
-        {% endblock %}
+        {% include 'v2/base/components/partials/footer.html' %}
+    </main>
 
-    </div>
-    {% include 'v2/base/components/partials/footer.html' %}
-</main>
+{% endblock %}
 
 {% include 'v2/base/components/widgets/setting-offcanvas.html' %}
 
@@ -71,6 +89,7 @@
 <script src="/static/lib/js.cookie.min.js"></script>
 <script src="/static/v2/js/common/app-system/index.js"></script>
 <script src="/static/v2/js/common/client-http/fetch/index.js"></script>
+<script src="/static/v2/js/common/form/form/index.js"></script>
 
 {% block scripts %}
 {% endblock %}

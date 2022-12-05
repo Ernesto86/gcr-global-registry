@@ -1,0 +1,6 @@
+@media only screen and (max-width: 768px) {
+    .g-recaptcha {
+        /*transform: scale(1);*/
+        -webkit-transform: scale(0.75);
+    }
+}

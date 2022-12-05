@@ -1,118 +1,69 @@
-{% extends 'form.html' %}
-{% load crispy_forms_tags %}
-{% block container-main %}
-    <article class="container-fluid" style="margin-top: 3.5rem">
-        <div class="row">
-            <div class="col">
-                <nav id="siteBreadcrumb" aria-label="breadcrumb">
-                    <ol class="breadcrumb p-2">
-                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
-                        <li class="breadcrumb-item" aria-current="page"><a
-                                href="/institutions/">Instituciones</a></li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <div class="alert alert-danger d-none" role="alert" id="id-alert">
-                </div>
+{% extends 'v2/base/crud/form/form.html' %}
 
-                <form method="POST" action="" enctype="multipart/form-data" id="id-form">
-                    {% csrf_token %}
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h5>Configuracion de datos : {{ form_action }}</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="form-row">
-                                <div class="form-group col-12 mb-0">
-                                    {{ form.dni|as_crispy_field }}
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12 mb-0">
-                                    {{ form.first_name|as_crispy_field }}
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12 mb-0">
-                                    {{ form.last_name|as_crispy_field }}
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12 mb-0">
-                                    {{ form.country|as_crispy_field }}
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12 mb-0">
-                                    {{ form.gender|as_crispy_field }}
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12 mb-0">
-                                    {{ form.email|as_crispy_field }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <button class="btn btn-success float-right ml-2" type="submit">
-                                <i class="fa fa-save"></i> Guardar Registro
-                            </button>
+{% block base-body-js %}
 
-                            <button type="button" class="btn btn-secondary float-right" onclick="window.location='{{ back_url }}'">
-                                <i class="fa fa-arrow-left"></i> Atras
-                            </button>
-
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </article>
-{% endblock %}
-{% block jscript-2 %}
     <script>
-        const form = document.getElementById('id-form')
-        const c = console.log
-        const dni = document.getElementById('id_dni').value
-        const $alert = document.getElementById('id-alert');
-
         const objElevate = {
-            student_id: '{{ student_id }}',
-            success_url: '{{ success_url }}'
+            successUrl: '{{ success_url }}'
         }
+    </script>
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            form.classList.add('was-validated');
+    <script>
+        document.addEventListener('DOMContentLoaded', function (e) {
+            const objD = {
+                CONSTANT: {},
+                elem: {
+                    $form: document.getElementById('id-form'),
+                    $dni: document.getElementById('id_dni'),
+                },
+                repeat: {},
+                loadFirst: {},
+                model: {},
+                fun: {
+                    submit: async () => {
+                        const formData = new FormData(objD.elem.$form)
+                        formData.append("action", 'add')
+                        formData.append("student_id", objElevate.studentId)
 
-            if (dni.length < 1)
-                return fnToast("La identificacion debe tener mas de un digito", 3)
+                        if (objD.elem.$dni.length < 1)
+                            return AppSystem.handleComp.alert.alert.show({title: "Dni debe tener mas de un digito.", typeFeature: AppSystem.CONSTANT.typeFeature.danger})
 
 
-            if (form.checkValidity() === false) {
-                e.preventDefault();
-                e.stopPropagation();
-            } else {
+                        AppSystem.fun.showLoadingUi()
+                        AppSystem.handleComp.alert.alert.hidden({})
 
-                const formData = new FormData(form)
-                formData.append("action", 'add')
+                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                            location.pathname,
+                            formData
+                        )
 
-                const [status, json] = await mFetch(`{{ request.path }}`, formData, 'POST');
+                        AppSystem.fun.hiddenLoadingUi()
 
-                if (status !== 200) {
-                    c(json)
-                    $alert.innerText = json.errors.join(',');
-                    $alert.classList.remove('d-none');
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                            let errorHtml = '<ul class="ms-5 d-block">'
+                            data?.errors.map(elem => errorHtml += `<li>${elem}</li>`)
+                            errorHtml += '</ul>'
 
-                    return console.log(json)
+                            AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                            return
+                        }
+
+                        window.location = objElevate.successUrl
+                    }
                 }
-
-                window.location = objElevate.success_url
             }
-        })
 
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+            objD.elem.$form.addEventListener('submit', (e) => {
+                e.preventDefault()
+
+                objD.fun.submit()
+            })
+
+        });
     </script>
 {% endblock %}

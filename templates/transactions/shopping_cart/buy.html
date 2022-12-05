@@ -1,40 +1,56 @@
-{% extends 'base.html' %}
-{% block header %}
-    {% include 'header.html' %}
-{% endblock %}
+{% extends 'v2/base/crud/template/template.html' %}
 
-{% block container-main %}
-    <div class="container-fluid" style="margin: 3rem;  ">
-        <div class="row mt-3">
-            <div class="col-lg-10 col-md">
-                <h4 class="border-bottom-3 font-weight-bold"><b>CARRITO</b></h4>
+{% block template-content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-10 col-md mt-4">
+                <h4 class="font-weight-bold"><b>CARRITO</b></h4>
             </div>
-            <div class="col-lg-2 col-md">
-                <h4 class="border-bottom-3 font-weight-bold"><b>Precio total</b></h4>
+            <div class="col-lg-2 col-md text-center">
+                <h4 class="font-weight-bold"><b>Precio total</b></h4>
             </div>
         </div>
-        <div class="row d-flex justify-content-center align-items-center">
-            {% for dicc in type_registries_list %}
-                <div class="col-lg-12">
-                    <hr style="background: lightgrey"/>
-                </div>
-                <div class="col-lg-4 col-md">
-                    <div
-                            style="border-radius:25px; background: {{ dicc.type_registries.color }}"
-                            class="alert alert-light mb-0 mt-5 text-center register shadow-lg m-auto"
-                            role="alert"
-                    >
-                        <p class="display-3 text-center white"><b class="circle">{{ dicc.type_registries.registers_level_count }}</b></p>
-                        <p class="white"><b>REGISTROS {{ dicc.type_registries.name }}</b></p>
-                        <p class="white"><b> $ {{ dicc.type_registries.price }}</b></p>
+
+        <div class="card border-bottom border-5 border-primary mb-5"></div>
+
+        <div class="row pb-2">
+            <div class="col-lg-12">
+                {% include 'v2/common/components/alert/alert.html' with type_feature_alert=4 hidden_alert=True %}
+            </div>
+        </div>
+
+
+        {% for dicc in type_registries_list %}
+            <div class="row d-flex justify-content-center align-items-center text-center mt-1">
+                <div class="col-lg-3">
+                    <div class="card border-bottom border-5 border-{{ dicc.type_registries.color }}">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-evenly align-items-center">
+                                <div class="bg-soft-primary rounded p-3">
+                                    <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                        <path
+                                                fill="currentColor"
+                                                d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z"
+                                        >
+                                        </path>
+                                    </svg>
+                                </div>
+                                <div class="text-center">
+                                    <b><p class="text-black">REGISTROS {{ dicc.type_registries.name }}</p></b>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center align-items-center pt-2">
+                                <h2 class="text-white badge bg-dark rounded-pill fs-5">$ {{ dicc.type_registries.price }}</h2>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md">
-                    <p style="color: black">
+                    <p class="text-black">
                         <b>{{ dicc.type_registries.detail|upper }}</b>
                     </p>
                     <p class="font-weight-bold">
-                        Actualmente tiene disponible <span class="badge badge-danger rounded-pill">{{ dicc.quota_balance }}</span> registros. Adquiera más
+                        Actualmente tiene disponible <span class="badge bg-danger rounded-pill">{{ dicc.quota_balance }}</span> registros. Adquiera más
                         registros para seguir ingresando sus certificados.
                     </p>
                     <div class="row">
@@ -49,15 +65,15 @@
                             >
                         </div>
                         <div class="col-lg-6 col-md">
-                            <button type="button" class="btn btn-warning btn-lg btn-block font-weight-bold black" style="border-radius:25px; font-size: 1rem">
-                                Precio unitario final: <span class="badge badge-danger rounded-pill"> US $ {{ dicc.price_discount }}</span>
+                            <button type="button" class="btn btn-warning btn-block font-weight-bold black rounded-5">
+                                Precio unitario final: <span class="badge bg-danger rounded-pill"> US $ {{ dicc.price_discount }}</span>
                             </button>
                         </div>
                         <div class="col-lg-3 col-md">
                             <button
                                     type="button"
-                                    class="btn btn-danger btn-lg btn-block cls-btn-delete-item font-weight-bold"
-                                    style="border-radius:25px; font-size: 1rem; color: black; background: red"
+                                    class="btn btn-danger btn-block cls-btn-delete-item font-weight-bold rounded-pill"
+                                    style="background: red"
                                     data-institutionid="{{ dicc.institution_id }}"
                                     data-typeregisterid="{{ dicc.type_registries.id }}"
                             >
@@ -67,67 +83,105 @@
                     </div>
                 </div>
                 <div class="col-lg-2 col-md m-auto">
-                    <p class="text-center black font-weight-bold">$ {{ dicc.price }}</p>
+                    <h3 class="text-center font-weight-bold fs-3 text-danger">$ {{ dicc.price }}</h3>
                 </div>
-            {% endfor %}
-            <div class="col-lg-12">
-                <hr style="background: lightgrey"/>
+                <div class="col-lg-12">
+                    <hr style="background: lightgrey"/>
+                </div>
             </div>
-            <div class="col-lg-2 offset-10 pt-3">
-                <p style="color: black">Subtotal <b>$ {{ subtotal }}</b></p>
-            </div>
-            <div>
-                {% if show_bottom_pay %}
-                    <button id="id-btn-pay" type="button" class="btn btn-warning btn-lg btn-block pl-5 pr-5" style="border-radius:25px; font-size: 2rem; color: black">
-                        <b>Proceder al pago</b>
-                    </button>
-                {% endif %}
-            </div>
-            <br>
+        {% endfor %}
+
+        <div class="d-flex align-items-end justify-content-end my-4">
+            <h3 class="mr-5 text-danger" style="margin-right: 100px"><b>$ {{ subtotal }}</b></h3>
+        </div>
+
+        <div class="row d-flex justify-content-center align-items-center">
+            {% if show_bottom_pay %}
+                <button id="id-btn-pay" type="button" class="btn btn-primary btn-lg btn-block pl-5 pr-5 text-white fs-4 rounded-pill my-5">
+                    <b>Proceder al pago</b>
+                </button>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
-{% block jscript %}
+
+
+{% block base-body-js %}
+
     <script>
-        document.addEventListener("DOMContentLoaded", e => {
-            var objD = {
-                elems: {},
-                attr: {},
+        const objElevate = {}
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function (e) {
+            const objD = {
                 CONSTANT: {},
+                elem: {},
+                repeat: {},
+                loadFirst: {},
                 model: {},
                 fun: {
                     deleteItemCart: async function (typeRegisterId) {
-
                         const formData = new FormData();
                         formData.append("action", 'delete_item')
                         formData.append("typeRegisterId", typeRegisterId)
 
-                        const [status, json] = await mFetch('{{ request.path }}', formData, 'POST');
+                        AppSystem.fun.showLoadingUi()
+                        AppSystem.handleComp.alert.alert.hidden({})
 
-                        if (status === 200) {
-                            window.location.reload()
-                        } else {
-                            alert.innerText = json.errors.join(',');
-                            alert.classList.remove('d-none');
+                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                            location.pathname,
+                            formData
+                        )
+
+                        AppSystem.fun.hiddenLoadingUi()
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                            let errorHtml = '<ul class="ms-5 d-block">'
+                            data?.errors.map(elem => `<li>${elem}</li>`)
+                            errorHtml += '</ul>'
+
+                            objD.elem.$name.value = data.message
+                            AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                            return
                         }
 
+                        window.location.reload()
                     },
                     pay: async function () {
                         const formData = new FormData();
                         formData.append("action", 'pay')
 
-                        const [status, json] = await mFetch('{{ request.path }}', formData, 'POST');
+                        AppSystem.fun.showLoadingUi()
+                        AppSystem.handleComp.alert.alert.hidden({})
 
-                        if (status === 200) {
-                            window.location.reload()
-                        } else {
-                            alert.innerText = json.errors.join(',');
-                            alert.classList.remove('d-none');
+                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                            location.pathname,
+                            formData
+                        )
+
+                        AppSystem.fun.hiddenLoadingUi()
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                            let errorHtml = '<ul class="ms-5 d-block">'
+                            data?.errors.map(elem => `<li>${elem}</li>`)
+                            errorHtml += '</ul>'
+
+                            objD.elem.$name.value = data.message
+                            AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                            return
                         }
-                    }
+
+                        window.location.reload()
+                    },
                 }
             }
 
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
             document.getElementById('id-btn-pay').addEventListener('click', function () {
                 objD.fun.pay()
             })
@@ -141,3 +195,4 @@
         });
     </script>
 {% endblock %}
+

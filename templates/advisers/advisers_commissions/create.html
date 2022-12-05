@@ -1,111 +1,127 @@
-{% extends 'form.html' %}
-{% load crispy_forms_tags %}
-{% block container-main %}
-    <article class="container-fluid" style="margin-top: 3.5rem">
-        <div class="row">
-            <div class="col">
-                <nav id="siteBreadcrumb" aria-label="breadcrumb">
-                    <ol class="breadcrumb p-2">
-                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
-                        <li class="breadcrumb-item" aria-current="page"><a href="/institutions/">Instituciones</a></li>
-                    </ol>
-                </nav>
+{% extends 'v2/base/crud/form/form.html' %}
+
+{% block form-card-body %}
+    <div class="form-group row">
+        <label class="control-label col-sm-3 align-self-center mb-0 text-black" for="{{ form_2.advisers_specific.id_for_label }}">{{ form_2.advisers_specific.label }}:</label>
+        <div class="col-sm-9">
+            {{ form_2.advisers_specific }}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="form-label text-black" for="{{ form_2.advisers_percentage_period_1.id_for_label }}">{{ form_2.advisers_percentage_period_1.label }}:</label>
+                {{ form_2.advisers_percentage_period_1 }}
             </div>
         </div>
-        <div class="row">
-            <div class="col">
-                <form method="POST" action="" enctype="multipart/form-data" id="formConfigurateData">
-                    {% csrf_token %}
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h5>Configuracion de datos : {{ form_action }}</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="form-row">
-                                <div class="form-group col-12 mb-0">
-                                    {{ form_2.advisers_specific|as_crispy_field }}
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-4 mb-0">
-                                    {{ form_2.advisers_percentage_period_1|as_crispy_field }}
-                                </div>
-                                <div class="form-group col-4 mb-0">
-                                    {{ form_2.days_commissions_period_1|as_crispy_field }}
-                                </div>
-                                <div class="form-group col-4 mb-0">
-                                    {{ form_2.advisers_percentage_max_period_1|as_crispy_field }}
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-4 mb-0">
-                                    {{ form_2.advisers_percentage_period_2|as_crispy_field }}
-                                </div>
-                                <div class="form-group col-4 mb-0">
-                                    {{ form_2.days_commissions_period_2|as_crispy_field }}
-                                </div>
-                                <div class="form-group col-4 mb-0">
-                                    {{ form_2.advisers_percentage_max_period_2|as_crispy_field }}
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-4 mb-0">
-                                    {{ form_2.advisers_percentage_period_3|as_crispy_field }}
-                                </div>
-                                <div class="form-group col-4 mb-0">
-                                    {{ form_2.days_commissions_period_3|as_crispy_field }}
-                                </div>
-                                <div class="form-group col-4 mb-0">
-                                    {{ form_2.advisers_percentage_max_period_3|as_crispy_field }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <button class="btn btn-success float-right ml-2" id="id-btnSave">
-                                <i class="fa fa-save"></i> Guardar Registro
-                            </button>
-                            <button type="button" class="btn btn-secondary float-right" onclick="window.location='{{ back_url }}'">
-                                <i class="fa fa-arrow-left"></i> Atras
-                            </button>
-                        </div>
-                    </div>
-                </form>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="form-label text-black" for="{{ form_2.days_commissions_period_1.id_for_label }}">{{ form_2.days_commissions_period_1.label }}:</label>
+                {{ form_2.days_commissions_period_1 }}
             </div>
         </div>
-    </article>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="form-label text-black" for="{{ form_2.advisers_percentage_max_period_1.id_for_label }}">{{ form_2.advisers_percentage_max_period_1.label }}:</label>
+                {{ form_2.advisers_percentage_max_period_1 }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="form-label text-black" for="{{ form_2.advisers_percentage_period_2.id_for_label }}">{{ form_2.advisers_percentage_period_2.label }}:</label>
+                {{ form_2.advisers_percentage_period_2 }}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="form-label text-black" for="{{ form_2.days_commissions_period_2.id_for_label }}">{{ form_2.days_commissions_period_2.label }}:</label>
+                {{ form_2.days_commissions_period_2 }}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="form-label text-black" for="{{ form_2.advisers_percentage_max_period_2.id_for_label }}">{{ form_2.advisers_percentage_max_period_2.label }}:</label>
+                {{ form_2.advisers_percentage_max_period_2 }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="form-label text-black" for="{{ form_2.advisers_percentage_period_3.id_for_label }}">{{ form_2.advisers_percentage_period_3.label }}:</label>
+                {{ form_2.advisers_percentage_period_3 }}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="form-label text-black" for="{{ form_2.days_commissions_period_3.id_for_label }}">{{ form_2.days_commissions_period_3.label }}:</label>
+                {{ form_2.days_commissions_period_3 }}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="form-label text-black" for="{{ form_2.advisers_percentage_max_period_3.id_for_label }}">{{ form_2.advisers_percentage_max_period_3.label }}:</label>
+                {{ form_2.advisers_percentage_max_period_3 }}
+            </div>
+        </div>
+    </div>
 {% endblock %}
-{% block jscript-2 %}
+
+{% block base-body-js %}
+
     <script>
+        const objElevate = {}
+    </script>
 
+    <script>
         document.addEventListener('DOMContentLoaded', function (e) {
-            const $advisers_percentage_max_period_1 = document.getElementById('id_advisers_percentage_max_period_1')
-            const $advisers_percentage_max_period_2 = document.getElementById('id_advisers_percentage_max_period_2')
-            const $advisers_percentage_max_period_3 = document.getElementById('id_advisers_percentage_max_period_3')
+            const objD = {
+                CONSTANT: {},
+                elem: {
+                    $advisers_percentage_max_period_1: document.getElementById('id_advisers_percentage_max_period_1'),
+                    $advisers_percentage_max_period_2: document.getElementById('id_advisers_percentage_max_period_2'),
+                    $advisers_percentage_max_period_3: document.getElementById('id_advisers_percentage_max_period_3'),
 
-            const $advisers_percentage_period_1 = document.getElementById('id_advisers_percentage_period_1')
-            const $advisers_percentage_period_2 = document.getElementById('id_advisers_percentage_period_2')
-            const $advisers_percentage_period_3 = document.getElementById('id_advisers_percentage_period_3')
+                    $advisers_percentage_period_1: document.getElementById('id_advisers_percentage_period_1'),
+                    $advisers_percentage_period_2: document.getElementById('id_advisers_percentage_period_2'),
+                    $advisers_percentage_period_3: document.getElementById('id_advisers_percentage_period_3'),
+                },
+                repeat: {},
+                loadFirst: {},
+                model: {},
+                fun: {}
+            }
 
-            $advisers_percentage_period_1.addEventListener('change', (e) => {
-                if (parseInt(e.target.value) > parseInt($advisers_percentage_max_period_1.value))
-                    alert("Excedió valor maximo: " + $advisers_percentage_max_period_1.value)
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+
+
+            objD.elem.$advisers_percentage_period_1.addEventListener('change', (e) => {
+                if (parseInt(e.target.value) > parseInt(objD.elem.$advisers_percentage_max_period_1.value))
+                    alert("Excedió valor maximo: " + objD.elem.$advisers_percentage_max_period_1.value)
             })
-            $advisers_percentage_period_2.addEventListener('change', (e) => {
-                if (parseInt(e.target.value) > parseInt($advisers_percentage_max_period_2.value))
-                    alert("Excedió valor maximo: " + $advisers_percentage_max_period_2.value)
+            objD.elem.$advisers_percentage_period_2.addEventListener('change', (e) => {
+                if (parseInt(e.target.value) > parseInt(objD.elem.$advisers_percentage_max_period_2.value))
+                    alert("Excedió valor maximo: " + objD.elem.$advisers_percentage_max_period_2.value)
             })
-            $advisers_percentage_period_3.addEventListener('change', (e) => {
-                if (parseInt(e.target.value) > parseInt($advisers_percentage_max_period_3.value))
-                    alert("Excedió valor maximo: " + $advisers_percentage_max_period_3.value)
+            objD.elem.$advisers_percentage_period_3.addEventListener('change', (e) => {
+                if (parseInt(e.target.value) > parseInt(objD.elem.$advisers_percentage_max_period_3.value))
+                    alert("Excedió valor maximo: " + objD.elem.$advisers_percentage_max_period_3.value)
             })
-        });
+        })
 
         {% if messages %}
             {% for message in messages %}
                 {% if message.tags.lower == 'success' %}
-                    fnToast("{{ message }}");
+                    AppSystem.handleComp.alert.alert.show({title: "{{ message }}", typeFeature: AppSystem.CONSTANT.typeFeature.success})
                 {% elif message.tags.lower == 'error'  %}
-                    fnToast("{{ message }}", 3 );
+                    AppSystem.handleComp.alert.alert.show({title: "{{ message }}", typeFeature: AppSystem.CONSTANT.typeFeature.danger})
                 {% endif %}
             {% endfor %}
         {% endif %}

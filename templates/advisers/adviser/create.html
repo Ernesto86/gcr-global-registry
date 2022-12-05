@@ -20,7 +20,7 @@
                 loadFirst: {},
                 model: {},
                 fun: {
-                    submitForm: async () => {
+                    submit: async () => {
                         const formData = new FormData(objD.elem.$form)
                         formData.append("action", objElevate.action)
 
@@ -37,11 +37,7 @@
                         if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
 
                             let errorHtml = '<ul class="ms-5 d-block">'
-                            Object.values(data?.errors).map(elem => {
-                                elem.map(element => {
-                                    errorHtml += `<li>${element}</li>`
-                                })
-                            })
+                            FormCommon.fun.getErrorList(data?.errors).map(elem => `<li>${elem}</li>`)
                             errorHtml += '</ul>'
 
                             AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
@@ -63,7 +59,7 @@
             objD.elem.$form.addEventListener('submit', (e) => {
                 e.preventDefault()
 
-                objD.fun.submitForm()
+                objD.fun.submit()
             })
         })
 

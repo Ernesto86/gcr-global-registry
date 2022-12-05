@@ -68,7 +68,7 @@ const AppSystem = {
                     $alert.classList.remove('d-none')
                 },
                 show: function (data = {}) {
-                    const {id = '', title = '', content = '', typeFeature = AppSystem.CONSTANT.typeFeature.info, withTitleDefault = true} = data
+                    const {id = '', title = '', content = '', typeFeature = AppSystem.CONSTANT.typeFeature.danger, withTitleDefault = true} = data
 
                     const $alert = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.alertSuffix))
                     const $title = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.titleSuffix))

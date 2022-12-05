@@ -1,111 +1,198 @@
-{% extends 'base.html' %}
-{% block header %}
-    {% include 'header.html' %}
+{% extends 'v2/base/base.html' %}
+
+{% block base-sidebar %}
+
 {% endblock %}
 
-{% block sidebar-navbar %}{% endblock %}
+{% block base-header %}
 
-{% block container-main %}
-    <div class="container-fluid">
-        <div class="row" style="background: white">
-            <aside class="col-lg-4 col-md" style="background: #f8f9fc; margin-left: -24px;">
-                <div class="card vh-100" style="background: #f8f9fc">
-                    <div class="card-body" style="margin-top: 20%; background:  #f8f9fc">
-                        <form id="id-form-login" class="form-signin p-4">
-                            {% csrf_token %}
-                            <div class="text-center">
-                                <!--i class="{{ logo_in }} text-primary"></i-->
-                                <img src="/static/img/logo/logo-global-2.jpeg" height="100">
-                            </div>
+{% endblock %}
 
-                            <div class="divider-text mt-5"></div>
+{% block base-sub-header %}
+{% endblock %}
 
-                            <div class="p-1" style="min-height: 1.5rem">
-                                <div id="id-alert" class="alert alert-danger p-1 text-center d-none" role="alert">
-                                    This is a danger alert—check it out!
+{% block base-main-content %}
+    <div class="wrapper">
+        <div class="iq-auth-page">
+            <nav class="navbar iq-auth-logo">
+                <div class="container-fluid">
+                    <a href="../../dashboard/" class="iq-link d-flex align-items-center">
+                        {#                                                <img src="../../assets/images/favicon.ico" alt="logo" loading="lazy"/>#}
+                        {#                                                <h4 data-setting="app_name" class="mb-0">Hope UI</h4>#}
+                    </a>
+                </div>
+            </nav>
+            {#            <div class="iq-banner-logo d-none d-lg-block">#}
+            {#                <img class="auth-image" src="/static/img/logo/sinnnnn.png" alt="logo-img" loading="lazy"/>#}
+            {#            </div>#}
+            <div class="iq-banner-logo d-none d-lg-block">
+                <img class="auth-image" src="/static/img/logo/sinnnnn.png" alt="logo-img" loading="lazy"/>
+            </div>
+            <div class="container-inside">
+                <div class="main-circle circle-small"></div>
+                <div class="main-circle circle-medium"></div>
+                <div class="main-circle circle-large"></div>
+                <div class="main-circle circle-xlarge"></div>
+                <div class="main-circle circle-xxlarge"></div>
+            </div>
+            <div class="row d-flex align-items-center iq-auth-container w-100">
+                <div class="col-10 col-xl-4 offset-xl-7 offset-1">
+                    <div class="card p-3 rounded-4">
+                        <div class="card-body">
+                            <form id="id-form">
+                                <div class="row text-center">
+                                    <div class="col-lg-12">
+                                        <img
+                                                class="text-center"
+                                                src="/static/img/logo/logo-global-2.jpeg"
+                                                style="width: 200px"
+                                        >
+                                    </div>
                                 </div>
-                            </div>
-
-                            <div class="form-group mt-4">
-                                <div class="col-xs-6">
-                                    <label for="id-usuario"><b>Email :</b></label>
+                                <h3 class="text-center pt-4">Login</h3>
+                                <p class="text-center">Permanece siempre conectado</p>
+                                <div class="row pb-2">
+                                    <div class="col-lg-12">
+                                        {% include 'v2/common/components/alert/alert.html' with type_feature_alert=4 hidden_alert=True %}
+                                    </div>
+                                    <div class="col-lg-12">
+                                        {% include 'v2/common/components/alert/alert.html' with type_feature_alert=6 hidden_alert=True  alert_id='alertInfo' %}
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="{{ form.username.id_for_label }}">{{ form.username.label }}:</label>
                                     {{ form.username }}
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-xs-6">
-                                    <label for="id-password"><b>Contraseña :</b></label>
+                                <div class="form-group">
+                                    <label class="form-label" for="{{ form.password.id_for_label }}">{{ form.password.label }}:</label>
                                     {{ form.password }}
                                 </div>
-                            </div>
-                            <div class="checkbox mb-3">
-                                <div class="custom-control custom-switch">
-                                    <input type="checkbox" name="norobot" class="custom-control-input" id="switch1" required>
-                                    <label class="custom-control-label" for="switch1">No soy un Robot</label>
+                                <div class="form-group row pt-2 pb-5">
+                                    <div class="col-sm-12 d-flex justify-content-center text-center ">
+                                        <div id="id-recaptchaSimple" class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+                                    </div>
                                 </div>
-                            </div>
-
-                            <button id="id-btnlogin" class="btn btn-lg btn-warning btn-block p-1">
-                                <i class="fa fa-sign-in-alt"></i> Iniciar Sesión
-                            </button>
-                            <br>
-                            <p>
-                                <a href="/security/sign-up" class="text-black-50 text-link" id="id-btn-show-form-consulta">
-                                    <b>Registrarse</b>
-                                </a>
-                                <br>
-                                <a href="#" class="text-black-50" id="id-btn-show-form-email"><b>¿Olvidaste tu contraseña?</b></a>
-                            </p>
-                        </form>
-                    </div>
-                </div>
-            </aside>
-            <article class="col-lg-8 col-md" style="margin-left: -24px;">
-                <div class="card vh-100" style="; border: none !important;">
-                    <div class="card-body center" style="margin-top: 10%">
-                        <!--img src="/static/img/logo/logo-400px.png"-->
-                        <div class="embed-responsive">
-                            <!--iframe width="560" height="315" src="https://www.youtube.com/embed/afEQ940nAbU?controls=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe-->
-                            <img src="/static/img/fondo/login4.svg" class="img-fluid">
+                                <div class="text-center pb-3">
+                                    <button type="submit" class="btn btn-success rounded-5 w-100">Iniciar sesión</button>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <a href="../../dashboard/auth-pro/reset-password.html">¿Olvidaste tu contraseña?</a>
+                                </div>
+                                <p>
+                                    No tienes una cuenta?
+                                    <a href="/security/sign-up" class="ms-2">
+                                        Click aki para registrarte.
+                                    </a>
+                                </p>
+                            </form>
                         </div>
                     </div>
                 </div>
-            </article>
+            </div>
         </div>
     </div>
 {% endblock %}
-{% block jscript %}
+
+{% block base-body-js %}
+
     <script>
-        const loginForm = document.getElementById('id-form-login');
-        const btnLogin = document.getElementById('id-btnlogin');
-        const alert = document.getElementById('id-alert');
-
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (loginForm.checkValidity() === false) {
-                loginForm.classList.add("was-validated");
-            } else {
-
-                btnLogin.disabled = true;
-                const formData = new FormData(loginForm);
-                const [status, json] = await mFetch('{{ request.path }}', formData);
-                if (status === 200) {
-                    window.location = '/';
-                } else {
-                    alert.innerText = json.errors.join(',');
-                    alert.classList.remove('d-none');
-                }
-                btnLogin.disabled = false;
-            }
-            return false;
-        });
-
+        let messageError = ""
+        let messageInfo = ""
         {% if messages %}
             {% for message in messages %}
+                {% if message.tags.lower == 'error' %}
+                    messageError = "{{ message }}"
+                {% endif %}
                 {% if message.tags.lower == 'info' %}
-                    fnToast("{{ message }}");
+                    messageInfo = "{{ message }}"
                 {% endif %}
             {% endfor %}
         {% endif %}
+
+        const objElevate = {
+            messageError,
+            messageInfo
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function (e) {
+            const objD = {
+                CONSTANT: {
+                    alertInfoId: 'alertInfo'
+                },
+                elem: {
+                    $form: document.getElementById('id-form'),
+                },
+                repeat: {},
+                loadFirst: {},
+                model: {},
+                fun: {
+                    submit: async () => {
+                        const formData = new FormData(objD.elem.$form)
+
+                        const response = grecaptcha.getResponse()
+
+                        if (response.length === 0)
+                            return AppSystem.handleComp.alert.alert.show({
+                                title: "Captcha es obligatorio.",
+                                typeFeature: AppSystem.CONSTANT.typeFeature.danger
+                            })
+
+
+                        AppSystem.fun.showLoadingUi()
+                        AppSystem.handleComp.alert.alert.hidden({})
+
+                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                            location.pathname,
+                            formData
+                        )
+
+                        AppSystem.fun.hiddenLoadingUi()
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+
+                            grecaptcha.reset()
+
+                            let errorHtml = '<ul class="ms-5 d-block">'
+                            data?.errors?.map(elem => errorHtml += `<li>${elem}</li>`)
+                            errorHtml += '</ul>'
+
+                            AppSystem.handleComp.alert.alert.show({
+                                title: message,
+                                content: errorHtml,
+                                typeFeature: AppSystem.CONSTANT.typeFeature.danger
+                            })
+                            return
+                        }
+
+                        window.location = '/'
+                    }
+                }
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+            if (objElevate.messageError)
+                AppSystem.handleComp.alert.alert.show({title: objElevate.messageError,})
+
+            if (objElevate.messageInfo)
+                AppSystem.handleComp.alert.alert.show({
+                    title: objElevate.messageInfo,
+                    typeFeature: AppSystem.CONSTANT.typeFeature.info,
+                    id: objD.CONSTANT.alertInfoId
+                })
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+            objD.elem.$form.addEventListener('submit', (e) => {
+                e.preventDefault()
+
+                objD.fun.submit()
+            })
+
+        });
     </script>
 {% endblock %}
+

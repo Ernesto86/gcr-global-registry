@@ -1,32 +1,23 @@
-{% extends 'list.html' %}
+{% extends 'v2/base/crud/list/list.html' %}
 
-{% block form-search-date %}
-{% endblock %}
-
-{% block form-search-input %}
-    <div class="col-md input-group input-group col-md-4">
-        <div class="input-group-prepend">
-            <span class="input-group-text" id="inputGroup-sizing-sm">
-                <i class="fa fa-user-graduate"></i>
-            </span>
+{% block list-search %}
+    <div class="row">
+        <div class="col-md col-md-3">
+            {% include "v2/common/forms/search/input_search_simple.html" with placeholder_input_search='Buscar asesor por codigo o nombre..' %}
         </div>
-
-        <input
-                type="text"
-                name="search"
-                value="{{ search }}"
-                class="form-control"
-                placeholder="Buscar asesor por codigo o nombre.."
-        >
-        <div class="input-group-append">
-            <button class="btn btn-primary">
-                <i class="fa fa-search"></i>
-            </button>
+        <div class="col-md-3">
+            {% include "v2/common/forms/search/input_date_init_simple.html" %}
+        </div>
+        <div class="col-md-3">
+            {% include "v2/common/forms/search/input_date_end_simple.html" %}
+        </div>
+        <div class="col-md col-md-3">
+            {% include "v2/common/forms/search/btn_search.html" %}
         </div>
     </div>
 {% endblock %}
 
-{% block table-header-columns %}
+{% block list-table-head-colums %}
     <th>Asesor</th>
     <th>Codigo asesor</th>
     <th>Comision periodo 1</th>
@@ -36,9 +27,7 @@
     <th class="text-center">Opciones</th>
 {% endblock %}
 
-{% block url_create %}{% url "advisers:advisers_commissions_create" %}{% endblock %}
-
-{% block table-body-rows %}
+{% block list-table-body-rows %}
     {% for advisers_commissions in object_list %}
         <tr>
             <td>{{ advisers_commissions.adviser }}</td>
@@ -60,23 +49,4 @@
             </td>
         </tr>
     {% endfor %}
-{% endblock %}
-
-{% block jscript %}
-    <script>
-        const table = document.querySelector('#id-table-data > tbody');
-
-        table.addEventListener('click', async (event) => {
-            const target = event.target.closest('a[rel="action-delete"]');
-
-            if (target) {
-                event.preventDefault();
-                const id = target.dataset.id
-                const [status, json] = await mFetch(`{{ request.path }}delete/${id}`, {}, 'DELETE');
-
-                if (status === 200)
-                    target.closest('tr').remove()
-            }
-        });
-    </script>
 {% endblock %}

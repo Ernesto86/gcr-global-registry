@@ -21,7 +21,7 @@ class StudentRegistersView(View):
     def get(self, request):
         context = {}
         addUserData(self.request, context)
-        context['type_registries_list'] = []
+        context['title_label'] = 'INGRESO INTERNACIONAL DE REGISTROS INSTITUCIONAL'
 
         institution_quotes_type_register_sum = InstitutionQuotesTypeRegister.objects.filter(
             deleted=False,
@@ -50,17 +50,14 @@ class StudentRegistersSearchView(View):
             try:
                 student = Students.objects.get(dni=identification)
 
-                data['code'] = 'failed'
                 data['message'] = 'No existe el estudiante ingresado'
                 data['student'] = model_to_dict(student)
                 return JsonResponse(data, status=200)
 
             except Students.DoesNotExist:
-                data['code'] = 'failed'
                 data['message'] = 'No existe el estudiante ingresado'
                 return JsonResponse(data, status=404)
             except Exception as ex:
-                data['code'] = 'failed'
                 data['message'] = 'Error inesperado'
                 return JsonResponse(data, status=500)
 
@@ -70,6 +67,7 @@ class StudentRegistersSearchView(View):
         context = {}
         addUserData(self.request, context)
         context['form'] = StudentRegistersSearchForm()
+        context['title_label'] = "INGRESO INTERNACIONAL DE REGISTROS INSTITUCIONAL"
         return render(request, self.template_name, context)
 
 
@@ -142,6 +140,7 @@ class StudentRegistersCreateView(CreateView):
         context['form_action'] = 'Crear'
         context['student_id'] = self.request.GET.get('student_id')
         context['success_url'] = self.success_url
+        context['title_label'] = "Crear registro de estudiante"
         return context
 
 # class InstitutionconfigurationView(TemplateView):

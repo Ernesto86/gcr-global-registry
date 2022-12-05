@@ -1,119 +1,66 @@
-{% extends 'form.html' %}
-{% load crispy_forms_tags %}
-{% block container-main %}
-    <article class="container-fluid" style="margin-top: 3.5rem">
-        <div class="row">
-            <div class="col">
-                <nav id="siteBreadcrumb" aria-label="breadcrumb">
-                    <ol class="breadcrumb p-2">
-                        <li class="breadcrumb-item"><a href="/">Inicio</a></li>
-                        <li class="breadcrumb-item" aria-current="page"><a
-                                href="/institutions/">Instituciones</a></li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                <form method="POST" action="" enctype="multipart/form-data" id="id-form">
-                    {% csrf_token %}
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <h5>Configuracion de datos : {{ form_action }}</h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="form-row">
-                                <div class="form-group col-12 mb-0">
-                                    {{ form.student|as_crispy_field }}
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md mb-0">
-                                    {{ form.type_register|as_crispy_field }}
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12 mb-0">
-                                    {{ form.certificate|as_crispy_field }}
-                                </div>
-                            </div>
+{% extends 'v2/base/crud/form/form.html' %}
 
-                            <div class="form-row">
-                                <div class="form-group col-12 mb-0">
-                                    {{ form.country|as_crispy_field }}
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12 mb-0">
-                                    {{ form.date_issue|as_crispy_field }}
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-12 mb-0">
-                                    {{ form.code_international_register|as_crispy_field }}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <button class="btn btn-success float-right ml-2" type="submit">
-                                <i class="fa fa-save"></i> Guardar Registro
-                            </button>
+{% block base-body-js %}
 
-                            <a type="button" class="btn btn-secondary float-right" href="{{ success_url }}">
-                                <i class="fa fa-arrow-left"></i> Atras
-                            </a>
-
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </article>
-{% endblock %}
-{% block jscript-2 %}
     <script>
-        const form = document.getElementById('id-form')
-        const c = console.log
-
         const objElevate = {
-            student_id: '{{ student_id }}',
-            success_url: '{{ success_url }}'
+            studentId: '{{ student_id }}',
+            successUrl: '{{ success_url }}'
         }
+    </script>
 
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            form.classList.add('was-validated');
-            if (form.checkValidity() === false) {
-                e.preventDefault();
-                e.stopPropagation();
-            } else {
+    <script>
+        document.addEventListener('DOMContentLoaded', function (e) {
+            const objD = {
+                CONSTANT: {},
+                elem: {
+                    $form: document.getElementById('id-form'),
+                },
+                repeat: {},
+                loadFirst: {},
+                model: {},
+                fun: {
+                    submit: async () => {
+                        const formData = new FormData(objD.elem.$form)
+                        formData.append("action", 'add')
+                        formData.append("student_id", objElevate.studentId)
 
-                const formData = new FormData(form)
-                formData.append("action", 'add')
-                formData.append("student_id", objElevate.student_id)
+                        AppSystem.fun.showLoadingUi()
+                        AppSystem.handleComp.alert.alert.hidden({})
 
-                const [status, json] = await mFetch(`{{ request.path }}`, formData, 'POST');
+                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                            location.pathname,
+                            formData
+                        )
 
-                if (status !== 200) {
+                        AppSystem.fun.hiddenLoadingUi()
 
-                    alert.innerText = json.errors.join(',');
-                    alert.classList.remove('d-none');
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                            let errorHtml = '<ul class="ms-5 d-block">'
+                            FormCommon.fun.getErrorList(data?.errors).map(elem => `<li>${elem}</li>`)
+                            errorHtml += '</ul>'
 
-                    return console.log(json)
+                            objD.elem.$name.value = data.message
+                            AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                            return
+                        }
+
+                        window.location = objElevate.successUrl
+                    }
                 }
-
-                window.location = objElevate.success_url
             }
-        })
 
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
 
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags.lower == 'success' %}
-                    fnToast("{{ message }}");
-                {% endif %}
-            {% endfor %}
-        {% endif %}
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+            objD.elem.$form.addEventListener('submit', (e) => {
+                e.preventDefault()
 
+                objD.fun.submit()
+            })
+
+        });
     </script>
 {% endblock %}

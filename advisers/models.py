@@ -1,10 +1,10 @@
 from decimal import Decimal
 
 from django.db import models
+from django.db.models import Sum
 
 from advisers.choices import TL_YEAR, TL_MONTH
 from core.models import ModelBaseAudited
-from django.db.models import Sum
 from core.util_functions import util_null_to_decimal
 
 
@@ -94,6 +94,7 @@ class Advisers(ModelBaseAudited):
 
 class PaymentAdviserCommissions(ModelBaseAudited):
     TYPE_FUNCTIONARY = (
+        (None, '------------'),
         (0, 'ASERSOR'),
         (1, 'GERENTE'),
     )
@@ -114,7 +115,8 @@ class PaymentAdviserCommissions(ModelBaseAudited):
         return '{}'.format(self.number)
 
     def calculate(self):
-        self.values_commission = util_null_to_decimal(self.paymentadvisercommissionsdetails_set.all().aggregate(sum=Sum('value_commission'))['sum'])
+        self.values_commission = util_null_to_decimal(
+            self.paymentadvisercommissionsdetails_set.all().aggregate(sum=Sum('value_commission'))['sum'])
         self.save()
 
     def save(self, *args, **kwargs):
@@ -207,16 +209,23 @@ class Managers(ModelBaseAudited):
 
 class PeriodCommissions(ModelBaseAudited):
     manager_percentage = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0), verbose_name='Porcentaje gerente %')
-    advisers_percentage_period_1 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0), verbose_name='Periodo 1 porcentaje asesor %')
+    advisers_percentage_period_1 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0),
+                                                       verbose_name='Periodo 1 porcentaje asesor %')
     days_commissions_period_1 = models.IntegerField(default=0, verbose_name="Periodo 1 dias comision")
-    advisers_percentage_max_period_1 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0), verbose_name='Periodo 1 porcentaje asesor maximo %')
-    advisers_percentage_period_2 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0), verbose_name='Periodo 2 porcentaje asesor %')
+    advisers_percentage_max_period_1 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0),
+                                                           verbose_name='Periodo 1 porcentaje asesor maximo %')
+    advisers_percentage_period_2 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0),
+                                                       verbose_name='Periodo 2 porcentaje asesor %')
     days_commissions_period_2 = models.IntegerField(default=0, verbose_name="Periodo 2 dias comision")
-    advisers_percentage_max_period_2 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0), verbose_name='Periodo 2 porcentaje asesor maximo %')
-    advisers_percentage_period_3 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0), verbose_name='Periodo 3 porcentaje asesor %')
+    advisers_percentage_max_period_2 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0),
+                                                           verbose_name='Periodo 2 porcentaje asesor maximo %')
+    advisers_percentage_period_3 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0),
+                                                       verbose_name='Periodo 3 porcentaje asesor %')
     days_commissions_period_3 = models.IntegerField(default=0, verbose_name="Periodo 3 dias comision")
-    advisers_percentage_max_period_3 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0), verbose_name='Periodo 3 porcentaje asesor maximo %')
-    manager_percentage_max = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0), verbose_name='Porcentaje gerente maximo %')
+    advisers_percentage_max_period_3 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0),
+                                                           verbose_name='Periodo 3 porcentaje asesor maximo %')
+    manager_percentage_max = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0),
+                                                 verbose_name='Porcentaje gerente maximo %')
 
     def __str__(self):
         return 'id : {}'.format(self.id)
@@ -239,9 +248,12 @@ class AdvisersCommissions(ModelBaseAudited):
         on_delete=models.CASCADE,
         verbose_name="Asesor"
     )
-    commissions_period_1 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0), verbose_name='Comision periodo 1 porcentaje %')
-    commissions_period_2 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0), verbose_name='Comision periodo 2 porcentaje %')
-    commissions_period_3 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0), verbose_name='Comision periodo 3 porcentaje %')
+    commissions_period_1 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0),
+                                               verbose_name='Comision periodo 1 porcentaje %')
+    commissions_period_2 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0),
+                                               verbose_name='Comision periodo 2 porcentaje %')
+    commissions_period_3 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0),
+                                               verbose_name='Comision periodo 3 porcentaje %')
     is_exclude = models.BooleanField(default=False)
 
     def __str__(self):
@@ -253,6 +265,13 @@ class AdvisersCommissions(ModelBaseAudited):
 
 
 class ManagersCommissions(ModelBaseAudited):
+    period_commissions = models.ForeignKey(
+        PeriodCommissions,
+        on_delete=models.PROTECT,
+        verbose_name="Periodo",
+        blank=True,
+        null=True
+    )
     manager = models.ForeignKey(
         Managers,
         on_delete=models.CASCADE,
@@ -267,3 +286,4 @@ class ManagersCommissions(ModelBaseAudited):
     class Meta:
         verbose_name = 'Gerente Comisión'
         verbose_name_plural = 'Gerente Comisiones'
+

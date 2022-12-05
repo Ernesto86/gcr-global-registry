@@ -15,6 +15,26 @@
         </div>
     </div>
     <div class="sidebar-body pt-0 data-scrollbar">
+        <div class="sidebar-profile-card mt-3">
+            <div class="sidebar-profile-body">
+                <div class="mb-3 d-flex justify-content-center">
+                    <div class="rounded rounded-3 border border-primary p-2">
+                        {% if user.institution.get_logo_url is not None %}
+                            <img src="{{ user.institution.get_logo_url }}" alt="User-Profile" class="img-fluid rounded" loading="lazy">
+                        {% else %}
+                            <img src="/static/img/logo/empty.png" alt="User-Profile" class="img-fluid rounded" loading="lazy">
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="sidebar-profile-detail">
+                    {% if user.institution is not None %}
+                        <h6 class="sidebar-profile-name">{{ user.institution.name| title }}</h6>
+                        {#                        <span class="sidebar-profile-username">UNIVERSIDAD ESTATAL DE MILAGRO</span>#}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <hr class="hr-horizontal">
         <div class="sidebar-list">
             {% include 'v2/base/components/partials/vertical-nav.html' %}
         </div>

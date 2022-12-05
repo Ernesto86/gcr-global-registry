@@ -5,8 +5,6 @@ from django.views.generic import CreateView
 from security.functions import addUserData
 from students.forms import StudentsForm
 from students.models import Students
-from system.models import SysParameters
-from transactions.models import InstitutionQuotesTypeRegister
 
 
 class StudentsCreateView(CreateView):
@@ -34,7 +32,6 @@ class StudentsCreateView(CreateView):
 
             if Students.objects.filter(dni=self.request.POST.get('dni')).exists():
                 status = 400
-                data['code'] = 'failed'
                 data['message'] = 'Error'
                 data['errors'] = ['Ya existe un dni registrado.']
                 return JsonResponse(data, status=status)
@@ -44,7 +41,6 @@ class StudentsCreateView(CreateView):
                 form.save()
                 return JsonResponse(data, status=status)
 
-            data['code'] = 'failed'
             data['message'] = 'Error'
             data['errors'] = form.errors
             return JsonResponse(data, status=status)
@@ -58,4 +54,5 @@ class StudentsCreateView(CreateView):
         context['form_action'] = 'Crear'
         context['student_id'] = self.request.GET.get('student_id')
         context['success_url'] = self.success_url
+        context['title_label'] = "Nuevo registro de estudiante"
         return context

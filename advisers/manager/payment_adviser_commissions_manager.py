@@ -46,7 +46,7 @@ class PaymentAdviserCommissionsManager:
         query_AND_1.children.append(("date_issue__year", year))
         query_AND_1.children.append(("date_issue__month", month))
 
-        if type_functionary == PaymentAdviserCommissions.TYPE_FUNCTIONARY[0][0]:
+        if type_functionary == PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0]:
             query_AND_1.children.append(("pay_adviser", False))
         else:
             query_AND_1.children.append(("pay_manager", False))
@@ -65,15 +65,10 @@ class PaymentAdviserCommissionsManager:
             value_commission = Decimal(0)
 
             for order_adviser in order_adviser_list:
-                # value_commission_adviser = order_adviser.get_commission_adviser()
-                value_commission_adviser = order_adviser.subtotal * (order_adviser.commissions_advisers_percentage / 100)
-                # value_commission_manager = order_adviser.get_commission_manager()
-                value_commission_manager = value_commission_adviser * (order_adviser.commissions_managers_percentage / 100)
-
-                if type_functionary == PaymentAdviserCommissions.TYPE_FUNCTIONARY[0][0]:
-                    value_commission += value_commission_adviser - value_commission_manager
+                if type_functionary == PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0]:
+                    value_commission += order_adviser.commissions_advisers_value
                 else:
-                    value_commission += value_commission_manager
+                    value_commission += order_adviser.commissions_managers_value
 
             if value_commission == Decimal(0):
                 continue
@@ -105,7 +100,7 @@ class PaymentAdviserCommissionsManager:
         query_AND_1.connector = 'AND'
         query_AND_1.children.append(("deleted", False))
 
-        if type_functionary == PaymentAdviserCommissions.TYPE_FUNCTIONARY[0][0]:
+        if type_functionary == PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0]:
             adviser = Advisers.objects.get(id=object_id)
             query_AND_1.children.append(("adviser_id", object_id))
             query_AND_1.children.append(("pay_adviser", pay_adviser))
@@ -159,7 +154,7 @@ class PaymentAdviserCommissionsManager:
             query_AND_1.children.append(("institution_id", institution_id))
 
         if object_id:
-            if type_functionary == PaymentAdviserCommissions.TYPE_FUNCTIONARY[0][0]:
+            if type_functionary == PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0]:
                 adviser = Advisers.objects.get(id=object_id)
                 query_AND_1.children.append(("adviser_id", object_id))
 
@@ -188,7 +183,7 @@ class PaymentAdviserCommissionsManager:
             commission_clean = detail.get_commission_adviser_clear()
             commission_sum += commission_clean
             commission_adviser_sum += detail.commissions_advisers_value
-            commission_manager_sum += detail.commissions_advisers_value
+            commission_manager_sum += detail.commissions_managers_value
             subtotal_sum += detail.subtotal
 
             order_institution_quotas_list.append(
@@ -197,7 +192,7 @@ class PaymentAdviserCommissionsManager:
                     'date_issue': detail.date_issue.date(),
                     'number': detail.number,
                     'commission_adviser_clean': commission_clean,
-                    'commission_manager': detail.commissions_advisers_value,
+                    'commission_manager': detail.commissions_managers_value,
                     'commission_adviser': detail.commissions_advisers_value,
                     'institution': {
                         'name': detail.institution.name

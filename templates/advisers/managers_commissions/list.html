@@ -1,31 +1,17 @@
-{% extends 'list.html' %}
+{% extends 'v2/base/crud/list/list.html' %}
 
-{% block form-search-date %}
-{% endblock %}
-
-{% block form-search-input %}
-    <div class="col-md input-group input-group col-md-4">
-        <div class="input-group-prepend">
-            <span class="input-group-text" id="inputGroup-sizing-sm">
-                <i class="fa fa-user-graduate"></i>
-            </span>
+{% block list-search %}
+    <div class="row">
+        <div class="col-md col-md-9">
+            {% include "v2/common/forms/search/input_search_simple.html" with placeholder_input_search='Buscar asesor por codigo o nombre..' %}
         </div>
-        <input
-                type="text"
-                name="search"
-                value="{{ search }}"
-                class="form-control"
-                placeholder="Buscar asesor por codigo o nombre.."
-        >
-        <div class="input-group-append">
-            <button class="btn btn-primary">
-                <i class="fa fa-search"></i>
-            </button>
+        <div class="col-md col-md-3">
+            {% include "v2/common/forms/search/btn_search.html" %}
         </div>
     </div>
 {% endblock %}
 
-{% block table-header-columns %}
+{% block list-table-head-colums %}
     <th>Gerente</th>
     <th>Codigo gerente</th>
     <th>Comision</th>
@@ -33,16 +19,14 @@
     <th class="text-center">Opciones</th>
 {% endblock %}
 
-{% block url_create %}{% url "advisers:managers_commissions_create" %}{% endblock %}
-
-{% block table-body-rows %}
+{% block list-table-body-rows %}
     {% for object in object_list %}
         <tr>
             <td>{{ object.manager }}</td>
             <td>{{ object.manager.code }}</td>
             <td>{{ object.value }}</td>
             <td>
-                {% include "component/badge/badge_presentate.html" with badge_type=1 badge_value_bool=object.is_exclude badge_text_bool=True %}
+                {% include "v2/common/components/badge/badge_presentate.html" with badge_type=1 badge_value_bool=object.is_exclude badge_text_bool=True %}
             </td>
             <td class="text-center">
                 <div class="btn-group" role="group">
@@ -54,23 +38,4 @@
             </td>
         </tr>
     {% endfor %}
-{% endblock %}
-
-{% block jscript %}
-    <script>
-        const table = document.querySelector('#id-table-data > tbody');
-
-        table.addEventListener('click', async (event) => {
-            const target = event.target.closest('a[rel="action-delete"]');
-
-            if (target) {
-                event.preventDefault();
-                const id = target.dataset.id
-                const [status, json] = await mFetch(`{{ request.path }}delete/${id}`, {}, 'DELETE');
-
-                if (status === 200)
-                    target.closest('tr').remove()
-            }
-        });
-    </script>
 {% endblock %}

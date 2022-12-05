@@ -1,4 +1,5 @@
 from django.contrib import messages
+from urllib.parse import urlencode
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.shortcuts import redirect, render
@@ -26,6 +27,8 @@ def advisers_commissions_save(request, *args, **kwargs):
     list_id_specific = request.POST.getlist('advisers_specific')
     is_specific = True if list_id_specific else False
 
+    validate_commissions_max(period_commissions, request)
+
     query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
     query_AND_1.children.append(("deleted", False))
 
@@ -40,12 +43,11 @@ def advisers_commissions_save(request, *args, **kwargs):
         query_AND_1.children.append(("adviser_id__in", list_id_specific))
         dict_update['is_exclude'] = True
     else:
+        print("debe estar llegando", request.POST.get('advisers_percentage_period_1'))
         period_commissions.advisers_percentage_period_1 = request.POST.get('advisers_percentage_period_1')
         period_commissions.advisers_percentage_period_2 = request.POST.get('advisers_percentage_period_2')
         period_commissions.advisers_percentage_period_3 = request.POST.get('advisers_percentage_period_3')
         period_commissions.save()
-
-    validate_commissions_max(period_commissions, request)
 
     AdvisersCommissions.objects.filter(
         query_AND_1
@@ -58,17 +60,34 @@ class AdvisersCommissionsListView(LoginRequiredMixin, ListView):
     login_url = '/security/login'
     redirect_field_name = 'redirect_to'
     template_name = 'advisers/advisers_commissions/list.html'
-    paginate_by = 30
+    paginate_by = 1
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         addUserData(self.request, context)
+        context['title_label'] = "Listado de comisiones de asesores"
+        context['create_url'] = reverse_lazy('advisers:advisers_commissions_create')
+        context['clear_url'] = reverse_lazy('advisers:advisers_commissions_list')
+
+        get_params = FilterOrmCommon.get_url_params(self.request.GET)
+        context.update(get_params)
+        context['url_params'] = urlencode(get_params)
         return context
 
     def get_queryset(self, **kwargs):
+        self.query_AND_1, self.query_OR_1 = FilterOrmCommon.get_query_connector_tuple()
         search = self.request.GET.get('search', '')
+
+        if search:
+            self.query_OR_1.children.append(("adviser__last_name__icontains", search))
+            self.query_OR_1.children.append(("adviser__first_name__icontains", search))
+            self.query_OR_1.children.append(("adviser__code__icontains", search))
+
+        FilterOrmCommon.get_filter_date_range(self.request.GET, 'created_at', self.query_AND_1)
+
         return AdvisersCommissions.objects.filter(
-            Q(adviser__last_name__icontains=search) | Q(adviser__first_name__icontains=search) | Q(adviser__code__icontains=search)
+            self.query_AND_1,
+            self.query_OR_1
         ).select_related(
             'adviser'
         ).order_by(
@@ -102,15 +121,9 @@ class AdvisersCommissionsCreateView(CreateView):
         context = super().get_context_data()
         addUserData(self.request, context)
         context['back_url'] = reverse_lazy('advisers:advisers_commissions_list')
+        context['title_label'] = "Actualizacion masiva"
         period_commissions = PeriodCommissions.objects.filter(deleted=False).last()
-        context['form_2'] = PeriodCommissionsForm(
-            instance=period_commissions,
-            initial={
-                'advisers_percentage_period_1': period_commissions.advisers_percentage_max_period_1,
-                'advisers_percentage_period_2': period_commissions.advisers_percentage_max_period_2,
-                'advisers_percentage_period_3': period_commissions.advisers_percentage_max_period_3,
-            }
-        )
+        context['form_2'] = PeriodCommissionsForm(instance=period_commissions)
         context['form_action'] = 'Crear'
         return context
 
@@ -142,6 +155,7 @@ class AdvisersCommissionsUpdateView(UpdateView):
         addUserData(self.request, context)
         context['back_url'] = reverse_lazy('advisers:advisers_commissions_list')
         advisers_commissions = self.get_object()
+        context['title_label'] = "Actualizacion masiva"
         context['form_2'] = PeriodCommissionsForm(
             instance=PeriodCommissions.objects.filter(deleted=False).last(),
             initial={

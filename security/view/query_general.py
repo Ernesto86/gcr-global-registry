@@ -1,8 +1,16 @@
+import json
+import os
+import requests
+
 from django.shortcuts import render
 from django.views.generic.base import View
+from rest_framework import status
+
+from core.common.filter_query.filter_query_common import FilterQueryCommon
+from core.services.recaptcha.recaptcha_service import RecaptchaService
 from institutions.models import InsTypeRegistries
-from students.models import StudentRegisters, Students
 from security.functions import addUserData
+from students.models import StudentRegisters, Students
 from system.models import SysCountries
 
 
@@ -13,6 +21,7 @@ class QueryGeneralView(View):
         context = {}
         addUserData(self.request, context)
         context['sys_country_list'] = SysCountries.objects.filter(deleted=False)
+        context['recaptcha_site_key'] = RecaptchaService.get_recaptcha_site_key()
         return context
 
     def get(self, request):
@@ -22,11 +31,16 @@ class QueryGeneralView(View):
     def post(self, request):
         context = self.context_common()
         country = self.request.POST.get("country", None)
+        recaptcha = FilterQueryCommon.get_param_validate(self.request.POST.get("g-recaptcha-response", None))
         context['country'] = int(country) if country else country
 
         dni = self.request.POST.get("identification", "")
         context['identification'] = dni
-        context['character'] = self.request.POST.get("character", "")
+
+        validate_recaptcha = RecaptchaService(recaptcha).validate_facade()
+        if not validate_recaptcha[0]:
+            context['errors'] = [validate_recaptcha[1]]
+            return render(request, self.template_name, context)
 
         context['student_registers_list'] = []
         context['student'] = None

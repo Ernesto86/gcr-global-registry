@@ -1,0 +1,12 @@
+<form id="id-formSearch">
+    {% include "component/form/presentate_field_to_search.html" %}
+    <div class="row mt-3 mb-4">
+        <div class="col-lg-10">
+            <div class="input-group">
+                {{ search_form.search }}
+                {% include "component/buttom/btn_search_clean.html" %}
+            </div>
+        </div>
+        {% include "component/buttom/btn_search.html" %}
+    </div>
+</form>

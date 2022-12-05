@@ -1,57 +1,49 @@
-{% extends 'base.html' %}
-{% block header %}
-    {% include 'header.html' %}
+{% extends 'v2/base/base.html' %}
+
+
+{% block base-sub-header %}
+    <br>
+    {% include 'v2/common/components/header/sub-header.html' %}
+
 {% endblock %}
-{% block container-main %}
-    <div class="container-fluid card min-vh-100" style="margin-top: 2rem;">
+
+{% block content %}
+
+    <div class="container">
         <div class="row">
-            <aside class="col-lg-12 col-md">
-                <div>
-                    <div class="card-body">
-                        <div class="text-center" style="margin-top: 2rem">
-                            <img src="/static/img/logo/gr-logo.png" height="120">
-                        </div>
-
-                        <div class="font-weight-bold" style="padding-left: 5%; padding-right: 5%; margin-top: 2rem; font-size: 2rem">
-                            BIENVENIDO A <b style="color: black">GLOBAL REGISTRY</b>
-                        </div>
-
-                        <hr class="mt-0 mb-0">
-
-                        <div style="padding-left: 5%; padding-right: 5%; margin-top: 1rem" class="text-justify">
-
-                            <h5 class="font-weight-bold">
-                                Bienvenido a <b style="color: black">Global Registry</b>. Somos una comunidad que busca impulsar el desarrollo educativo y
-                                profesional de todas las personas a nivel global, permitiendo el registro y verificación de sus
-                                conocimientos adquiridos a través de nuestra plataforma con sistema Blockchain que permite
-                                manejar la información de la manera más segura posible.
-
+            <div class="col-lg-12">
+                <div class="card border-bottom border-4 border-0 border-primary" style="margin-top: -70px">
+                    <div class="card-header">
+                        <h2>BIENVENIDO A <b>GLOBAL REGISTRY</b></h2>
+                        <div class="card border-bottom border-4 border-0 border-primary"></div>
+                    </div>
+                    <div class="card-body mx-5 mb-5 m-3">
+                        <div style="text-align: justify">
+                            <h5>
+                                Bienvenido a <b>Global Registry</b>. Somos una comunidad internacional que busca impulsar el desarrollo educativo y profesional
+                                de todas las personas a nivel global, permitiendo el registro y verificación de sus conocimientos adquiridos a través de
+                                nuestra plataforma con sistema Blockchain que permite manejar la información de la manera más segura posible.
                             </h5>
 
-                            <h5 class="pt-4 font-weight-bold">
+                            <h5 class="mt-5">
                                 Cada una de las instituciones que pertenecen a nuestra comunidad se ven beneficiados por nuestra
                                 propuesta de valor única que es la de verificar sus títulos o certificaciones a nivel internacional,
                                 permitiendo a los estudiantes validar sus conocimientos en el entorno laboral y dando un alcance
                                 global a cada una de nuestras instituciones miembros.
                             </h5>
 
-                            <h5 class="pt-4 font-weight-bold">
+                            <h5 class="mt-5">
                                 Para dar sus primeros pasos, deberá ingresar a la opción Configuración de datos donde deberá
                                 ingresar el nombre de su institución, el tipo de institución que es, su representante legal y el nivel
                                 académico del representante legal, todo con su respectiva evidencia adjunta para su verificación.
                                 Previo a la revisión y aprobación de su institución, podrá comenzar a adquirir registros para ingresar
                                 la validación de sus títulos o certificaciones otorgadas.
                             </h5>
-
                         </div>
-
-                        <br>
                     </div>
                 </div>
-            </aside>
+            </div>
         </div>
     </div>
-{% endblock %}
 
-{% block jscript %}
 {% endblock %}

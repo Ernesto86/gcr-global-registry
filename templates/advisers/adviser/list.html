@@ -1,5 +1,16 @@
 {% extends 'v2/base/crud/list/list.html' %}
 
+{% block list-search %}
+    <div class="row">
+        <div class="col-md col-md-9">
+            {% include "v2/common/forms/search/input_search_simple.html" with placeholder_input_search='Buscar asesor por codigo, dni, nombre..' %}
+        </div>
+        <div class="col-md col-md-3">
+            {% include "v2/common/forms/search/btn_search.html" %}
+        </div>
+    </div>
+{% endblock %}
+
 {% block list-table-head-colums %}
     <th>Codigo</th>
     <th>DNI</th>
@@ -7,7 +18,7 @@
     <th class="text-center">Opciones</th>
 {% endblock %}
 
-{% block url_create %}{% url "institution_create" %}{% endblock %}
+{#{% block url_create %}{% url "institution_create" %}{% endblock %}#}
 
 {% block list-table-body-rows %}
     {% for object in advisers %}
@@ -60,30 +71,7 @@
                 repeat: {},
                 loadFirst: {},
                 model: {},
-                fun: {
-                    submitForm: async () => {
-                        const formData = new FormData(objD.elem.$form)
-                        formData.append("action", objElevate.action)
-
-                        AppSystem.fun.showLoadingUi()
-                        AppSystem.handleComp.alert.alert.hidden({})
-
-                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
-                            location.pathname,
-                            formData
-                        )
-
-                        AppSystem.fun.hiddenLoadingUi()
-
-                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
-                            let errors = data?.errors?.user
-                            AppSystem.handleComp.alert.alert.show({title: message, content: errors, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
-                            return
-                        }
-
-                        window.location = objElevate.backUrl
-                    }
-                }
+                fun: {}
             }
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,9 +92,7 @@
                     const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
                         `${objElevate.deleteUrl}/${id}`,
                         {},
-                        {
-                            method: ClientHttpFetch.CONSTANT.verboseMethod.DELETE.description
-                        }
+                        {method: ClientHttpFetch.CONSTANT.verboseMethod.DELETE.description}
                     )
 
                     AppSystem.fun.hiddenLoadingUi()
