@@ -7,4 +7,6 @@ urlpatterns = [
     path('update/<int:pk>', InstitutionUpdateView.as_view(), name='institution_update'),
     path('delete/<int:pk>', InstitutionDelete.as_view(), name='institution_delete'),
     path('configuration', InstitutionconfigurationView.as_view(), name='institution_configuration'),
+    path('register-status', InstitutionRegisterStatus.as_view(), name='register_status'),
+    path('register-status/<int:pk>', InstitutionViewByPk.as_view(), name='register_status_id'),
 ]
