@@ -14,6 +14,7 @@ from security.mixins import *
 from advisers.models import Advisers
 from core.constants import RegistrationStatus
 from system.models import SysCountries
+import datetime
 
 class InstitutionsListView(PermissionMixin, ListViewFilter, ListView):
     login_url = '/security/login'
@@ -140,7 +141,10 @@ class InstitutionRegisterStatus(ListViewFilter, ListView):
         context['url_params'] = urlencode(get_params)
         context['status'] = RegistrationStatus.choices
         context['countries'] = SysCountries.objects.filter(deleted=False)
-        context['country_id'] = int(context['country_id']) if context['country_id'] else ''
+        try:
+            context['country_id'] = int(context['country_id']) if context['country_id'] else ''
+        except:
+            pass
         return context
 
     def get_queryset(self, **kwargs):
@@ -170,6 +174,7 @@ class InstitutionViewByPk(PermissionMixin, View):
             if institution is not None:
                 status_id = self.request.POST.get('status_id')
                 institution.registration_status = status_id
+                institution.date_approval = datetime.datetime.now()
                 institution.save()
             else:
                 status = 200
