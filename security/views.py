@@ -12,5 +12,4 @@ class HomeView(LoginRequiredMixin,View):
             'title': "Home Global Registry"
         }
         addUserData(request, data)
-        # return render(request, 'security/index_original.html', data)
         return render(request, 'security/index.html', data)
