@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
 
 from advisers.forms import AdvisersCommissionsForm, PeriodCommissionsForm
-from advisers.models import AdvisersCommissions, PeriodCommissions
+from advisers.models import AdvisersCommissions, PeriodCommissions, Managers, Advisers
 from core.common.filter_orm.filter_orm_common import FilterOrmCommon
 from core.util_functions import util_null_to_decimal
 from security.functions import addUserData
@@ -31,6 +31,7 @@ def advisers_commissions_save(request, *args, **kwargs):
 
     query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
     query_AND_1.children.append(("deleted", False))
+    query_AND_1.children.append(("adviser__manager__user_id", request.user.pkid))
 
     dict_update = {
         'commissions_period_1': request.POST.get('advisers_percentage_period_1'),
@@ -43,7 +44,6 @@ def advisers_commissions_save(request, *args, **kwargs):
         query_AND_1.children.append(("adviser_id__in", list_id_specific))
         dict_update['is_exclude'] = True
     else:
-        print("debe estar llegando", request.POST.get('advisers_percentage_period_1'))
         period_commissions.advisers_percentage_period_1 = request.POST.get('advisers_percentage_period_1')
         period_commissions.advisers_percentage_period_2 = request.POST.get('advisers_percentage_period_2')
         period_commissions.advisers_percentage_period_3 = request.POST.get('advisers_percentage_period_3')
@@ -78,6 +78,8 @@ class AdvisersCommissionsListView(PermissionMixin, ListView):
     def get_queryset(self, **kwargs):
         self.query_AND_1, self.query_OR_1 = FilterOrmCommon.get_query_connector_tuple()
         search = self.request.GET.get('search', '')
+
+        self.query_AND_1.children.append(("adviser__manager__user_id", self.request.user.pkid))
 
         if search:
             self.query_OR_1.children.append(("adviser__last_name__icontains", search))
@@ -116,17 +118,34 @@ class AdvisersCommissionsCreateView(PermissionMixin, CreateView):
             request.POST,
             instance=period_commissions,
         )
+        AdvisersCommissionsCreateView.fill_field_choice_adviser_per_manager(self.request.user.pkid, form_2)
         return render(request, self.template_name, {'form': form, 'form_2': form_2})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         addUserData(self.request, context)
+
         context['back_url'] = reverse_lazy('advisers:advisers_commissions_list')
         context['title_label'] = "Actualizacion masiva"
-        period_commissions = PeriodCommissions.objects.filter(deleted=False).last()
-        context['form_2'] = PeriodCommissionsForm(instance=period_commissions)
         context['form_action'] = 'Crear'
+
+        period_commissions = PeriodCommissions.objects.filter(deleted=False).last()
+        form = PeriodCommissionsForm(instance=period_commissions)
+        AdvisersCommissionsCreateView.fill_field_choice_adviser_per_manager(self.request.user.pkid, form)
+
+        context['form_2'] = form
         return context
+
+    @staticmethod
+    def fill_field_choice_adviser_per_manager(user_manager_id, form):
+        advisers_list = Advisers.objects.filter(
+            manager__user_id=user_manager_id,
+            deleted=False
+        )
+        form.fields['advisers_specific'].choices = [
+            ('', 'Todos...'),
+            *[(x.id, x.__str__()) for x in advisers_list]
+        ]
 
 
 class AdvisersCommissionsUpdateView(PermissionMixin, UpdateView):
@@ -149,15 +168,20 @@ class AdvisersCommissionsUpdateView(PermissionMixin, UpdateView):
             request.POST,
             instance=period_commissions,
         )
+
+        AdvisersCommissionsCreateView.fill_field_choice_adviser_per_manager(self.request.user.pkid, form_2)
+
         return render(request, self.template_name, {'form': form, 'form_2': form_2})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         addUserData(self.request, context)
-        context['back_url'] = reverse_lazy('advisers:advisers_commissions_list')
         advisers_commissions = self.get_object()
+
+        context['back_url'] = reverse_lazy('advisers:advisers_commissions_list')
         context['title_label'] = "Actualizacion masiva"
-        context['form_2'] = PeriodCommissionsForm(
+
+        form = PeriodCommissionsForm(
             instance=PeriodCommissions.objects.filter(deleted=False).last(),
             initial={
                 'advisers_specific': [advisers_commissions.adviser_id],
@@ -166,5 +190,9 @@ class AdvisersCommissionsUpdateView(PermissionMixin, UpdateView):
                 'advisers_percentage_period_3': advisers_commissions.commissions_period_3,
             }
         )
+
+        AdvisersCommissionsCreateView.fill_field_choice_adviser_per_manager(self.request.user.pkid, form)
+
+        context['form_2'] = form
         context['form_action'] = 'Actualizar'
         return context

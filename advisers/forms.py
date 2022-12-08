@@ -27,6 +27,7 @@ class PeriodCommissionsForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         FormCommon.update_all_field(self.fields)
 
+
     class Meta:
         model = PeriodCommissions
         fields = '__all__'
@@ -60,7 +61,7 @@ class PeriodCommissionsForm(forms.ModelForm):
 
     advisers_specific = forms.ModelChoiceField(
         widget=forms.SelectMultiple(attrs={'class': "select2 select2-design"}),
-        queryset=Advisers.objects.filter(deleted=False),
+        queryset=Advisers.objects.none(),
         label='Asesores especificos',
         required=False,
     )

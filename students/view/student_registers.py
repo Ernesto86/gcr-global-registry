@@ -21,6 +21,7 @@ class StudentRegistersView(PermissionMixin, TemplateView):
         addUserData(self.request, context)
         context['title_label'] = 'INGRESO INTERNACIONAL DE REGISTROS INSTITUCIONAL'
         institution_quotes_type_register_sum = InstitutionQuotesTypeRegister.objects.filter(
+            institution_id=context['user'].institution_id,
             deleted=False,
         ).aggregate(
             quotas=Sum('quotas'),

@@ -55,7 +55,7 @@
                             </div>
                         </div>
                         <div class="d-flex justify-content-center align-items-center pt-2">
-                            <h1 class="text-white badge bg-dark rounded-pill fs-3">{{ institution_quotes_type_register_sum.quotas }}</h1>
+                            <h1 class="text-white badge bg-dark rounded-pill fs-3">{{ institution_quotes_type_register_sum.quotas|default_if_none:"0"  }}</h1>
                         </div>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                             </div>
                         </div>
                         <div class="d-flex justify-content-center align-items-center pt-2">
-                            <h1 class="text-white badge bg-dark rounded-pill fs-3">{{ institution_quotes_type_register_sum.quotas_balance }}</h1>
+                            <h1 class="text-white badge bg-dark rounded-pill fs-3">{{ institution_quotes_type_register_sum.quotas_balance|default_if_none:"0" }}</h1>
                         </div>
                     </div>
                 </div>
