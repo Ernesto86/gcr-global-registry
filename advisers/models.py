@@ -48,6 +48,7 @@ class Advisers(ModelBaseAudited):
     class Meta:
         verbose_name = 'Asesor'
         verbose_name_plural = 'Asesores'
+        permissions = (('dashboard_advisers', 'Dashboard asesor'),)
         ordering = ('code',)
 
     def create_commission(self):
@@ -180,6 +181,7 @@ class Managers(ModelBaseAudited):
     class Meta:
         verbose_name = 'Gerente'
         verbose_name_plural = 'Gerentes'
+        permissions = (('dashboard_managers', 'Dashboard gerente'),)
         ordering = ('created_at',)
 
     def save(self, *args, **kwargs):

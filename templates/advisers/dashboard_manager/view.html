@@ -206,7 +206,8 @@
         <div class="modal-dialog modal-xl modal-fullscreen-xl-down">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Detalle de comisiones del Gerente : <span class="badge bg-primary" id="id-nameManagerDetailInstitution"></span></h5>
+                    <h5 class="modal-title">Detalle de comisiones del Gerente : <span class="badge bg-primary"
+                                                                                      id="id-nameManagerDetailInstitution"></span></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -489,7 +490,7 @@
                         </tr>
                                 `
                 })
-
+                c('con sara')
                 objD.elem.$institutionBody.innerHTML = insitututionList.join(' ')
 
                 if (objD.elem.barChartCommissionPaid)
@@ -500,7 +501,7 @@
 
                 if (objD.elem.barChartCommissionTotals)
                     objD.elem.barChartCommissionTotals.destroy()
-
+                c('con sara 11111111')
                 const paidInfoChart = getValueCommissionInfoChart(data.payment_paid_list)
 
                 objD.elem.barChartCommissionPaid = new ApexCharts(
@@ -557,7 +558,9 @@
                     event.preventDefault()
 
                     await getDetailPaymentSpecific(targetXCobrar.dataset.institutionid, 'xcobrar')
+
                 }
+
 
             });
         })

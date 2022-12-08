@@ -1,15 +1,16 @@
-from django.shortcuts import render
-from django.views.generic.base import View
+from django.views.generic import CreateView, TemplateView
+from security.mixins import PermissionMixin
 from institutions.models import InsTypeRegistries
 from security.functions import addUserData
 from students.models import StudentRegisters
 
 
-class OrganizadorRegistrosView(View):
+class OrganizadorRegistrosView(PermissionMixin, TemplateView):
     template_name = 'security/organizador_registros/view.html'
+    permission_required = 'view_studentregisters'
 
-    def get(self, request):
-        context = {}
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         addUserData(self.request, context)
         context['type_registries_list'] = []
 
@@ -29,4 +30,4 @@ class OrganizadorRegistrosView(View):
                         "registers_level_count": registers_level,
                     }
                 )
-        return render(request, self.template_name, context)
+        return context

@@ -3,6 +3,7 @@ from django.utils.decorators import method_decorator
 from django.shortcuts import redirect
 from django.contrib import messages
 
+
 class ModuleMixin(object):
 
     @method_decorator(login_required)
@@ -50,7 +51,9 @@ class PermissionMixin(object):
             if 'group_id' in request.session:
                 group = user.get_group_session()
                 permissions = self.get_permissions()
+
                 for permission in permissions:
+
                     if not group.modulegruppermissions_set.filter(permissions__codename=permission).exists():
                         messages.error(request, 'No tiene permiso para ingresar a este módulo')
                         return redirect('home')

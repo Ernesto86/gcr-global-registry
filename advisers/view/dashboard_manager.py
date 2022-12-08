@@ -1,255 +1,26 @@
 import datetime
 
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView
 from django.db.models import Sum
 from django.http import JsonResponse
-from django.forms import model_to_dict
+from django.views.generic import TemplateView
 
 from advisers.manager.payment_adviser_commissions_manager import PaymentAdviserCommissionsManager
-from advisers.models import Advisers, PaymentAdviserCommissionsDetails, PaymentAdviserCommissions, Managers
+from advisers.models import Advisers, PaymentAdviserCommissions, Managers
 from core.common.filter_orm.filter_orm_common import FilterOrmCommon
 from core.common.filter_query.filter_query_common import FilterQueryCommon
 from core.constants import MESES
 from core.util_functions import util_null_to_decimal
 from institutions.models import Institutions
 from security.functions import addUserData
+from security.mixins import PermissionMixin
 from transactions.models import OrderInstitutionQuotas
 
 
-class DashboardManagerView(LoginRequiredMixin, TemplateView):
+class DashboardManagerView(PermissionMixin, TemplateView):
     login_url = '/security/login'
     redirect_field_name = 'redirect_to'
     template_name = 'advisers/dashboard_manager/view.html'
-
-    # permission_required = ('add_institutions','change_institutions')
-
-    def get_range_year_list(self):
-        year = datetime.datetime.now().date().year
-        year_list = [year]
-
-        for index in range(0, 4):
-            year -= 1
-            year_list.append(year)
-        return year_list
-
-    def get_payment_adviser_commissions_list(self, year, year_list, is_per_year, year_selected):
-        query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
-
-        for index in range(0, 4):
-            year -= 1
-            year_list.append(year)
-
-        if is_per_year:
-            query_AND_1.children.append(('year', year_selected))
-        else:
-            query_AND_1.children.append(('year__in', year_list))
-
-        payment_adviser_commissions_list = PaymentAdviserCommissions.objects.filter(
-            query_AND_1,
-            deleted=False,
-        )
-
-        payment_adviser_commissions_final_list = []
-
-        for year in list(set(payment_adviser_commissions_list.filter().values_list('year', flat=True))):
-            payment_adviser_commissions_final_list.append(
-                payment_adviser_commissions_list.filter(year=year).first()
-            )
-
-        return payment_adviser_commissions_final_list
-
-    def get_commission_paid(self, manager_id, adviser_id, year, year_list, is_per_year, year_selected):
-        payment_paid_list = []
-
-        query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
-        if adviser_id:
-            query_AND_1.children.append(('adviser_id', adviser_id))
-
-        payment_adviser_commissions_list = self.get_payment_adviser_commissions_list(
-            year, year_list, is_per_year, year_selected
-        )
-
-        for payment_adviser_commissions in payment_adviser_commissions_list:
-            value_presenter_list = []
-
-            if is_per_year:
-
-                for mes in MESES:
-                    value_commission = util_null_to_decimal(
-                        OrderInstitutionQuotas.objects.filter(
-                            query_AND_1,
-                            manager_id=manager_id,
-                            date_issue__year=year_selected,
-                            date_issue__month=mes[0],
-                            pay_manager=True,
-                            deleted=False
-                        ).aggregate(
-                            sum=Sum('commissions_managers_value')
-                        )['sum']
-                    )
-
-                    value_presenter_list.append(
-                        {
-                            'payment_adviser_commissions': model_to_dict(payment_adviser_commissions),
-                            'label': mes[1],
-                            'value': value_commission
-                        }
-                    )
-            else:
-                value_commission = util_null_to_decimal(
-                    OrderInstitutionQuotas.objects.filter(
-                        query_AND_1,
-                        manager_id=manager_id,
-                        pay_manager=True,
-                        deleted=False
-                    ).aggregate(
-                        sum=Sum('commissions_managers_value')
-                    )['sum']
-                )
-
-                value_presenter_list.append(
-                    {
-                        'label': payment_adviser_commissions.year,
-                        'value': value_commission
-                    }
-                )
-
-            payment_paid_list.append(
-                {
-                    'payment_adviser_commissions': model_to_dict(payment_adviser_commissions),
-                    'value_presenter_list': value_presenter_list
-                }
-            )
-
-        return payment_paid_list
-
-    def get_commission_x_cobrar(self, manager_id, adviser_id, year, year_list, is_per_year, year_selected):
-        payment_paid_list = []
-
-        query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
-        if adviser_id:
-            query_AND_1.children.append(('adviser_id', adviser_id))
-
-        payment_adviser_commissions_list = self.get_payment_adviser_commissions_list(
-            year, year_list, is_per_year, year_selected
-        )
-
-        for payment_adviser_commissions in payment_adviser_commissions_list:
-            value_presenter_list = []
-
-            if is_per_year:
-
-                for mes in MESES:
-                    value_commission = util_null_to_decimal(
-                        OrderInstitutionQuotas.objects.filter(
-                            query_AND_1,
-                            manager_id=manager_id,
-                            date_issue__year=year_selected,
-                            date_issue__month=mes[0],
-                            pay_manager=False,
-                            deleted=False
-                        ).aggregate(
-                            sum=Sum('commissions_managers_value')
-                        )['sum']
-                    )
-
-                    value_presenter_list.append(
-                        {
-                            'payment_adviser_commissions': model_to_dict(payment_adviser_commissions),
-                            'label': mes[1],
-                            'value': value_commission
-                        }
-                    )
-            else:
-                value_commission = util_null_to_decimal(
-                    OrderInstitutionQuotas.objects.filter(
-                        query_AND_1,
-                        manager_id=manager_id,
-                        pay_manager=False,
-                        deleted=False
-                    ).aggregate(
-                        sum=Sum('commissions_managers_value')
-                    )['sum']
-                )
-
-                value_presenter_list.append(
-                    {
-                        'label': payment_adviser_commissions.year,
-                        'value': value_commission
-                    }
-                )
-
-            payment_paid_list.append(
-                {
-                    'payment_adviser_commissions': model_to_dict(payment_adviser_commissions),
-                    'value_presenter_list': value_presenter_list
-                }
-            )
-
-        return payment_paid_list
-
-    def get_commission_totals(self, manager_id, adviser_id, year, year_list, is_per_year, year_selected):
-        payment_paid_list = []
-
-        query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
-        if adviser_id:
-            query_AND_1.children.append(('adviser_id', adviser_id))
-
-        payment_adviser_commissions_list = self.get_payment_adviser_commissions_list(
-            year, year_list, is_per_year, year_selected
-        )
-
-        for payment_adviser_commissions in payment_adviser_commissions_list:
-            value_presenter_list = []
-
-            if is_per_year:
-
-                for mes in MESES:
-                    value_commission = util_null_to_decimal(
-                        OrderInstitutionQuotas.objects.filter(
-                            query_AND_1,
-                            manager_id=manager_id,
-                            date_issue__year=year_selected,
-                            date_issue__month=mes[0],
-                            deleted=False
-                        ).aggregate(
-                            sum=Sum('subtotal')
-                        )['sum']
-                    )
-
-                    value_presenter_list.append(
-                        {
-                            'payment_adviser_commissions': model_to_dict(payment_adviser_commissions),
-                            'label': mes[1],
-                            'value': value_commission
-                        }
-                    )
-            else:
-                value_commission = util_null_to_decimal(
-                    OrderInstitutionQuotas.objects.filter(
-                        query_AND_1,
-                        manager_id=manager_id,
-                        deleted=False
-                    ).aggregate(
-                        sum=Sum('subtotal')
-                    )['sum']
-                )
-
-                value_presenter_list.append(
-                    {
-                        'label': payment_adviser_commissions.year,
-                        'value': value_commission
-                    }
-                )
-
-            payment_paid_list.append(
-                {
-                    'payment_adviser_commissions': model_to_dict(payment_adviser_commissions),
-                    'value_presenter_list': value_presenter_list
-                }
-            )
-        return payment_paid_list
+    permission_required = 'dashboard_managers'
 
     def post(self, request, *args, **kwargs):
         data = {'errors': []}
@@ -313,10 +84,15 @@ class DashboardManagerView(LoginRequiredMixin, TemplateView):
                 advisers_id_list = list(advisers_list.values_list('id', flat=True))
                 query_AND_1.children.append(('adviser_id__in', advisers_id_list))
 
-            data['payment_paid_list'] = self.get_commission_paid(manager.id, adviser_id, year, year_list, is_per_year, year_selected)
-            data['payment_x_cobrar_list'] = self.get_commission_x_cobrar(manager.id, adviser_id, year, year_list, is_per_year, year_selected)
-            data['payment_totals_list'] = self.get_commission_totals(manager.id, adviser_id, year, year_list, is_per_year, year_selected)
+            data['payment_paid_list'] = self.get_commission_paid(manager.id, adviser_id, is_per_year, year_selected)
 
+            data['payment_x_cobrar_list'] = self.get_commission_x_cobrar(
+                manager.id,
+                adviser_id,
+                is_per_year,
+                year_selected
+            )
+            data['payment_totals_list'] = self.get_commission_totals(manager.id, adviser_id, is_per_year, year_selected)
             data['institutions_active_count'] = Institutions.objects.filter(query_AND_1, status=True).count()
             data['institutions_disabled_count'] = Institutions.objects.filter(query_AND_1, status=False).count()
 
@@ -373,3 +149,201 @@ class DashboardManagerView(LoginRequiredMixin, TemplateView):
         context['advisers_list'] = advisers_list = Advisers.objects.filter(manager_id=manager.id)
         context['year_list'] = self.get_range_year_list()
         return context
+
+    def get_range_year_list(self):
+        year = datetime.datetime.now().date().year
+        year_list = [year]
+
+        for index in range(0, 4):
+            year -= 1
+            year_list.append(year)
+        return year_list
+
+    def get_range_year_to_search_list(self, is_per_year, year_selected):
+
+        if is_per_year:
+            return [int(year_selected)]
+
+        return self.get_range_year_list()
+
+    def get_commission_paid(self, manager_id, adviser_id, is_per_year, year_selected):
+        payment_paid_list = []
+
+        query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
+        query_AND_1.children.append(('deleted', False))
+        query_AND_1.children.append(('pay_manager', True))
+        query_AND_1.children.append(('manager_id', manager_id))
+
+        if adviser_id:
+            query_AND_1.children.append(('adviser_id', adviser_id))
+
+        range_year_to_search_list = self.get_range_year_to_search_list(is_per_year, year_selected)
+
+        for year in range_year_to_search_list:
+            value_presenter_list = []
+
+            if is_per_year:
+
+                for mes in MESES:
+                    value_commission = util_null_to_decimal(
+                        OrderInstitutionQuotas.objects.filter(
+                            query_AND_1,
+                            date_issue__year=year,
+                            date_issue__month=mes[0],
+                        ).aggregate(
+                            sum=Sum('commissions_managers_value')
+                        )['sum']
+                    )
+
+                    value_presenter_list.append(
+                        {
+                            'year': year,
+                            'label': mes[1],
+                            'value': value_commission
+                        }
+                    )
+            else:
+                value_commission = util_null_to_decimal(
+                    OrderInstitutionQuotas.objects.filter(
+                        query_AND_1,
+                        date_issue__year=year,
+                    ).aggregate(
+                        sum=Sum('commissions_managers_value')
+                    )['sum']
+                )
+
+                value_presenter_list.append(
+                    {
+                        'label': year,
+                        'value': value_commission
+                    }
+                )
+
+            payment_paid_list.append(
+                {
+                    'year': year,
+                    'value_presenter_list': value_presenter_list
+                }
+            )
+
+        return payment_paid_list
+
+    def get_commission_x_cobrar(self, manager_id, adviser_id, is_per_year, year_selected):
+        payment_paid_list = []
+
+        query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
+        query_AND_1.children.append(('deleted', False))
+        query_AND_1.children.append(('pay_manager', False))
+        query_AND_1.children.append(('manager_id', manager_id))
+
+        if adviser_id:
+            query_AND_1.children.append(('adviser_id', adviser_id))
+
+        range_year_to_search_list = self.get_range_year_to_search_list(is_per_year, year_selected)
+        for year in range_year_to_search_list:
+            value_presenter_list = []
+
+            if is_per_year:
+                for mes in MESES:
+                    value_commission = util_null_to_decimal(
+                        OrderInstitutionQuotas.objects.filter(
+                            query_AND_1,
+                            date_issue__year=year,
+                            date_issue__month=mes[0],
+                        ).aggregate(
+                            sum=Sum('commissions_managers_value')
+                        )['sum']
+                    )
+
+                    value_presenter_list.append(
+                        {
+                            'year': year,
+                            'label': mes[1],
+                            'value': value_commission
+                        }
+                    )
+            else:
+                value_commission = util_null_to_decimal(
+                    OrderInstitutionQuotas.objects.filter(
+                        query_AND_1,
+                        date_issue__year=year,
+                    ).aggregate(
+                        sum=Sum('commissions_managers_value')
+                    )['sum']
+                )
+
+                value_presenter_list.append(
+                    {
+                        'label': year,
+                        'value': value_commission
+                    }
+                )
+
+            payment_paid_list.append(
+                {
+                    'year': year,
+                    'value_presenter_list': value_presenter_list
+                }
+            )
+
+        return payment_paid_list
+
+    def get_commission_totals(self, manager_id, adviser_id, is_per_year, year_selected):
+        payment_paid_list = []
+
+        query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
+        query_AND_1.children.append(('deleted', False))
+        query_AND_1.children.append(('manager_id', manager_id))
+
+        if adviser_id:
+            query_AND_1.children.append(('adviser_id', adviser_id))
+
+        range_year_to_search_list = self.get_range_year_to_search_list(is_per_year, year_selected)
+
+        for year in range_year_to_search_list:
+            value_presenter_list = []
+
+            if is_per_year:
+
+                for mes in MESES:
+                    value_commission = util_null_to_decimal(
+                        OrderInstitutionQuotas.objects.filter(
+                            query_AND_1,
+                            date_issue__year=year,
+                            date_issue__month=mes[0],
+                        ).aggregate(
+                            sum=Sum('subtotal')
+                        )['sum']
+                    )
+
+                    value_presenter_list.append(
+                        {
+                            'year': year,
+                            'label': mes[1],
+                            'value': value_commission
+                        }
+                    )
+            else:
+                value_commission = util_null_to_decimal(
+                    OrderInstitutionQuotas.objects.filter(
+                        query_AND_1,
+                        date_issue__year=year,
+                    ).aggregate(
+                        sum=Sum('subtotal')
+                    )['sum']
+                )
+
+                value_presenter_list.append(
+                    {
+                        'label': year,
+                        'value': value_commission
+                    }
+                )
+
+            payment_paid_list.append(
+                {
+                    'year': year,
+                    'value_presenter_list': value_presenter_list
+                }
+            )
+        return payment_paid_list

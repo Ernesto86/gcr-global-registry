@@ -1,7 +1,6 @@
-from django.contrib import messages
 from urllib.parse import urlencode
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Q
+
+from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
@@ -11,6 +10,7 @@ from advisers.models import AdvisersCommissions, PeriodCommissions
 from core.common.filter_orm.filter_orm_common import FilterOrmCommon
 from core.util_functions import util_null_to_decimal
 from security.functions import addUserData
+from security.mixins import PermissionMixin
 
 
 def validate_commissions_max(period_commissions, request):
@@ -56,10 +56,11 @@ def advisers_commissions_save(request, *args, **kwargs):
     )
 
 
-class AdvisersCommissionsListView(LoginRequiredMixin, ListView):
+class AdvisersCommissionsListView(PermissionMixin, ListView):
     login_url = '/security/login'
     redirect_field_name = 'redirect_to'
     template_name = 'advisers/advisers_commissions/list.html'
+    permission_required = 'view_adviserscommissions'
     paginate_by = 1
 
     def get_context_data(self, **kwargs):
@@ -95,12 +96,12 @@ class AdvisersCommissionsListView(LoginRequiredMixin, ListView):
         )
 
 
-class AdvisersCommissionsCreateView(CreateView):
+class AdvisersCommissionsCreateView(PermissionMixin, CreateView):
     model = AdvisersCommissions
     template_name = 'advisers/advisers_commissions/create.html'
     form_class = AdvisersCommissionsForm
     success_url = reverse_lazy('advisers:advisers_commissions_list')
-    permission_required = 'add_institutions'
+    permission_required = 'add_adviserscommissions'
 
     def post(self, request, *args, **kwargs):
         period_commissions = PeriodCommissions.objects.filter(deleted=False).last()
@@ -128,12 +129,12 @@ class AdvisersCommissionsCreateView(CreateView):
         return context
 
 
-class AdvisersCommissionsUpdateView(UpdateView):
+class AdvisersCommissionsUpdateView(PermissionMixin, UpdateView):
     model = AdvisersCommissions
     template_name = 'advisers/advisers_commissions/create.html'
     form_class = AdvisersCommissionsForm
     success_url = reverse_lazy('advisers:advisers_commissions_list')
-    permission_required = 'change_institutions'
+    permission_required = 'change_adviserscommissions'
 
     def post(self, request, *args, **kwargs):
         period_commissions = PeriodCommissions.objects.filter(deleted=False).last()

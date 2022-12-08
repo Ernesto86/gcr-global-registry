@@ -8,9 +8,8 @@
     {#    </li>#}
 
     {% for gc in module_grup_categories %}
-
         <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#menu-registry" role="button" aria-expanded="false" aria-controls="menu-registry">
+            <a class="nav-link" data-bs-toggle="collapse" href="#menu-{{ gc.id }}" role="button" aria-expanded="false" aria-controls="menu-{{ gc.id }}">
                 <i class="icon" data-bs-toggle="tooltip" title="Utilities" data-bs-placement="right">
                     <svg width="20" class="icon-20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path opacity="0.4" d="M11.9912 18.6215L5.49945 21.864C5.00921 22.1302 4.39768 21.9525 4.12348 21.4643C4.0434 21.3108 4.00106 21.1402 4 20.9668V13.7087C4 14.4283 4.40573 14.8725 5.47299 15.37L11.9912 18.6215Z" fill="currentColor"></path>
@@ -29,7 +28,7 @@
                     </svg>
                 </i>
             </a>
-            <ul class="sub-nav collapse" id="menu-registry" data-bs-parent="#sidebar-menu">
+            <ul class="sub-nav collapse" id="menu-{{ gc.id }}" data-bs-parent="#sidebar-menu">
                 {% for cm in gc.get_grup_category_modules %}
                     <li class="nav-item">
                         <a class="nav-link {% if active == 'sidebar-small' %}active{% endif %}" href="{{ cm.module.url }}">

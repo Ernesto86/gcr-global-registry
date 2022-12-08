@@ -21,34 +21,7 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
     login_url = '/security/login'
     redirect_field_name = 'redirect_to'
     template_name = 'advisers/dashboard_advisor/view.html'
-
-    # permission_required = ('add_institutions','change_institutions')
-
-    def get_payment_adviser_commissions_list(self, year, year_list, is_per_year, year_selected):
-        query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
-
-        for index in range(0, 4):
-            year -= 1
-            year_list.append(year)
-
-        if is_per_year:
-            query_AND_1.children.append(('year', year_selected))
-        else:
-            query_AND_1.children.append(('year__in', year_list))
-
-        payment_adviser_commissions_list = PaymentAdviserCommissions.objects.filter(
-            query_AND_1,
-            deleted=False,
-        )
-
-        payment_adviser_commissions_final_list = []
-
-        for year in list(set(payment_adviser_commissions_list.filter().values_list('year', flat=True))):
-            payment_adviser_commissions_final_list.append(
-                payment_adviser_commissions_list.filter(year=year).first()
-            )
-
-        return payment_adviser_commissions_final_list
+    permission_required = 'dashboard_advisers'
 
     def post(self, request, *args, **kwargs):
         data = {'errors': []}
@@ -87,17 +60,18 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
         elif action == 'commission_paid':
             year_selected = FilterQueryCommon.get_param_validate(request.POST.get('year', None))
             advisers = Advisers.objects.get(user_id=self.request.user.pkid)
-            year = datetime.datetime.now().date().year
-            year_list = [year]
             payment_paid_list = []
             status = 200
             is_per_year = True if year_selected else False
 
-            payment_adviser_commissions_list = self.get_payment_adviser_commissions_list(
-                year, year_list, is_per_year, year_selected
-            )
+            query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
+            query_AND_1.children.append(('deleted', False))
+            query_AND_1.children.append(('adviser_id', advisers.id))
+            query_AND_1.children.append(('pay_adviser', True))
 
-            for payment_adviser_commissions in payment_adviser_commissions_list:
+            range_year_to_search_list = self.get_range_year_to_search_list(is_per_year, year_selected)
+
+            for year in range_year_to_search_list:
                 value_presenter_list = []
 
                 if is_per_year:
@@ -105,10 +79,9 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
                     for mes in MESES:
                         value_commission = util_null_to_decimal(
                             OrderInstitutionQuotas.objects.filter(
-                                adviser_id=advisers.id,
-                                date_issue__year=year_selected,
+                                query_AND_1,
+                                date_issue__year=year,
                                 date_issue__month=mes[0],
-                                pay_adviser=True
                             ).aggregate(
                                 sum=Sum('commissions_advisers_value')
                             )['sum']
@@ -116,33 +89,31 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
 
                         value_presenter_list.append(
                             {
-                                'payment_adviser_commissions': model_to_dict(payment_adviser_commissions),
+                                'year': year,
                                 'label': mes[1],
                                 'value': value_commission
                             }
                         )
                 else:
                     value_commission = util_null_to_decimal(
-                        PaymentAdviserCommissionsDetails.objects.filter(
-                            payment_adviser_commissions_id=payment_adviser_commissions.id,
-                            adviser_id=advisers.id,
-                            pay=True,
-                            deleted=False,
+                        OrderInstitutionQuotas.objects.filter(
+                            query_AND_1,
+                            date_issue__year=year,
                         ).aggregate(
-                            sum=Sum('value_commission')
+                            sum=Sum('commissions_managers_value')
                         )['sum']
                     )
 
                     value_presenter_list.append(
                         {
-                            'label': payment_adviser_commissions.year,
+                            'label': year,
                             'value': value_commission
                         }
                     )
 
                 payment_paid_list.append(
                     {
-                        'payment_adviser_commissions': model_to_dict(payment_adviser_commissions),
+                        'year': year,
                         'value_presenter_list': value_presenter_list
                     }
                 )
@@ -152,17 +123,18 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
         elif action == 'commission_x_cobrar':
             year_selected = FilterQueryCommon.get_param_validate(request.POST.get('year', None))
             advisers = Advisers.objects.get(user_id=self.request.user.pkid)
-            year = datetime.datetime.now().date().year
-            year_list = [year]
             payment_paid_list = []
             status = 200
             is_per_year = True if year_selected else False
 
-            payment_adviser_commissions_list = self.get_payment_adviser_commissions_list(
-                year, year_list, is_per_year, year_selected
-            )
+            query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
+            query_AND_1.children.append(('deleted', False))
+            query_AND_1.children.append(('adviser_id', advisers.id))
+            query_AND_1.children.append(('pay_adviser', False))
 
-            for payment_adviser_commissions in payment_adviser_commissions_list:
+            range_year_to_search_list = self.get_range_year_to_search_list(is_per_year, year_selected)
+
+            for year in range_year_to_search_list:
                 value_presenter_list = []
 
                 if is_per_year:
@@ -170,10 +142,9 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
                     for mes in MESES:
                         value_commission = util_null_to_decimal(
                             OrderInstitutionQuotas.objects.filter(
-                                adviser_id=advisers.id,
+                                query_AND_1,
                                 date_issue__year=year_selected,
                                 date_issue__month=mes[0],
-                                pay_adviser=False
                             ).aggregate(
                                 sum=Sum('commissions_advisers_value')
                             )['sum']
@@ -181,7 +152,7 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
 
                         value_presenter_list.append(
                             {
-                                'payment_adviser_commissions': model_to_dict(payment_adviser_commissions),
+                                'year': year,
                                 'label': mes[1],
                                 'value': value_commission
                             }
@@ -189,8 +160,8 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
                 else:
                     value_commission = util_null_to_decimal(
                         OrderInstitutionQuotas.objects.filter(
-                            adviser_id=advisers.id,
-                            pay_adviser=False
+                            query_AND_1,
+                            date_issue__year=year,
                         ).aggregate(
                             sum=Sum('commissions_advisers_value')
                         )['sum']
@@ -198,14 +169,14 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
 
                     value_presenter_list.append(
                         {
-                            'label': payment_adviser_commissions.year,
+                            'label': year,
                             'value': value_commission
                         }
                     )
 
                 payment_paid_list.append(
                     {
-                        'payment_adviser_commissions': model_to_dict(payment_adviser_commissions),
+                        'year': year,
                         'value_presenter_list': value_presenter_list
                     }
                 )
@@ -215,17 +186,17 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
         elif action == 'commission_totals':
             year_selected = FilterQueryCommon.get_param_validate(request.POST.get('year', None))
             advisers = Advisers.objects.get(user_id=self.request.user.pkid)
-            year = datetime.datetime.now().date().year
-            year_list = [year]
             payment_paid_list = []
             status = 200
             is_per_year = True if year_selected else False
 
-            payment_adviser_commissions_list = self.get_payment_adviser_commissions_list(
-                year, year_list, is_per_year, year_selected
-            )
+            query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
+            query_AND_1.children.append(('deleted', False))
+            query_AND_1.children.append(('adviser_id', advisers.id))
 
-            for payment_adviser_commissions in payment_adviser_commissions_list:
+            range_year_to_search_list = self.get_range_year_to_search_list(is_per_year, year_selected)
+
+            for year in range_year_to_search_list:
                 value_presenter_list = []
 
                 if is_per_year:
@@ -233,7 +204,7 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
                     for mes in MESES:
                         value_commission = util_null_to_decimal(
                             OrderInstitutionQuotas.objects.filter(
-                                adviser_id=advisers.id,
+                                query_AND_1,
                                 date_issue__year=year_selected,
                                 date_issue__month=mes[0],
                             ).aggregate(
@@ -243,7 +214,7 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
 
                         value_presenter_list.append(
                             {
-                                'payment_adviser_commissions': model_to_dict(payment_adviser_commissions),
+                                'year': year,
                                 'label': mes[1],
                                 'value': value_commission
                             }
@@ -251,7 +222,8 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
                 else:
                     value_commission = util_null_to_decimal(
                         OrderInstitutionQuotas.objects.filter(
-                            adviser_id=advisers.id,
+                            query_AND_1,
+                            date_issue__year=year,
                         ).aggregate(
                             sum=Sum('subtotal')
                         )['sum']
@@ -259,14 +231,14 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
 
                     value_presenter_list.append(
                         {
-                            'label': payment_adviser_commissions.year,
+                            'label': year,
                             'value': value_commission
                         }
                     )
 
                 payment_paid_list.append(
                     {
-                        'payment_adviser_commissions': model_to_dict(payment_adviser_commissions),
+                        'year': year,
                         'value_presenter_list': value_presenter_list
                     }
                 )
@@ -279,13 +251,7 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data()
         addUserData(self.request, context)
         context['advisers'] = advisers = Advisers.objects.get(user_id=self.request.user.pkid)
-        year = datetime.datetime.now().date().year
-        year_list = [year]
-
-        for index in range(0, 4):
-            year -= 1
-            year_list.append(year)
-        context['year_list'] = year_list
+        context['year_list'] = self.get_range_year_list()
 
         context['institutions_active_count'] = Institutions.objects.filter(adviser_id=advisers.id, deleted=False, status=True).count()
         context['institutions_disabled_count'] = Institutions.objects.filter(adviser_id=advisers.id, deleted=False, status=False).count()
@@ -296,12 +262,14 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
                 deleted=False,
             ).aggregate(sum=Sum('value_commission'))['sum']
         )
+
         context['order_subtotal'] = util_null_to_decimal(
             OrderInstitutionQuotas.objects.filter(
                 adviser_id=advisers.id,
                 deleted=False,
             ).aggregate(sum=Sum('subtotal'))['sum']
         )
+
         order_institution_quotas_subtotal = PaymentAdviserCommissionsManager.get_detail_adviser_payment_acummulate(
             PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0],
             advisers.id
@@ -310,3 +278,18 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
         context['institutions_list'] = Institutions.objects.filter(adviser_id=advisers.id)
 
         return context
+
+    def get_range_year_list(self):
+        year = datetime.datetime.now().date().year
+        year_list = [year]
+
+        for index in range(0, 4):
+            year -= 1
+            year_list.append(year)
+        return year_list
+
+    def get_range_year_to_search_list(self, is_per_year, year_selected):
+        if is_per_year:
+            return [int(year_selected)]
+
+        return self.get_range_year_list()

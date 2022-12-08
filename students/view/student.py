@@ -54,5 +54,6 @@ class StudentsCreateView(CreateView):
         context['form_action'] = 'Crear'
         context['student_id'] = self.request.GET.get('student_id')
         context['success_url'] = self.success_url
+        context['back_url'] = self.success_url
         context['title_label'] = "Nuevo registro de estudiante"
         return context

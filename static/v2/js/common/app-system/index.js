@@ -64,15 +64,15 @@ const AppSystem = {
                     contentSuffix: 'contentAlert'
                 },
                 onlyShow: function ({id = ''}) {
-                    const $alert = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.alertSuffix))
+                    const $alert = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, this.CONSTANT.alertSuffix))
                     $alert.classList.remove('d-none')
                 },
                 show: function (data = {}) {
                     const {id = '', title = '', content = '', typeFeature = AppSystem.CONSTANT.typeFeature.danger, withTitleDefault = true} = data
 
-                    const $alert = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.alertSuffix))
-                    const $title = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.titleSuffix))
-                    const $content = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.contentSuffix))
+                    const $alert = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, this.CONSTANT.alertSuffix))
+                    const $title = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, this.CONSTANT.titleSuffix))
+                    const $content = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, this.CONSTANT.contentSuffix))
 
                     let titleDefault = ''
 
@@ -105,7 +105,7 @@ const AppSystem = {
                     $alert.classList.remove('d-none')
                 },
                 hidden: function ({id = ''}) {
-                    const $alert = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, AppSystem.handleComp.alert.alert.CONSTANT.alertSuffix))
+                    const $alert = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, this.CONSTANT.alertSuffix))
                     $alert.classList.add('d-none')
                 }
             }
@@ -117,7 +117,7 @@ const AppSystem = {
                 },
                 changeValue: function (data = {}) {
                     const {id = '', value = ''} = data
-                    const $h3 = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, AppSystem.handleComp.card.cardWidgetValue.CONSTANT.valueSuffix))
+                    const $h3 = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, this.CONSTANT.valueSuffix))
                     $h3.innerHTML = value
                 }
             },

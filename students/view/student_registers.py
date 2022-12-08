@@ -1,28 +1,25 @@
 from django.db.models import Sum
-from django.shortcuts import render
-from django.views.generic.base import View, TemplateView
-from django.views.generic import ListView, CreateView, UpdateView
-from django.http import JsonResponse
 from django.forms import model_to_dict
+from django.http import JsonResponse
 from django.urls import reverse_lazy
+from django.views.generic import CreateView, TemplateView
 
-from core.constants import SYS_PARAMETER_CODE
-from institutions.models import InsTypeRegistries
 from security.functions import addUserData
+from security.mixins import PermissionMixin
 from students.forms import StudentRegistersSearchForm, StudentRegistersForm
 from students.models import Students, StudentRegisters
 from system.models import SysParameters
 from transactions.models import InstitutionQuotesTypeRegister
 
 
-class StudentRegistersView(View):
+class StudentRegistersView(PermissionMixin, TemplateView):
     template_name = 'students/student_registers/view.html'
+    permission_required = 'add_studentregisters'
 
-    def get(self, request):
-        context = {}
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         addUserData(self.request, context)
         context['title_label'] = 'INGRESO INTERNACIONAL DE REGISTROS INSTITUCIONAL'
-
         institution_quotes_type_register_sum = InstitutionQuotesTypeRegister.objects.filter(
             deleted=False,
         ).aggregate(
@@ -31,12 +28,12 @@ class StudentRegistersView(View):
         )
 
         context['institution_quotes_type_register_sum'] = institution_quotes_type_register_sum
+        return context
 
-        return render(request, self.template_name, context)
 
-
-class StudentRegistersSearchView(View):
+class StudentRegistersSearchView(PermissionMixin, TemplateView):
     template_name = 'students/student_registers/search.html'
+    permission_required = ('add_studentregisters',)
 
     def post(self, request, *args, **kwargs):
         data = {'errors': [], 'message': "No ha enviado ninguna opcion"}
@@ -63,15 +60,16 @@ class StudentRegistersSearchView(View):
 
         return JsonResponse(data, status=status)
 
-    def get(self, request):
-        context = {}
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         addUserData(self.request, context)
         context['form'] = StudentRegistersSearchForm()
         context['title_label'] = "INGRESO INTERNACIONAL DE REGISTROS INSTITUCIONAL"
-        return render(request, self.template_name, context)
+        return context
 
 
-class StudentRegistersCreateView(CreateView):
+class StudentRegistersCreateView(PermissionMixin, CreateView):
+    permission_required = ('add_studentregisters',)
     model = StudentRegisters
     template_name = 'students/student_registers/create.html'
     form_class = StudentRegistersForm
@@ -140,6 +138,7 @@ class StudentRegistersCreateView(CreateView):
         context['form_action'] = 'Crear'
         context['student_id'] = self.request.GET.get('student_id')
         context['success_url'] = self.success_url
+        context['back_url'] = self.success_url
         context['title_label'] = "Crear registro de estudiante"
         return context
 

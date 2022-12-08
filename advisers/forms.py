@@ -109,4 +109,4 @@ class AdviserForm(forms.ModelForm):
     class Meta:
         model = Advisers
         fields = '__all__'
-        exclude = ('deleted', 'manager', 'code')
+        exclude = ('deleted', 'manager')

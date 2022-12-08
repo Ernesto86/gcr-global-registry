@@ -2,8 +2,8 @@ import datetime
 from decimal import Decimal
 
 from django.http import JsonResponse
-from django.shortcuts import render
-from django.views.generic.base import View
+from django.views.generic import CreateView, TemplateView
+from security.mixins import PermissionMixin
 
 from advisers.models import PeriodCommissions, AdvisersCommissions, ManagersCommissions
 from core.util_functions import util_null_to_decimal
@@ -13,13 +13,14 @@ from transactions.manager.shopping_cart_manager import ShoppingCartManager
 from transactions.models import OrderInstitutionQuotas, OrderInstitutionQuotaDetails, InstitutionQuotesTypeRegister
 
 
-class ShoppingCartView(View):
+class ShoppingCartView(PermissionMixin, TemplateView):
     template_name = 'transactions/shopping_cart/view.html'
+    permission_required = 'add_orderinstitutionquotas'
 
-    def get(self, request):
-        context = {}
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         addUserData(self.request, context)
-        context['quota_sum'] = ShoppingCartManager.get_quota_sum(request.session.get('shopping_cart', None))
+        context['quota_sum'] = ShoppingCartManager.get_quota_sum(self.request.session.get('shopping_cart', None))
 
         institution = Institutions.objects.select_related(
             "type_registration"
@@ -40,7 +41,7 @@ class ShoppingCartView(View):
             for x in InsTypeRegistries.objects.all().order_by('code')
         ]
 
-        return render(request, self.template_name, context)
+        return context
 
     def post(self, request):
         action = request.POST.get('action')
@@ -58,7 +59,8 @@ class ShoppingCartView(View):
                 }
             else:
                 if request.session['shopping_cart'].get(type_register_id_str):
-                    request.session['shopping_cart'][type_register_id_str] = int(request.session['shopping_cart'][type_register_id_str]) + quotes
+                    request.session['shopping_cart'][type_register_id_str] = int(
+                        request.session['shopping_cart'][type_register_id_str]) + quotes
                 else:
                     request.session['shopping_cart'][type_register_id_str] = quotes
 
@@ -68,14 +70,15 @@ class ShoppingCartView(View):
         })
 
 
-class ShoppingCartBuyView(View):
+class ShoppingCartBuyView(PermissionMixin, TemplateView):
     template_name = 'transactions/shopping_cart/buy.html'
+    permission_required = 'add_orderinstitutionquotas'
 
-    def get(self, request):
-        context = {}
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         addUserData(self.request, context)
 
-        context['shopping_cart'] = request.session.get('shopping_cart')
+        context['shopping_cart'] = self.request.session.get('shopping_cart')
         context['subtotal'] = 0
         context['type_registries_list'] = []
         institution = Institutions.objects.select_related(
@@ -108,7 +111,7 @@ class ShoppingCartBuyView(View):
 
         context['show_bottom_pay'] = len(context['type_registries_list']) > 0
 
-        return render(request, self.template_name, context)
+        return context
 
     def post(self, request):
         action = request.POST.get('action')
@@ -125,6 +128,7 @@ class ShoppingCartBuyView(View):
             date_buy = datetime.datetime.now()
 
             if shopping_cart:
+                print("mas arriba")
                 managers_commissions = ManagersCommissions.objects.get(manager_id=institution.adviser.manager_id, deleted=False)
 
                 commissions_advisers_find = self.commissions_advisers_find(institution)
