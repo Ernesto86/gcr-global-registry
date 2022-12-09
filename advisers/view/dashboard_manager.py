@@ -8,7 +8,7 @@ from advisers.manager.payment_adviser_commissions_manager import PaymentAdviserC
 from advisers.models import Advisers, PaymentAdviserCommissions, Managers
 from core.common.filter_orm.filter_orm_common import FilterOrmCommon
 from core.common.filter_query.filter_query_common import FilterQueryCommon
-from core.constants import MESES
+from core.constants import MESES, RegistrationStatus
 from core.util_functions import util_null_to_decimal
 from institutions.models import Institutions
 from security.functions import addUserData
@@ -61,7 +61,6 @@ class DashboardManagerView(PermissionMixin, TemplateView):
             adviser_id = FilterQueryCommon.get_param_validate(request.POST.get('adviser_id', None))
             manager = Managers.objects.get(user_id=self.request.user.pkid)
             year = datetime.datetime.now().date().year
-            year_list = [year]
             status = 200
             is_per_year = True if year_selected else False
 
@@ -93,8 +92,14 @@ class DashboardManagerView(PermissionMixin, TemplateView):
                 year_selected
             )
             data['payment_totals_list'] = self.get_commission_totals(manager.id, adviser_id, is_per_year, year_selected)
-            data['institutions_active_count'] = Institutions.objects.filter(query_AND_1, status=True).count()
-            data['institutions_disabled_count'] = Institutions.objects.filter(query_AND_1, status=False).count()
+            data['institutions_active_count'] = Institutions.objects.filter(
+                query_AND_1,
+                registration_status=RegistrationStatus.APROBADO
+            ).count()
+            data['institutions_disabled_count'] = Institutions.objects.filter(
+                query_AND_1,
+                registration_status=RegistrationStatus.PENDIENTE
+            ).count()
 
             data['value_commission_paid'] = util_null_to_decimal(
                 OrderInstitutionQuotas.objects.filter(

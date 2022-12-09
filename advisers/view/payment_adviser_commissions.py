@@ -86,18 +86,23 @@ class PaymentAdviserCommissionsCreateView(CreateView):
         if action == 'add':
             try:
                 status = 200
+                print("akaaaaaaaaa")
                 type_functionary = int(request.POST.get('type_functionary', ''))
                 year = int(request.POST.get('year', ''))
                 month = int(request.POST.get('month', ''))
                 date_payment = datetime.datetime.now()
 
+                print("adentro")
                 data['calculate_payment_commissions'] = PaymentAdviserCommissionsManager.get_calculate_payment_commissions(
                     type_functionary,
                     year,
                     month
                 )
+                print("afuera")
 
                 PaymentAdviserCommissionsManager.validate_or_raise_name_error(year, month, type_functionary)
+
+                print("no te cachoooooooo")
 
                 try:
                     payment_adviser_commissions = PaymentAdviserCommissions.objects.get(
@@ -109,17 +114,40 @@ class PaymentAdviserCommissionsCreateView(CreateView):
                 except Exception as ex:
                     payment_adviser_commissions = None
 
+                print("no te aaaaaaaa")
+
                 if payment_adviser_commissions:
                     PaymentAdviserCommissionsDetails.objects.filter(
                         payment_adviser_commissions_id=payment_adviser_commissions.id
                     ).delete()
                 else:
+                    print("debugear")
                     payment_adviser_commissions = PaymentAdviserCommissions.objects.create(
                         type_functionary=type_functionary,
                         date_payment=date_payment,
                         year=year,
                         month=month,
-                        pay_period=False
+                        # TODO: INCLUIR PROCESO DE PAYPAL PARA PAY_PERYOD TRUE
+                        pay_period=True
+                    )
+                    print("debugear 1111111")
+
+                    update_common = {}
+
+                    if int(type_functionary) == PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0]:
+                        # TODO: INCLUIR PROCESO DE PAYPAL PARA pay_adviser TRUE
+                        update_common["pay_adviser"] = True
+                    else:
+                        # TODO: INCLUIR PROCESO DE PAYPAL PARA pay_adviser TRUE
+                        update_common["pay_manager"] = True
+
+                    OrderInstitutionQuotas.objects.filter(
+                        deleted=False,
+                        date_issue__year=year,
+                        date_issue__month=month,
+                    ).update(
+                        # TODO: INCLUIR PROCESO DE PAYPAL PARA pay_adviser TRUE
+                        **update_common
                     )
 
                 PaymentAdviserCommissionsManager.create_details_payment(

@@ -31,7 +31,8 @@ def advisers_commissions_save(request, *args, **kwargs):
 
     query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
     query_AND_1.children.append(("deleted", False))
-    query_AND_1.children.append(("adviser__manager__user_id", request.user.pkid))
+
+
 
     dict_update = {
         'commissions_period_1': request.POST.get('advisers_percentage_period_1'),

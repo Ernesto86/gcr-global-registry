@@ -63,7 +63,6 @@ class AdviserCreateView(PermissionMixin, CreateView):
         action = request.POST['action']
 
         if action == 'add':
-            print("seguro--------")
             form = self.get_form()
 
             if form.is_valid():

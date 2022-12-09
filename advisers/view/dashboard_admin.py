@@ -10,7 +10,7 @@ from advisers.manager.payment_adviser_commissions_manager import PaymentAdviserC
 from advisers.models import Advisers, PaymentAdviserCommissions, Managers
 from core.common.filter_orm.filter_orm_common import FilterOrmCommon
 from core.common.filter_query.filter_query_common import FilterQueryCommon
-from core.constants import MESES
+from core.constants import MESES, RegistrationStatus
 from core.util_functions import util_null_to_decimal
 from institutions.models import Institutions
 from security.functions import addUserData
@@ -75,8 +75,6 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
             country_id = FilterQueryCommon.get_param_validate(request.POST.get('country_id', None))
             manager_id = FilterQueryCommon.get_param_validate(request.POST.get('manager_id', None))
             adviser_id = FilterQueryCommon.get_param_validate(request.POST.get('adviser_id', None))
-            year = datetime.datetime.now().date().year
-            year_list = [year]
             status = 200
 
             query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
@@ -101,8 +99,14 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
                         query_AND_1.children.append(('adviser_id', adviser_id))
                         value_commission_query_AND_1.children.append(('adviser_id', adviser_id))
 
-            data['institutions_active_count'] = Institutions.objects.filter(query_AND_1, status=True).count()
-            data['institutions_disabled_count'] = Institutions.objects.filter(query_AND_1, status=False).count()
+            data['institutions_active_count'] = Institutions.objects.filter(
+                query_AND_1,
+                registration_status=RegistrationStatus.APROBADO
+            ).count()
+            data['institutions_disabled_count'] = Institutions.objects.filter(
+                query_AND_1,
+                registration_status=RegistrationStatus.PENDIENTE
+            ).count()
 
             data['value_commission_paid_manager'] = util_null_to_decimal(
                 OrderInstitutionQuotas.objects.filter(
@@ -195,9 +199,12 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
                 {
                     **model_to_dict(x, fields=FIELDS),
                     'subtotal': x.subtotal,
+                    'type_registration': x.type_registration.name,
                     'count': x.count,
                 }
-                for x in Institutions.objects.filter(
+                for x in Institutions.objects.select_related(
+                    'type_registration'
+                ).filter(
                     query_AND_1
                 ).annotate(
                     count=Count(['id']),

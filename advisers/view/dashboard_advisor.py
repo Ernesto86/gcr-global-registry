@@ -10,7 +10,7 @@ from advisers.manager.payment_adviser_commissions_manager import PaymentAdviserC
 from advisers.models import Advisers, PaymentAdviserCommissionsDetails, PaymentAdviserCommissions
 from core.common.filter_orm.filter_orm_common import FilterOrmCommon
 from core.common.filter_query.filter_query_common import FilterQueryCommon
-from core.constants import MESES
+from core.constants import MESES, RegistrationStatus
 from core.util_functions import util_null_to_decimal
 from institutions.models import Institutions
 from security.functions import addUserData
@@ -143,7 +143,7 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
                         value_commission = util_null_to_decimal(
                             OrderInstitutionQuotas.objects.filter(
                                 query_AND_1,
-                                date_issue__year=year_selected,
+                                date_issue__year=year,
                                 date_issue__month=mes[0],
                             ).aggregate(
                                 sum=Sum('commissions_advisers_value')
@@ -253,14 +253,24 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
         context['advisers'] = advisers = Advisers.objects.get(user_id=self.request.user.pkid)
         context['year_list'] = self.get_range_year_list()
 
-        context['institutions_active_count'] = Institutions.objects.filter(adviser_id=advisers.id, deleted=False, status=True).count()
-        context['institutions_disabled_count'] = Institutions.objects.filter(adviser_id=advisers.id, deleted=False, status=False).count()
+        context['institutions_active_count'] = Institutions.objects.filter(
+            adviser_id=advisers.id,
+            deleted=False,
+            registration_status=RegistrationStatus.APROBADO
+        ).count()
+        context['institutions_disabled_count'] = Institutions.objects.filter(
+            adviser_id=advisers.id,
+            deleted=False,
+            registration_status=RegistrationStatus.PENDIENTE
+        ).count()
         context['value_commission_payment'] = util_null_to_decimal(
-            PaymentAdviserCommissionsDetails.objects.filter(
-                adviser_id=advisers.id,
-                pay=True,
+            OrderInstitutionQuotas.objects.filter(
                 deleted=False,
-            ).aggregate(sum=Sum('value_commission'))['sum']
+                adviser_id=advisers.id,
+                pay_adviser=True,
+            ).aggregate(
+                sum=Sum('commissions_managers_value')
+            )['sum']
         )
 
         context['order_subtotal'] = util_null_to_decimal(

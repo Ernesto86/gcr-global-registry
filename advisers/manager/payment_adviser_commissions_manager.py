@@ -15,9 +15,13 @@ class PaymentAdviserCommissionsManager:
 
     @staticmethod
     def validate_or_raise_name_error(year, month, type_functionary):
-        if PaymentAdviserCommissions.objects.filter(pay_period=True).count():
+        if PaymentAdviserCommissions.objects.filter(
+                type_functionary=type_functionary,
+                pay_period=True
+        ).count():
             month_copy = month
             query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
+
             query_AND_1.children.append(('type_functionary', type_functionary))
             query_AND_1.children.append(('pay_period', True))
 
@@ -231,7 +235,8 @@ class PaymentAdviserCommissionsManager:
                         payment_adviser_commissions_id=payment_adviser_commissions_id,
                         value_commission=value_commission,
                         adviser_id=payment_commissions_details['adviser']['id'],
-                        pay=False
+                        # TODO: INCLUIR PROCESO DE PAYPAL PARA PAY TRUE
+                        pay=True
                     )
                 )
 

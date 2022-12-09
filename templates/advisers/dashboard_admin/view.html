@@ -95,18 +95,14 @@
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive mt-4">
-                        <table id="id-institutionTable" class="table table-striped mb-0" role="grid">
+                        <table id="id-institutionTable" class="table table-striped mb-0 table-sm" role="grid">
                             <thead class="table-primary">
                             <tr>
                                 <th>Nombre</th>
                                 <th>Alias</th>
                                 <th>Tipo de registro</th>
                                 <th>Representante</th>
-                                <th>Identificacion</th>
                                 <th>Pais</th>
-                                <th>Direccion</th>
-                                <th>Telefono</th>
-                                <th>Email</th>
                                 <th>Habilitado?</th>
                                 <th>Cantidad</th>
                                 <th>Subtotal</th>
@@ -456,14 +452,10 @@
                     return `
                         <tr>
                             <td>${elem.name}</td>
-                            <td>${elem.alias}</td>
+                            <td>${elem.alias? elem.alias: "-"}</td>
                             <td>${elem.type_registration}</td>
-                            <td>${elem.representative}</td>
-                            <td>${elem.identification}</td>
+                            <td>${elem.representative? elem.representative : "-"}</td>
                             <td>${elem.country}</td>
-                            <td>${elem.address}</td>
-                            <td>${elem.telephone}</td>
-                            <td>${elem.email}</td>
                             <td class="text-center"></td>
                             <td>${elem.count}</td>
                             <td>${elem.subtotal}</td>
@@ -489,7 +481,7 @@
                             </td>
                         </tr>
                                 `
-                })
+                }).join('')
 
                 if (objD.elem.barChartCommissionPaid)
                     objD.elem.barChartCommissionPaid.destroy()
