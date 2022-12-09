@@ -35,6 +35,7 @@ class AdviserListView(PermissionMixin, ListViewFilter, ListView):
 
     def get_queryset(self, **kwargs):
         self.query_AND_1, self.query_OR_1 = FilterOrmCommon.get_query_connector_tuple()
+        self.query_AND_1.children.append(("manager__user_id", self.request.user.pkid))
         search = self.request.GET.get('search', '')
 
         if search:

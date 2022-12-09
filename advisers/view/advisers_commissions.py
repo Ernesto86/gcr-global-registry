@@ -78,9 +78,8 @@ class AdvisersCommissionsListView(PermissionMixin, ListView):
 
     def get_queryset(self, **kwargs):
         self.query_AND_1, self.query_OR_1 = FilterOrmCommon.get_query_connector_tuple()
-        search = self.request.GET.get('search', '')
-
         self.query_AND_1.children.append(("adviser__manager__user_id", self.request.user.pkid))
+        search = self.request.GET.get('search', '')
 
         if search:
             self.query_OR_1.children.append(("adviser__last_name__icontains", search))
