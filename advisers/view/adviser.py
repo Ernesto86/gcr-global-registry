@@ -6,11 +6,12 @@ from django.http import JsonResponse
 from rest_framework import status
 
 from advisers.forms import AdviserForm
-from advisers.models import Advisers
+from advisers.models import Advisers, Managers
 from core.common.filter_orm.filter_orm_common import FilterOrmCommon
 from security.functions import addUserData
 from core.util_functions import ListViewFilter
 from security.mixins import *
+from security.models import User
 
 
 class AdviserListView(PermissionMixin, ListViewFilter, ListView):
@@ -66,8 +67,19 @@ class AdviserCreateView(PermissionMixin, CreateView):
         if action == 'add':
             form = self.get_form()
 
+            manager = Managers.objects.get(user_id=self.request.user.pk)
+
             if form.is_valid():
-                form.instance.manager_id = self.request.user.pk
+                user = User.objects.create_user(
+                    username=form.instance.email,
+                    first_name=form.instance.first_name,
+                    last_name=form.instance.last_name,
+                    email=form.instance.email,
+                    password="admin123**"
+                )
+                
+                form.instance.manager_id = manager.id
+                form.instance.user_id = user.pk
                 form.save()
                 form.instance.create_commission()
                 return JsonResponse(data, status=status.HTTP_200_OK)
