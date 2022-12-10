@@ -103,11 +103,11 @@ WSGI_APPLICATION = "api.wsgi.application"
 
 DATABASES = {
     "default": {
-        'ENGINE': os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
-        'NAME': os.environ.get("SQL_DATABASE", "central-global-registry-local"),
-        'USER': os.environ.get("SQL_USER", "local_db_usr"),
-        'PASSWORD': os.environ.get("SQL_PASSWORD", "local_db_pass"),
-        'HOST': os.environ.get("SQL_HOST", "localhost"),
+        'ENGINE': os.environ.get("SQL_ENGINE", "django.db.backends.postgresql_psycopg2"),
+        'NAME': os.environ.get("SQL_DATABASE", "central-global-registry"),
+        'USER': os.environ.get("SQL_USER", "devs-test"),
+        'PASSWORD': os.environ.get("SQL_PASSWORD", "~#FP5ar,FmNN-*?T"),
+        'HOST': os.environ.get("SQL_HOST", "/cloudsql/primeval-aspect-342120:us-central1:central-devs-psql"),
         'PORT': os.environ.get("SQL_PORT", "5432"),
         'ATOMIC_REQUESTS': True
     }
