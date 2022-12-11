@@ -105,8 +105,8 @@ DATABASES = {
     "default": {
         'ENGINE': os.environ.get("SQL_ENGINE", "django.db.backends.postgresql_psycopg2"),
         'NAME': os.environ.get("SQL_DATABASE", "central-global-registry"),
-        'USER': os.environ.get("SQL_USER", "devs-test"),
-        'PASSWORD': os.environ.get("SQL_PASSWORD", "~#FP5ar,FmNN-*?T"),
+        'USER': os.environ.get("SQL_USER", "postgres"),
+        'PASSWORD': os.environ.get("SQL_PASSWORD", "-*?A4fFJX@6U'qh3"),
         'HOST': os.environ.get("SQL_HOST", "/cloudsql/primeval-aspect-342120:us-central1:central-devs-psql"),
         'PORT': os.environ.get("SQL_PORT", "5432"),
         'ATOMIC_REQUESTS': True
