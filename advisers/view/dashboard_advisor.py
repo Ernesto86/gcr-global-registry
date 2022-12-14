@@ -100,7 +100,7 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
                             query_AND_1,
                             date_issue__year=year,
                         ).aggregate(
-                            sum=Sum('commissions_managers_value')
+                            sum=Sum('commissions_advisers_value')
                         )['sum']
                     )
 
@@ -269,7 +269,7 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
                 adviser_id=advisers.id,
                 pay_adviser=True,
             ).aggregate(
-                sum=Sum('commissions_managers_value')
+                sum=Sum('commissions_advisers_value')
             )['sum']
         )
 

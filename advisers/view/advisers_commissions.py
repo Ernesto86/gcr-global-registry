@@ -62,7 +62,6 @@ class AdvisersCommissionsListView(PermissionMixin, ListView):
     redirect_field_name = 'redirect_to'
     template_name = 'advisers/advisers_commissions/list.html'
     permission_required = 'view_adviserscommissions'
-    paginate_by = 1
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

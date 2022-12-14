@@ -293,11 +293,9 @@ class PaymentAdviserCommissionsUpdateView(UpdateView):
         elif action == 'calculate':
             try:
                 status = 200
-                print("que paso", request.POST.get('type_functionary', ''), "no hay nada")
                 type_functionary = int(request.POST.get('type_functionary', ''))
                 year = request.POST.get('year', '')
                 month = request.POST.get('month', '')
-                print("que pasa", year, month)
 
                 data['calculate_payment_commissions'] = PaymentAdviserCommissionsManager.get_calculate_payment_commissions(
                     type_functionary,

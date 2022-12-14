@@ -1,8 +1,14 @@
 from django import forms
+
+from core.common.form.form_common import FormCommon
 from institutions.models import Institutions
 
 
 class InstitutionForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        FormCommon.update_all_field(self.fields)
 
     class Meta:
         model = Institutions

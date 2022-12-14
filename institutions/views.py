@@ -11,7 +11,7 @@ from institutions.models import Institutions
 from security.functions import addUserData
 from core.util_functions import ListViewFilter
 from security.mixins import *
-from advisers.models import Advisers
+from advisers.models import Advisers, Managers
 from core.constants import RegistrationStatus
 from system.models import SysCountries
 import datetime
@@ -91,6 +91,7 @@ class InstitutionconfigurationView(PermissionMixin, TemplateView):
         addUserData(self.request, context)
         context['form'] = InstitutionForm(instance = self.request.user.institution)
         context['institution'] = self.request.user.institution
+        context['title_label'] = "Configurar datos de Institución"
         return context
 
     def post(self, request, *args, **kwargs):
@@ -153,7 +154,10 @@ class InstitutionRegisterStatus(ListViewFilter, ListView):
             'registration_status': self.request.GET.get('status_id', ''),
             'country_id': self.request.GET.get('country_id', ''),
         }
+        manager = Managers.objects.get(user_id=self.request.user.pk)
+        print("manageraaaaaaaaaaaaa")
         return Institutions.objects.filter(
+            Q(adviser__manager_id=manager.id),
             Q(deleted=False),
             Q(code__icontains=search)|
             Q(name__icontains=search),
