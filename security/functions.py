@@ -35,7 +35,7 @@ def addUserData(request, data):
                 data['module_grup_categories'] = grup.modulegruppermissions_set.filter(
                         module__visible=True
                     ).order_by(
-                        'main_category_id','main_category__name'
+                        'main_category_id', 'main_category__is_out' , 'main_category__name'
                     ).distinct('main_category_id')
         except:
             pass

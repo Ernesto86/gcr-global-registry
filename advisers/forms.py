@@ -1,7 +1,8 @@
 from django import forms
 
 from advisers.choices import TL_YEAR, TL_MONTH
-from advisers.models import AdvisersCommissions, PeriodCommissions, Advisers, PaymentAdviserCommissions, ManagersCommissions, Managers
+from advisers.models import AdvisersCommissions, PeriodCommissions, Advisers, PaymentAdviserCommissions, ManagersCommissions, \
+    Managers
 from core.common.form.form_common import FormCommon
 
 
@@ -26,7 +27,6 @@ class PeriodCommissionsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         FormCommon.update_all_field(self.fields)
-
 
     class Meta:
         model = PeriodCommissions
@@ -105,6 +105,18 @@ class PaymentAdviserCommissionsForm(forms.ModelForm):
 class AdviserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        FormCommon.update_required_field(self.fields)
+
+    class Meta:
+        model = Advisers
+        fields = '__all__'
+        exclude = ('deleted', 'manager', 'user')
+
+
+class AdviserProfileForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        FormCommon.update_readonly_field([self.fields['code'], self.fields['email']], is_list=True)
         FormCommon.update_required_field(self.fields)
 
     class Meta:

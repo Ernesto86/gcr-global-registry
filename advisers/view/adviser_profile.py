@@ -1,0 +1,49 @@
+from django.http import JsonResponse
+from django.urls import reverse_lazy
+from django.views.generic import UpdateView
+from rest_framework import status
+
+from advisers.forms import AdviserProfileForm
+from advisers.models import Advisers
+from security.functions import addUserData
+from security.mixins import *
+
+
+class AdviserProfileUpdateView(PermissionMixin, UpdateView):
+    model = Advisers
+    template_name = 'advisers/adviser_profile/create.html'
+    form_class = AdviserProfileForm
+    success_url = reverse_lazy('home')
+    permission_required = 'change_advisers'
+
+    def get_object(self):
+        return Advisers.objects.get(user_id=self.request.user.pk)
+
+    def post(self, request, *args, **kwargs):
+        data = {'errors': [], 'message': ""}
+        action = request.POST['action']
+
+        if action == 'edit':
+            instance = self.get_object()
+            form = self.form_class(data=self.request.POST, instance=instance)
+
+            if form.is_valid():
+                form.save()
+                form.instance.user.first_name = form.instance.first_name
+                form.instance.user.last_name = form.instance.last_name
+                form.instance.user.save()
+                return JsonResponse(data, status=status.HTTP_200_OK)
+
+            data['message'] = 'Error de validacion de formulario.'
+            data['errors'] = form.errors
+            return JsonResponse(data, status=status.HTTP_400_BAD_REQUEST)
+
+        return JsonResponse(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        addUserData(self.request, context)
+        context['back_url'] = self.success_url
+        context['title_label'] = 'Actualizar perfil'
+        context['action'] = 'edit'
+        return context

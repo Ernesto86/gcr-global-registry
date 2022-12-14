@@ -10,6 +10,7 @@ from core.models import ModelBase
 from .managers import CustomUserManager
 from crum import get_current_request
 
+
 class User(AbstractBaseUser, PermissionsMixin):
     pkid = models.BigAutoField(primary_key=True, editable=False)
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
@@ -28,7 +29,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=1024,
         blank=True, null=True
     )
-    institution = models.ForeignKey("institutions.Institutions", verbose_name=_("Institución"), on_delete=models.PROTECT, blank=True, null=True)
+    institution = models.ForeignKey("institutions.Institutions", verbose_name=_("Institución"), on_delete=models.PROTECT, blank=True,
+                                    null=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
@@ -55,7 +57,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_group_session(self):
         request = get_current_request()
         return Group.objects.filter(pk=request.session['group_id']).first()
-
 
     def set_group_session(self):
         try:
@@ -89,11 +90,13 @@ class User(AbstractBaseUser, PermissionsMixin):
         if grup is not None:
             grup.user_set.add(self)
 
+
 class Module(ModelBase):
     code = models.CharField(max_length=50, verbose_name="Código", blank=True, null=True)
     url = models.CharField(max_length=100, verbose_name="Enlace")
     name = models.CharField(max_length=100, verbose_name="Nombre")
-    category_module = models.CharField(max_length=20, verbose_name="Categoría módulo", blank=True, null=True, choices=CategoryModule.choices)
+    category_module = models.CharField(max_length=20, verbose_name="Categoría módulo", blank=True, null=True,
+                                       choices=CategoryModule.choices)
     type_module = models.CharField(max_length=20, verbose_name="Tipo módulo", blank=True, null=True, choices=TypeModule.choices)
     icon = models.CharField(max_length=100, verbose_name="Icono", blank=True, null=True)
     image = models.ImageField(upload_to='module/%Y/%m/%d', verbose_name='Imagen', null=True, blank=True)
@@ -120,6 +123,10 @@ class ModuleGrupCategory(ModelBase):
     code = models.CharField(max_length=50, verbose_name="Código", blank=True, null=True)
     name = models.CharField(max_length=100, verbose_name="Nombre")
     order = models.IntegerField(default=0, verbose_name="Orden", blank=True, null=True)
+    is_out = models.BooleanField(default=False, verbose_name="Sin grupo?")
+
+    class CategoryCode(models.IntegerChoices):
+        OUT = "123"
 
     def __str__(self):
         return '{}'.format(self.name)
@@ -137,9 +144,11 @@ class ModuleGrupCategory(ModelBase):
 
         ModelBase.save(self)
 
+
 class ModuleGrupPermissions(ModelBase):
     description = models.CharField(max_length=100, verbose_name="Descripción", blank=True, null=True)
-    main_category = models.ForeignKey(ModuleGrupCategory, on_delete=models.CASCADE, verbose_name='Categoria principal', blank=True, null=True)
+    main_category = models.ForeignKey(ModuleGrupCategory, on_delete=models.CASCADE, verbose_name='Categoria principal', blank=True,
+                                      null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, verbose_name="Grupo", blank=True, null=True)
     module = models.ForeignKey(Module, on_delete=models.CASCADE, verbose_name="Módulo", blank=True, null=True)
     permissions = models.ManyToManyField(Permission, verbose_name='Permisos', blank=True)
@@ -147,6 +156,7 @@ class ModuleGrupPermissions(ModelBase):
 
     def __str__(self):
         return '{} {}'.format(self.description, self.priority)
+
     class Meta:
         verbose_name = 'Grupo de Módulos Permisos'
         verbose_name_plural = 'Grupos de Módulos Permisos'
@@ -155,5 +165,5 @@ class ModuleGrupPermissions(ModelBase):
     def get_grup_category_modules(self):
         return self.group.modulegruppermissions_set.filter(
             module__visible=True,
-            main_category = self.main_category
+            main_category=self.main_category
         )

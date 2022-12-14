@@ -2,41 +2,63 @@ from core.common.form.form_constant import CONSTANT_CLS_BOOTSTRAP, CONSTANT_STAN
 
 
 class FormCommon:
+    CLS_BACKGROUND_READONLY = "bg-secondary bg-opacity-10"
 
     @staticmethod
-    def update_disabled_field(field_list, state=True):
+    def update_disabled_field(fields, is_list=False):
         """
             HACER UN CAMPO COMO DESACTIVADO
         """
-        for key in field_list:
-            field = field_list[key]
-            field.widget.attrs['disabled'] = state
+        if is_list:
+            for field in fields:
+                field.widget.attrs['disabled'] = True
+        else:
+            for key in fields:
+                field = fields[key]
+                field.widget.attrs['disabled'] = True
 
     @staticmethod
-    def update_readonly_field(field_list, state=True):
+    def update_readonly_field(fields, is_list=False):
         """
             HACER UN CAMPO COMO SOLO LECTURA
         """
-        for key in field_list:
-            field = field_list[key]
-            field.widget.attrs['readonly'] = state
+        if is_list:
+            for field in fields:
+                FormCommon.update_dictionary_class_readonly(field)
+        else:
+            for key in fields:
+                field = fields[key]
+                FormCommon.update_dictionary_class_readonly(field)
 
     @staticmethod
-    def update_required_field(field_list, state=True):
+    def update_dictionary_class_readonly(field):
+        class_cls = field.widget.attrs.get('class')
+        class_cls = f"{class_cls} {FormCommon.CLS_BACKGROUND_READONLY}" if class_cls else FormCommon.CLS_BACKGROUND_READONLY
+        field.widget.attrs.update({
+            'readonly': 'readonly',
+            'class': class_cls,
+        })
+
+    @staticmethod
+    def update_required_field(fields, state=True, is_list=False):
         """
             ATUALIZAR LOS CAMPOS DEACUERDO A UNA CONFIGURACION
         """
-        for key in field_list:
-            field = field_list[key]
-            field.widget.attrs['required'] = state
+        if is_list:
+            for field in fields:
+                field.widget.attrs['required'] = state
+        else:
+            for key in fields:
+                field = fields[key]
+                field.widget.attrs['required'] = state
 
     @staticmethod
-    def update_all_field(lt_field, with_place_holder=False, with_place_holder_cover=True):
+    def update_all_field(fields, with_place_holder=False, with_place_holder_cover=True):
         """
             ATUALIZAR LOS CAMPOS DEACUERDO A UNA CONFIGURACION
         """
-        for key in lt_field:
-            field = lt_field[key]
+        for key in fields:
+            field = fields[key]
             settings = {}
 
             class_cls = field.widget.attrs.get('class')

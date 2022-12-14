@@ -7,6 +7,7 @@ from security.sign_up import SignUpView
 from security.view.organizador_detalle import OrganizadorRegistroListView
 from security.view.organizador_registros import OrganizadorRegistrosView
 from security.view.query_general import QueryGeneralView
+from security.view.user import UserUpdatePasswordView
 
 urlpatterns = [
     path(
@@ -28,4 +29,5 @@ urlpatterns = [
     path('query-general', QueryGeneralView.as_view(), name='query_general'),
     path('organizador-registros', OrganizadorRegistrosView.as_view(), name='organizador-registros'),
     path('organizador-detalle/<int:typeregisterid>', OrganizadorRegistroListView.as_view(), name='organizador_detalle'),
+    path('change-password', UserUpdatePasswordView.as_view(), name='user_change_password'),
 ]
