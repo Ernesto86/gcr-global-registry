@@ -27,25 +27,29 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
             institution_id = request.POST.get('institution_id')
             option_view = request.POST.get('option_view')
 
+            adviser_dashboard = AdviserDashboard(advisers)
+
             if option_view == 'paid':
-                data.update(
-                    PaymentAdviserCommissionsManager.get_detail_adviser_payment(
-                        PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0],
-                        advisers.id,
-                        institution_id=institution_id,
-                        pay_adviser=True
-                    )
-                )
+                # data.update(
+                #     PaymentAdviserCommissionsManager.get_detail_adviser_payment(
+                #         PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0],
+                #         advisers.id,
+                #         institution_id=institution_id,
+                #         pay_adviser=True
+                #     )
+                # )
+                data.update(adviser_dashboard.get_detail_sales_collected_per_range_year())
 
             elif option_view == 'xcobrar':
-                data.update(
-                    PaymentAdviserCommissionsManager.get_detail_adviser_payment(
-                        PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0],
-                        advisers.id,
-                        institution_id=institution_id,
-                        pay_adviser=False
-                    )
-                )
+                # data.update(
+                #     PaymentAdviserCommissionsManager.get_detail_adviser_payment(
+                #         PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0],
+                #         advisers.id,
+                #         institution_id=institution_id,
+                #         pay_adviser=False
+                #     )
+                # )
+                data.update(adviser_dashboard.get_detail_sales_by_collect_per_range_year())
 
             status = 200
             data['message'] = ''
