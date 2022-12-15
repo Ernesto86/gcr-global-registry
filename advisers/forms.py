@@ -123,3 +123,15 @@ class AdviserProfileForm(forms.ModelForm):
         model = Advisers
         fields = '__all__'
         exclude = ('deleted', 'manager', 'user')
+
+
+class ManagerProfileForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        FormCommon.update_readonly_field([self.fields['code'], self.fields['email']], is_list=True)
+        FormCommon.update_required_field(self.fields)
+
+    class Meta:
+        model = Managers
+        fields = '__all__'
+        exclude = ('deleted', 'user')
