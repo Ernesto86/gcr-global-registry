@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.views.generic import TemplateView
 
 from advisers.models import Advisers
-from advisers.view.dashboard_adviser.Adviser import AdviserDashboard
+from advisers.view.dashboard_adviser.adviser_dashboard import AdviserDashboard
 from core.common.filter_query.filter_query_common import FilterQueryCommon
 from institutions.models import Institutions
 from security.functions import addUserData
