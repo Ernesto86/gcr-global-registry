@@ -2,8 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.views.generic import TemplateView
 
-from advisers.manager.payment_adviser_commissions_manager import PaymentAdviserCommissionsManager
-from advisers.models import Advisers, PaymentAdviserCommissions
+from advisers.models import Advisers
 from advisers.view.dashboard_adviser.Adviser import AdviserDashboard
 from core.common.filter_query.filter_query_common import FilterQueryCommon
 from institutions.models import Institutions
@@ -30,26 +29,10 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
             adviser_dashboard = AdviserDashboard(advisers)
 
             if option_view == 'paid':
-                # data.update(
-                #     PaymentAdviserCommissionsManager.get_detail_adviser_payment(
-                #         PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0],
-                #         advisers.id,
-                #         institution_id=institution_id,
-                #         pay_adviser=True
-                #     )
-                # )
-                data.update(adviser_dashboard.get_detail_sales_collected_per_range_year())
+                data.update(adviser_dashboard.get_detail_sales_collected_per_range_year_and_institution(institution_id))
 
             elif option_view == 'xcobrar':
-                # data.update(
-                #     PaymentAdviserCommissionsManager.get_detail_adviser_payment(
-                #         PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0],
-                #         advisers.id,
-                #         institution_id=institution_id,
-                #         pay_adviser=False
-                #     )
-                # )
-                data.update(adviser_dashboard.get_detail_sales_by_collect_per_range_year())
+                data.update(adviser_dashboard.get_detail_sales_by_collect_per_range_year_and_institution(institution_id))
 
             status = 200
             data['message'] = ''
