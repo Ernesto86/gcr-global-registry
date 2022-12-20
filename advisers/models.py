@@ -8,14 +8,15 @@ from core.models import ModelBaseAudited
 from core.util_functions import util_null_to_decimal
 
 
-class PaymentMethodAbstract(ModelBaseAudited):
-    titular = models.CharField(max_length=100)
-    number = models.CharField(max_length=16)
-    number_phone_titular = models.CharField(max_length=15)
-    alias = models.CharField(max_length=15)
-
-    class Meta:
-        abstract = True
+# class PaymentMethodAbstract(ModelBaseAudited):
+#     titular = models.CharField(max_length=100)
+#     number = models.CharField(max_length=16)
+#     number_phone_titular = models.CharField(max_length=15)
+#     alias = models.CharField(max_length=15)
+#     isDefault = models.BooleanField(default=False)
+#
+#     class Meta:
+#         abstract = True
 
 
 class Advisers(ModelBaseAudited):
@@ -103,12 +104,17 @@ class Advisers(ModelBaseAudited):
         super(Advisers, self).save(*args, **kwargs)
 
 
-class AdvisersPaymentMethod(PaymentMethodAbstract):
-    adviser = models.ForeignKey(
+class PaymentMethod(ModelBaseAudited):
+    user = models.ForeignKey(
         Advisers,
         on_delete=models.CASCADE,
-        verbose_name="Asesor"
+        verbose_name="security.User",
     )
+    titular = models.CharField(max_length=100)
+    number = models.CharField(max_length=16)
+    number_phone_titular = models.CharField(max_length=15)
+    alias = models.CharField(max_length=15)
+    isDefault = models.BooleanField(default=False)
 
 
 class PaymentAdviserCommissions(ModelBaseAudited):
@@ -230,12 +236,12 @@ class Managers(ModelBaseAudited):
         ModelBaseAudited.save(self)
 
 
-class ManagersPaymentMethod(PaymentMethodAbstract):
-    managers = models.ForeignKey(
-        Managers,
-        on_delete=models.CASCADE,
-        verbose_name="Managers"
-    )
+# class ManagersPaymentMethod(PaymentMethodAbstract):
+#     managers = models.ForeignKey(
+#         Managers,
+#         on_delete=models.CASCADE,
+#         verbose_name="Managers"
+#     )
 
 
 class PeriodCommissions(ModelBaseAudited):
