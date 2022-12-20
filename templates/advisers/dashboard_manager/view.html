@@ -163,12 +163,6 @@
                                 <th>Alias</th>
                                 <th>Tipo de registro</th>
                                 <th>Representante</th>
-                                <th>Identificacion</th>
-                                <th>Pais</th>
-                                <th>Direccion</th>
-                                <th>Telefono</th>
-                                <th>Email</th>
-                                <th>Habilitado?</th>
                                 <th>Opciones</th>
                             </tr>
                             </thead>
@@ -207,7 +201,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Detalle de comisiones del Gerente : <span class="badge bg-primary"
-                                                                                      id="id-nameManagerDetailInstitution"></span></h5>
+                                                                                      id="id-nameManagerDetailInstitution"></span>
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -218,12 +213,13 @@
                                 <th>Nº</th>
                                 <th>Institucion</th>
                                 <th>Fecha compra</th>
+                                <th>Total</th>
                                 <th>% asesor</th>
-                                <th>% gerente</th>
-                                <th>Subtotal</th>
                                 <th>Comision</th>
-                                <th>C. gerente</th>
+                                <th>% asesor real</th>
                                 <th>C. asesor</th>
+                                <th>% gerente</th>
+                                <th>C. gerente</th>
                             </tr>
                             </thead>
                             <tbody id="id-detailInstitutionBody">
@@ -399,19 +395,19 @@
                             <td>${elem.number}</td>
                             <td>${elem.institution.name}</td>
                             <td>${elem.date_issue}</td>
-                            <td>${elem.commissions_advisers_percentage}</td>
-                            <td>${elem.commissions_managers_percentage}</td>
                             <td>${elem.subtotal}</td>
+                            <td>${elem.commissions_advisers_percentage}</td>
                             <td>${elem.commission_adviser_clean}</td>
-                            <td>${elem.commission_manager}</td>
+                            <td>${elem.commission_adviser_real}</td>
                             <td>${elem.commission_adviser}</td>
+                            <td>${elem.commissions_managers_percentage}</td>
+                            <td>${elem.commission_manager}</td>
                         </tr>
                     `
                 })
                 html += `<tr>
-                        <td colspan="7"></td>
+                        <td colspan="9"></td>
                         <td>${data.commission_manager}</td>
-                        <td>${data.commission_adviser}</td>
                     </tr>
                 `
 
@@ -456,17 +452,9 @@
                     return `
                         <tr>
                             <td>${elem.name}</td>
-                            <td>${elem.alias}</td>
-                            <td>${elem.type_registration}</td>
-                            <td>${elem.representative}</td>
-                            <td>${elem.identification}</td>
-                            <td>${elem.country}</td>
-                            <td>${elem.address}</td>
-                            <td>${elem.telephone}</td>
-                            <td>${elem.email}</td>
-                            <td class="text-center">
-{#                                            {% include "v2/common/components/badge/badge_presentate.html" with badge_type=1 badge_value_bo${elem.statusadge_text_bool = True %}#}
-                            </td>
+                            <td>${elem?.alias ? elem.alias : "-"}</td>
+                            <td>${elem?.type_registration ? elem.type_registration.name : "-"}</td>
+                            <td>${elem.representative ? elem.representative : '-'}</td>
                             <td class="text-center">
                                 <div class="bd-content">
                                     <a
@@ -490,7 +478,7 @@
                         </tr>
                                 `
                 })
-                c('con sara')
+
                 objD.elem.$institutionBody.innerHTML = insitututionList.join(' ')
 
                 if (objD.elem.barChartCommissionPaid)
@@ -501,7 +489,7 @@
 
                 if (objD.elem.barChartCommissionTotals)
                     objD.elem.barChartCommissionTotals.destroy()
-                c('con sara 11111111')
+
                 const paidInfoChart = getValueCommissionInfoChart(data.payment_paid_list)
 
                 objD.elem.barChartCommissionPaid = new ApexCharts(

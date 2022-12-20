@@ -188,6 +188,7 @@ class PaymentAdviserCommissionsManager:
             commission_sum += commission_clean
             commission_adviser_sum += detail.commissions_advisers_value
             commission_manager_sum += detail.commissions_managers_value
+            commissions_advisers_value_real = (detail.commissions_advisers_value / detail.subtotal) * 100
             subtotal_sum += detail.subtotal
 
             order_institution_quotas_list.append(
@@ -198,6 +199,7 @@ class PaymentAdviserCommissionsManager:
                     'commission_adviser_clean': commission_clean,
                     'commission_manager': detail.commissions_managers_value,
                     'commission_adviser': detail.commissions_advisers_value,
+                    'commission_adviser_real': commissions_advisers_value_real,
                     'institution': {
                         'name': detail.institution.name
                     }

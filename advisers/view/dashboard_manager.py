@@ -3,6 +3,7 @@ import datetime
 from django.db.models import Sum
 from django.http import JsonResponse
 from django.views.generic import TemplateView
+from django.forms import model_to_dict
 
 from advisers.manager.payment_adviser_commissions_manager import PaymentAdviserCommissionsManager
 from advisers.models import Advisers, PaymentAdviserCommissions, Managers
@@ -90,7 +91,8 @@ class DashboardManagerView(PermissionMixin, TemplateView):
 
             if is_per_year:
                 if adviser_id:
-                    data['payment_paid_list'] = manager_dashboard.get_commission_collected_per_year_and_adviser(year_selected,adviser_id)
+                    data['payment_paid_list'] = manager_dashboard.get_commission_collected_per_year_and_adviser(
+                        year_selected, adviser_id)
                     # data['payment_x_cobrar_list'] = manager_dashboard.get_commission_by_collect_per_year_and_adviser(year_selected,adviser_id)
                 else:
                     data['payment_paid_list'] = manager_dashboard.get_commission_collected_per_year(year_selected)
@@ -98,7 +100,8 @@ class DashboardManagerView(PermissionMixin, TemplateView):
 
             else:
                 if adviser_id:
-                    data['payment_paid_list'] = manager_dashboard.get_commission_collected_per_range_year_and_adviser(adviser_id)
+                    data['payment_paid_list'] = manager_dashboard.get_commission_collected_per_range_year_and_adviser(
+                        adviser_id)
                     # data['payment_x_cobrar_list'] = manager_dashboard.get_commission_by_collect_per_range_year_and_adviser(adviser_id)
                 else:
                     data['payment_paid_list'] = manager_dashboard.get_commission_collected_per_range_year()
@@ -147,20 +150,30 @@ class DashboardManagerView(PermissionMixin, TemplateView):
                 )['sum']
             )
             data['institutions_list'] = [
-                x
+                {
+                    **model_to_dict(
+                        x,
+                        fields=(
+                            'id',
+                            'name',
+                            'alias',
+                            'type_registration',
+                            'representative',
+                            'identification',
+                            'country',
+                            'address',
+                            'telephone',
+                            'email',
+                        )
+                    ),
+                    'type_registration':{
+                        'name': x.type_registration.name
+                    }
+                }
                 for x in Institutions.objects.filter(
                     adviser_id__in=advisers_id_list
-                ).values(
-                    'id',
-                    'name',
-                    'alias',
-                    'type_registration',
-                    'representative',
-                    'identification',
-                    'country',
-                    'address',
-                    'telephone',
-                    'email',
+                ).select_related(
+                    'type_registration'
                 )
             ]
 
