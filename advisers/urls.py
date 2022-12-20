@@ -9,6 +9,8 @@ from advisers.view.manager_profile import ManagerProfileUpdateView
 from advisers.view.managers_commissions import ManagersCommissionsListView, ManagersCommissionsCreateView, ManagersCommissionsUpdateView
 from advisers.view.dashboard_manager import DashboardManagerView
 from advisers.view.payment_adviser_commissions import PaymentAdviserCommissionsListView, PaymentAdviserCommissionsCreateView, PaymentAdviserCommissionsUpdateView
+from advisers.view.payment_method.view import PaymentMethodDeleteView, PaymentMethodUpdateView, PaymentMethodCreateView, \
+    PaymentMethodListView
 
 app_name = 'advisers'
 
@@ -32,7 +34,22 @@ urlpatterns = [
     path('managers-commissions/create', ManagersCommissionsCreateView.as_view(), name='managers_commissions_create'),
     path('managers-commissions/update/<int:pk>', ManagersCommissionsUpdateView.as_view(), name='managers_commissions_update'),
 
-    path('advisers-commissions-payment', PaymentAdviserCommissionsListView.as_view(), name='payment_adviser_commissions_list'),
-    path('advisers-commissions-payment/create', PaymentAdviserCommissionsCreateView.as_view(), name='payment_adviser_commissions_create'),
-    path('advisers-commissions-payment/update/<int:pk>', PaymentAdviserCommissionsUpdateView.as_view(), name='payment_adviser_commissions_update'),
+    path(
+        'advisers-commissions-payment', PaymentAdviserCommissionsListView.as_view(), name='payment_adviser_commissions_list'
+    ),
+    path(
+        'advisers-commissions-payment/create',
+        PaymentAdviserCommissionsCreateView.as_view(),
+        name='payment_adviser_commissions_create'
+    ),
+    path(
+        'advisers-commissions-payment/update/<int:pk>',
+        PaymentAdviserCommissionsUpdateView.as_view(),
+        name='payment_adviser_commissions_update'
+    ),
+
+    path('payment-method', PaymentMethodListView.as_view(), name='payment_method_list'),
+    path('payment-method/create', PaymentMethodCreateView.as_view(), name='payment_method_create'),
+    path('payment-method/update/<int:pk>', PaymentMethodUpdateView.as_view(), name='payment_method_update'),
+    path('payment-method/delete/<int:pk>', PaymentMethodDeleteView.as_view(), name='payment_method_delete'),
 ]

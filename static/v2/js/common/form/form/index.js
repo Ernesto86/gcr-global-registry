@@ -7,9 +7,15 @@ const FormCommon = {
 
             if (!errors) return []
 
-            Object.values(data?.errors).map(elem => {
-                elem.map(element => element)
-            })
+            try {
+                const errorsNew = Array.isArray(data?.errors) ? data?.errors : Object.values(data?.errors)
+
+                errorsNew.map(elem => {
+                    elem.map(element => element)
+                })
+            } catch (e) {
+                return []
+            }
         },
         getExtractErrorList: (errors) => {
 

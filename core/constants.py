@@ -43,6 +43,10 @@ class RegistrationStatus(models.IntegerChoices):
     NOAPLICA = 5
 
 
+class TypeAliasPymentMethod(models.IntegerChoices):
+    VISA = 1
+    MASTERCARD = 2
+
 # ESTADO_CIVIL = (
 #     (1, 'SOLTERO(A)'),
 #     (2, 'CASADO(A)'),

@@ -2,7 +2,7 @@ from django import forms
 
 from advisers.choices import TL_YEAR, TL_MONTH
 from advisers.models import AdvisersCommissions, PeriodCommissions, Advisers, PaymentAdviserCommissions, ManagersCommissions, \
-    Managers
+    Managers, PaymentMethod
 from core.common.form.form_common import FormCommon
 
 
@@ -133,5 +133,16 @@ class ManagerProfileForm(forms.ModelForm):
 
     class Meta:
         model = Managers
+        fields = '__all__'
+        exclude = ('deleted', 'user')
+
+
+class PaymentMethodForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        FormCommon.update_required_field(self.fields, excludes=('is_default',))
+
+    class Meta:
+        model = PaymentMethod
         fields = '__all__'
         exclude = ('deleted', 'user')

@@ -40,7 +40,7 @@ class FormCommon:
         })
 
     @staticmethod
-    def update_required_field(fields, state=True, is_list=False):
+    def update_required_field(fields, state=True, is_list=False, excludes: tuple = ()):
         """
             ATUALIZAR LOS CAMPOS DEACUERDO A UNA CONFIGURACION
         """
@@ -50,7 +50,8 @@ class FormCommon:
         else:
             for key in fields:
                 field = fields[key]
-                field.widget.attrs['required'] = state
+                if key not in excludes:
+                    field.widget.attrs['required'] = state
 
     @staticmethod
     def update_all_field(fields, with_place_holder=False, with_place_holder_cover=True):

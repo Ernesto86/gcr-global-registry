@@ -1,0 +1,106 @@
+{% extends 'v2/base/crud/list/list.html' %}
+
+{% block list-table-head-colums %}
+    <th>Titular</th>
+    <th>Numero</th>
+    <th>Telefono titular</th>
+    <th>Alias</th>
+    <th>Es predeterminada?</th>
+    <th class="text-center">Opciones</th>
+{% endblock %}
+
+{% block list-table-body-rows %}
+    {% for object in object_list %}
+        <tr>
+            <td>{{ object.titular }}</td>
+            <td>{{ object.number }}</td>
+            <td>{{ object.number_phone_titular }}</td>
+            <td>{{ object.alias }}</td>
+            <td>{{ object.is_default }}</td>
+            <td class="text-center">
+                <div class="btn-group" role="group">
+                    <a
+                            href="{% url 'advisers:payment_method_update' object.id %}"
+                            class="btn btn-primary btn-sm"
+                            data-toggle="tooltip"
+                    >
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    <a
+                            href="#"
+                            rel="rel-action-delete"
+                            class="btn btn-danger btn-sm"
+                            data-id="{{ object.id }}"
+                            data-toggle="tooltip"
+                    >
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block base-body-js %}
+
+    <script>
+        const objElevate = {
+            action: '{{ action }}',
+            backUrl: '{{ back_url | safe }}',
+            deleteUrl: `{{ request.path }}/delete`
+
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function (e) {
+            const objD = {
+                CONSTANT: {},
+                elem: {
+                    $table: document.querySelector('#id-table > tbody')
+                },
+                repeat: {},
+                loadFirst: {},
+                model: {},
+                fun: {}
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+
+            objD.elem.$table.addEventListener('click', async (event) => {
+                const target = event.target.closest('a[rel="rel-action-delete"]');
+
+                if (target) {
+                    event.preventDefault();
+                    const id = target.dataset.id
+
+                    AppSystem.fun.showLoadingUi()
+
+                    const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                        `${objElevate.deleteUrl}/${id}`,
+                        {},
+                        {method: ClientHttpFetch.CONSTANT.verboseMethod.DELETE.description}
+                    )
+
+                    AppSystem.fun.hiddenLoadingUi()
+
+                    if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                        AppSystem.handleComp.alert.alert.show({
+                            title: message,
+                            typeFeature: AppSystem.CONSTANT.typeFeature.danger
+                        })
+                        return
+                    }
+
+                    target.closest('tr').remove()
+                }
+            });
+
+        })
+
+    </script>
+{% endblock %}

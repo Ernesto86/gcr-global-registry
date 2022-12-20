@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models import Sum
 
 from advisers.choices import TL_YEAR, TL_MONTH
+from core.constants import TypeAliasPymentMethod
 from core.models import ModelBaseAudited
 from core.util_functions import util_null_to_decimal
 
@@ -106,15 +107,29 @@ class Advisers(ModelBaseAudited):
 
 class PaymentMethod(ModelBaseAudited):
     user = models.ForeignKey(
-        Advisers,
+        "security.user",
         on_delete=models.CASCADE,
-        verbose_name="security.User",
+        verbose_name="Usuario",
     )
-    titular = models.CharField(max_length=100)
-    number = models.CharField(max_length=16)
-    number_phone_titular = models.CharField(max_length=15)
-    alias = models.CharField(max_length=15)
-    isDefault = models.BooleanField(default=False)
+    titular = models.CharField(max_length=100, verbose_name='Titular')
+    number = models.CharField(max_length=16, verbose_name='Numero')
+    number_phone_titular = models.CharField(max_length=15, verbose_name='Telefono titular')
+    alias = models.IntegerField(
+        default=TypeAliasPymentMethod.VISA,
+        choices=TypeAliasPymentMethod.choices,
+        verbose_name='alias'
+    )
+    is_default = models.BooleanField(default=False, verbose_name='Es predeterminada?')
+
+    class Meta:
+        verbose_name = 'Metodo de pago'
+        verbose_name_plural = 'Metodos de pagos'
+        # constraints = [
+        #     models.UniqueConstraint(fields=['user', 'is_default'], name='unique_user_is_default'),
+        # ]
+
+    def __str__(self):
+        return '{} - {}'.format(self.titular, self.number)
 
 
 class PaymentAdviserCommissions(ModelBaseAudited):
