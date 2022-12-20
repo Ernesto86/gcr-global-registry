@@ -220,16 +220,23 @@ class AdviserDashboard:
             'subtotal': subtotal_sum,
         }
 
+    def __set_clear_query_and_1(self):
+        self.__query_AND_1 = Q()
+        self.__query_AND_1.connector = 'AND'
+
     def __set_query_to_totals_sales(self):
+        self.__set_clear_query_and_1()
         self.__query_AND_1.children.append(('deleted', False))
         self.__query_AND_1.children.append(('adviser_id', self.__adviser.id))
 
     def __set_query_to_commission_by_collect(self):
+        self.__set_clear_query_and_1()
         self.__query_AND_1.children.append(('deleted', False))
         self.__query_AND_1.children.append(('adviser_id', self.__adviser.id))
         self.__query_AND_1.children.append(('pay_adviser', False))
 
     def __set_query_to_commission_collected(self):
+        self.__set_clear_query_and_1()
         self.__query_AND_1.children.append(('deleted', False))
         self.__query_AND_1.children.append(('adviser_id', self.__adviser.id))
         self.__query_AND_1.children.append(('pay_adviser', True))
