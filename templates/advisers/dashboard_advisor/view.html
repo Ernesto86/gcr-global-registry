@@ -120,12 +120,9 @@
                                 <th>Nº</th>
                                 <th>Institucion</th>
                                 <th>Fecha compra</th>
-                                <th>% asesor</th>
-                                <th>% gerente</th>
-                                <th>Subtotal</th>
+                                <th>Total compra</th>
+                                <th>%</th>
                                 <th>Comision</th>
-                                <th>C. gerente</th>
-                                <th>C. asesor</th>
                             </tr>
                             </thead>
                             <tbody id="id-detailAdviserBody">
@@ -353,18 +350,14 @@
                                         <td>${elem.number}</td>
                                         <td>${elem.institution.name}</td>
                                         <td>${elem.date_issue}</td>
-                                        <td>${elem.commissions_advisers_percentage}</td>
-                                        <td>${elem.commissions_managers_percentage}</td>
                                         <td>${elem.subtotal}</td>
-                                        <td>${elem.commission_adviser_clean}</td>
-                                        <td>${elem.commission_manager}</td>
+                                        <td>${elem.commission_adviser_real}</td>
                                         <td>${elem.commission_adviser}</td>
                                     </tr>
                                 `
                         })
                         html += `<tr>
-                                <td colspan="7"></td>
-                                <td>${data.commission_manager}</td>
+                                <td colspan="5"></td>
                                 <td>${data.commission_adviser}</td>
                             </tr>`
 

@@ -198,6 +198,7 @@ class AdviserDashboard:
             commission_adviser_sum += detail.commissions_advisers_value
             commission_manager_sum += detail.commissions_managers_value
             subtotal_sum += detail.subtotal
+            commission_adviser_real = (detail.commissions_advisers_value / detail.subtotal) * 100
 
             order_institution_quotas_list.append(
                 {
@@ -207,6 +208,7 @@ class AdviserDashboard:
                     'commission_adviser_clean': commission_clean,
                     'commission_manager': detail.commissions_managers_value,
                     'commission_adviser': detail.commissions_advisers_value,
+                    'commission_adviser_real': commission_adviser_real,
                     'institution': {
                         'name': detail.institution.name
                     }
