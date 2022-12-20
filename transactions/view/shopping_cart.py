@@ -30,7 +30,6 @@ class ShoppingCartView(PermissionMixin, TemplateView):
 
         ins_type_registries_list = institution.get_type_register_enabled_list()
 
-        print("llego hasta aki")
         context['type_registries_list'] = [
             {
                 'type_registries': x,

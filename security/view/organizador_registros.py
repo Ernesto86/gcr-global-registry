@@ -1,8 +1,8 @@
-from django.views.generic import CreateView, TemplateView
-from security.mixins import PermissionMixin
-from institutions.models import InsTypeRegistries
+from django.views.generic import TemplateView
+
 from security.functions import addUserData
-from students.models import StudentRegisters
+from security.manager.organizador_registros_manager import OrganizadorRegistrosManager
+from security.mixins import PermissionMixin
 
 
 class OrganizadorRegistrosView(PermissionMixin, TemplateView):
@@ -12,22 +12,7 @@ class OrganizadorRegistrosView(PermissionMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         addUserData(self.request, context)
-        context['type_registries_list'] = []
+        context['type_registries_list'] = OrganizadorRegistrosManager(context['user']).get_type_registries_list()
+        context['type_registries_list'] = OrganizadorRegistrosManager(context['user']).get_type_registries_list()
 
-        for ins_type_registries in InsTypeRegistries.objects.all():
-            registers_level = StudentRegisters.objects.filter(
-                type_register_id=ins_type_registries.id,
-                institution_id=context['user'].institution_id
-            ).count()
-
-            if registers_level:
-                context['type_registries_list'].append(
-                    {
-                        "id": ins_type_registries.id,
-                        "name": ins_type_registries.name,
-                        "detail": ins_type_registries.detail,
-                        "color": ins_type_registries.color,
-                        "registers_level_count": registers_level,
-                    }
-                )
         return context

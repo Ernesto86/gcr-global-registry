@@ -8,6 +8,16 @@ from core.models import ModelBaseAudited
 from core.util_functions import util_null_to_decimal
 
 
+class PaymentMethodAbstract(ModelBaseAudited):
+    titular = models.CharField(max_length=100)
+    number = models.CharField(max_length=16)
+    number_phone_titular = models.CharField(max_length=15)
+    alias = models.CharField(max_length=15)
+
+    class Meta:
+        abstract = True
+
+
 class Advisers(ModelBaseAudited):
     country_origin = models.ForeignKey(
         "system.SysCountries",
@@ -93,6 +103,14 @@ class Advisers(ModelBaseAudited):
         super(Advisers, self).save(*args, **kwargs)
 
 
+class AdvisersPaymentMethod(PaymentMethodAbstract):
+    adviser = models.ForeignKey(
+        Advisers,
+        on_delete=models.CASCADE,
+        verbose_name="Asesor"
+    )
+
+
 class PaymentAdviserCommissions(ModelBaseAudited):
     TYPE_FUNCTIONARY = (
         (None, '------------'),
@@ -103,8 +121,10 @@ class PaymentAdviserCommissions(ModelBaseAudited):
     date_payment = models.DateTimeField(blank=True, null=True, verbose_name="Fecha de Pago")
     year = models.IntegerField(blank=True, null=True, verbose_name="Año", choices=TL_YEAR, default=TL_YEAR[0][0])
     month = models.IntegerField(blank=True, null=True, verbose_name="Mes", choices=TL_MONTH, default=TL_MONTH[0][0])
-    values_commission = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Comision asesor", blank=True, null=True)
-    type_functionary = models.IntegerField(verbose_name="Tipo de funcionario", choices=TYPE_FUNCTIONARY, default=TYPE_FUNCTIONARY[0][0])
+    values_commission = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Comision asesor", blank=True,
+                                            null=True)
+    type_functionary = models.IntegerField(verbose_name="Tipo de funcionario", choices=TYPE_FUNCTIONARY,
+                                           default=TYPE_FUNCTIONARY[0][0])
     pay_period = models.BooleanField(default=False)
 
     class Meta:
@@ -139,7 +159,8 @@ class PaymentAdviserCommissionsDetails(ModelBaseAudited):
         on_delete=models.PROTECT,
         blank=True, null=True
     )
-    value_commission = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Valor asesor", blank=True, null=True)
+    value_commission = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Valor asesor", blank=True,
+                                           null=True)
     pay = models.BooleanField(default=False)
 
     class Meta:
@@ -209,8 +230,17 @@ class Managers(ModelBaseAudited):
         ModelBaseAudited.save(self)
 
 
+class ManagersPaymentMethod(PaymentMethodAbstract):
+    managers = models.ForeignKey(
+        Managers,
+        on_delete=models.CASCADE,
+        verbose_name="Managers"
+    )
+
+
 class PeriodCommissions(ModelBaseAudited):
-    manager_percentage = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0), verbose_name='Porcentaje gerente %')
+    manager_percentage = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0),
+                                             verbose_name='Porcentaje gerente %')
     advisers_percentage_period_1 = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal(0),
                                                        verbose_name='Periodo 1 porcentaje asesor %')
     days_commissions_period_1 = models.IntegerField(default=0, verbose_name="Periodo 1 dias comision")
@@ -288,4 +318,3 @@ class ManagersCommissions(ModelBaseAudited):
     class Meta:
         verbose_name = 'Gerente Comisión'
         verbose_name_plural = 'Gerente Comisiones'
-

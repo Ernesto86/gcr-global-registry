@@ -127,3 +127,4 @@ class InstitutionQuotesTypeRegister(ModelBase):
         verbose_name = "Institucion cupo saldo"
         verbose_name_plural = "Institucion cupos saldos"
         ordering = ('created_at',)
+

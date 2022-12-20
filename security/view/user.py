@@ -1,23 +1,17 @@
-import json
-
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
-from django.http import HttpResponse
-from django.urls import reverse_lazy
-from django.views.generic import CreateView, DeleteView, FormView
 from django.http import JsonResponse
+from django.urls import reverse_lazy
+from django.views.generic import FormView
 from rest_framework import status
 
 from security.functions import addUserData
-from security.mixins import ModuleMixin
 
 
-class UserUpdatePasswordView(ModuleMixin, FormView):
+class UserUpdatePasswordView(FormView):
     template_name = 'security/user/change_password.html'
     form_class = PasswordChangeForm
     success_url = reverse_lazy('home')
-
-    # permission_required = 'change_advisers'
 
     def get_form(self, form_class=None):
         form = PasswordChangeForm(user=self.request.user)

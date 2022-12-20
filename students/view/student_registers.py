@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView
 
 from security.functions import addUserData
+from security.manager.organizador_registros_manager import OrganizadorRegistrosManager
 from security.mixins import PermissionMixin
 from students.forms import StudentRegistersSearchForm, StudentRegistersForm
 from students.models import Students, StudentRegisters
@@ -15,6 +16,27 @@ from transactions.models import InstitutionQuotesTypeRegister
 class StudentRegistersView(PermissionMixin, TemplateView):
     template_name = 'students/student_registers/view.html'
     permission_required = 'add_studentregisters'
+
+    def post(self, request, *args, **kwargs):
+        data = {'errors': [], 'message': ''}
+        status = 500
+
+        action = request.POST.get('action', None)
+
+        if action == 'type_registries_list':
+
+            organizador_registros_manager = OrganizadorRegistrosManager(self.request.user)
+            data['type_registries_list'] = organizador_registros_manager.get_type_registries_list()
+            status = 200
+
+        elif action == 'type_registries_count_available_list':
+
+            organizador_registros_manager = OrganizadorRegistrosManager(self.request.user)
+            type_registries_count_available_list = organizador_registros_manager.get_type_registries_count_available_list()
+            data['type_registries_count_available_list'] = type_registries_count_available_list
+            status = 200
+
+        return JsonResponse(data, status=status)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -29,6 +51,10 @@ class StudentRegistersView(PermissionMixin, TemplateView):
         )
 
         context['institution_quotes_type_register_sum'] = institution_quotes_type_register_sum
+        context['register_into_quotas'] = StudentRegisters.objects.filter(
+            institution_id=context['user'].institution_id,
+            deleted=False
+        ).count()
         return context
 
 
@@ -79,7 +105,8 @@ class StudentRegistersCreateView(PermissionMixin, CreateView):
     def get_initial(self):
         super(StudentRegistersCreateView, self).get_initial()
 
-        student_id = self.request.GET.get('student_id') if self.request.method == 'GET' else self.request.POST.get('student_id')
+        student_id = self.request.GET.get('student_id') if self.request.method == 'GET' else self.request.POST.get(
+            'student_id')
 
         self.initial = {
             'student': student_id,
@@ -90,7 +117,8 @@ class StudentRegistersCreateView(PermissionMixin, CreateView):
     def get_form(self, *args, **kwargs):
         form = super(StudentRegistersCreateView, self).get_form(*args, **kwargs)
 
-        student_id = self.request.GET.get('student_id') if self.request.method == 'GET' else self.request.POST.get('student_id')
+        student_id = self.request.GET.get('student_id') if self.request.method == 'GET' else self.request.POST.get(
+            'student_id')
         institution = self.request.user.institution
 
         form.fields['student'].queryset = Students.objects.filter(id=student_id)
@@ -142,27 +170,3 @@ class StudentRegistersCreateView(PermissionMixin, CreateView):
         context['back_url'] = self.success_url
         context['title_label'] = "Crear registro de estudiante"
         return context
-
-# class InstitutionconfigurationView(TemplateView):
-#     template_name = 'students/student_registers/create.html'
-#     success_url = reverse_lazy('students_registers_search')
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data()
-#         addUserData(self.request, context)
-#         context['form'] = InstitutionForm(instance=self.request.user.institution)
-#         return context
-#
-#     def post(self, request, *args, **kwargs):
-#         institution = self.request.user.institution
-#         form = InstitutionForm(request.POST, request.FILES, instance=institution)
-#         if form.is_valid():
-#             form.save()
-#             if institution is None:
-#                 user = self.request.user
-#                 user.institution = form.instance
-#                 user.save()
-#             messages.add_message(request, messages.SUCCESS, "Registro actualizado correctamente..")
-#             return redirect(self.success_url)
-#         else:
-#             return render(request, self.template_name, {'form': form})

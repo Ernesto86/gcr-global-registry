@@ -10,11 +10,17 @@
     <hr>
     <p class="font-weight-bold">
         <b>
-            Bienvenidos al portal de ingreso internacional de registros de títulos y certificaciones de su institución. Aquí podrá ingresar los
-            certificados que ha emitido a sus estudiantes. Le recordamos que la información ingresada se encuentra bajo estricta responsabilidad de
+            Bienvenidos al portal de ingreso internacional de registros de títulos y certificaciones de su institución.
+            Aquí podrá ingresar los certificados que ha emitido a sus estudiantes. Le recordamos que la información ingresada
+            se encuentra bajo estricta responsabilidad de
             su institución.
         </b>
     </p>
+    <div class="row">
+        <div class="col-lg-12">
+            {% include 'v2/common/components/alert/alert.html' with type_feature_alert=4 hidden_alert=True %}
+        </div>
+    </div>
     <div class="row d-flex justify-content-evenly align-items-center pt-5">
         <div class="col-lg-6 col-sm-12 col-md">
             <div class="text-center d-flex justify-content-between">
@@ -29,58 +35,254 @@
             </div>
             <p class="mt-5" style="text-align: justify">
                 <b>
-                    *Le recordamos que debe ser cuidadoso al ingresar la
-                    información de sus registros, puesto que debido a nuestro
-                    proceso de seguridad de la información respaldado bajo nuestro
-                    sistema de blockchain, la información no podrá ser modificada
-                    posterior a su ingreso y deberá ingresar un ticket de ayuda el
-                    mismo que puede tomar un lapso de 15 días en ser atendido y
-                    verificado.
+                    *Le recordamos que debe ser cuidadoso al ingresar la información de sus registros, puesto que debido a
+                    nuestro proceso de seguridad de la información respaldado bajo nuestro sistema de blockchain, la
+                    información no podrá ser modificada posterior a su ingreso y deberá ingresar un ticket de ayuda el mismo
+                    que puede tomar un lapso de 15 días en ser atendido y verificado.
                 </b>
             </p>
         </div>
         <div class="col-lg-5 col-sm-12 col-md">
             <div class="col-lg-12">
-                <div class="card border-bottom border-5 border-primary">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div class="bg-soft-primary rounded p-3">
-                                <svg width="24px" height="24px" viewBox="0 0 24 24">
-                                    <path fill="currentColor"
-                                          d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z"></path>
-                                </svg>
+                <a href="" id="id-registryEntered">
+                    <div class="card border-bottom border-5 border-primary">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div class="bg-soft-primary rounded p-3">
+                                    <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                        <path
+                                                fill="currentColor"
+                                                d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z">
+                                        </path>
+                                    </svg>
+                                </div>
+                                <div class="text-center">
+                                    <b><p class="text-black">REGISTROS INGRESADOS</p></b>
+                                </div>
                             </div>
-                            <div class="text-center">
-                                <b><p class="text-black">REGISTROS INGRESADOS</p></b>
+                            <div class="d-flex justify-content-center align-items-center pt-2">
+                                <h1 class="text-white badge bg-dark rounded-pill fs-3">{{ register_into_quotas|default_if_none:"0" }}</h1>
                             </div>
-                        </div>
-                        <div class="d-flex justify-content-center align-items-center pt-2">
-                            <h1 class="text-white badge bg-dark rounded-pill fs-3">{{ institution_quotes_type_register_sum.quotas|default_if_none:"0"  }}</h1>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
             <div class="col-lg-12">
-                <div class="card border-bottom border-5 border-success">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <div class="bg-soft-primary rounded p-3">
-                                <svg width="24px" height="24px" viewBox="0 0 24 24">
-                                    <path fill="currentColor"
-                                          d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z"></path>
-                                </svg>
+                <a href="" id="id-registryAvailable">
+                    <div class="card border-bottom border-5 border-success">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div class="bg-soft-primary rounded p-3">
+                                    <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                              d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z"></path>
+                                    </svg>
+                                </div>
+                                <div class="text-center">
+                                    <b><p class="text-black">REGISTROS DISPONIBLES</p></b>
+                                </div>
                             </div>
-                            <div class="text-center">
-                                <b><p class="text-black">REGISTROS DISPONIBLES</p></b>
+                            <div class="d-flex justify-content-center align-items-center pt-2">
+                                <h1 class="text-white badge bg-dark rounded-pill fs-3">{{ institution_quotes_type_register_sum.quotas_balance|default_if_none:"0" }}</h1>
                             </div>
-                        </div>
-                        <div class="d-flex justify-content-center align-items-center pt-2">
-                            <h1 class="text-white badge bg-dark rounded-pill fs-3">{{ institution_quotes_type_register_sum.quotas_balance|default_if_none:"0" }}</h1>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
         </div>
     </div>
 
+{% endblock %}
+
+{% block content-modal %}
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-fullscreen-xl-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Registros ingresados
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row d-flex justify-content-center align-items-center pt-5" id="id-registryOrganizer">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="id-registryAvailableModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-fullscreen-xl-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Registros disponibles
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row d-flex justify-content-center align-items-center pt-5" id="id-registryAvailableContentModal">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block base-body-js %}
+
+    <script>
+        const objElevate = {
+            studentId: '{{ student_id }}',
+            successUrl: '{{ success_url }}'
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function (e) {
+            const objD = {
+                CONSTANT: {},
+                elem: {
+                    $registryEntered: document.getElementById('id-registryEntered'),
+                    $registryOrganizer: document.getElementById('id-registryOrganizer'),
+                    $registryAvailable: document.getElementById('id-registryAvailable'),
+                    $registryAvailableModal: document.getElementById('id-registryAvailableContentModal'),
+                },
+                repeat: {},
+                loadFirst: {},
+                model: {},
+                fun: {
+                    getTypeTegistriesCard: (type_registries) => {
+                        return `
+                            <div class="col-lg-5">
+                                <a>
+                                    <div class="card border-bottom border-5 border-${type_registries.color}">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div class="bg-soft-primary rounded p-3">
+                                                    <svg width="24px" height="24px" viewBox="0 0 24 24">
+                                                        <path
+                                                            fill="currentColor"
+                                                            d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z">
+                                                        </path>
+                                                    </svg>
+                                                </div>
+                                                <div class="text-center">
+                                                    <b>
+                                                        <p class="text-black">
+                                                            REGISTROS ${type_registries.name} - ${type_registries.detail}
+                                                        </p>
+                                                    </b>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex justify-content-center align-items-center pt-2">
+                                                <h1 class="text-white badge bg-dark rounded-pill fs-3">
+                                                    ${type_registries.value}
+                                                </h1>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        `
+                    },
+                    showRegistryOrganizer: async () => {
+                        const formData = new FormData(objD.elem.$form)
+                        formData.append("action", 'type_registries_list')
+                        formData.append("student_id", objElevate.studentId)
+
+                        objD.elem.$registryOrganizer.innerHTML = ""
+
+                        AppSystem.fun.showLoadingUi()
+                        AppSystem.handleComp.alert.alert.hidden({})
+
+                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                            location.pathname,
+                            formData
+                        )
+
+                        AppSystem.fun.hiddenLoadingUi()
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                            AppSystem.handleComp.alert.alert.show({
+                                title: message,
+                                typeFeature: AppSystem.CONSTANT.typeFeature.danger
+                            })
+                            return
+                        }
+
+                        objD.elem.$registryOrganizer.innerHTML = data.type_registries_list.map(type_registries =>
+                            objD.fun.getTypeTegistriesCard(
+                                {
+                                    ...type_registries,
+                                    value: type_registries.registers_level_count
+                                }
+                            )
+                        ).join('')
+
+                        $('#exampleModal').modal('show')
+                    },
+                    showRegistryAvailable: async () => {
+                        const formData = new FormData(objD.elem.$form)
+                        formData.append("action", 'type_registries_count_available_list')
+                        formData.append("student_id", objElevate.studentId)
+
+                        objD.elem.$registryAvailableModal.innerHTML = ""
+
+                        AppSystem.fun.showLoadingUi()
+                        AppSystem.handleComp.alert.alert.hidden({})
+
+                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                            location.pathname,
+                            formData
+                        )
+
+                        AppSystem.fun.hiddenLoadingUi()
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                            AppSystem.handleComp.alert.alert.show({
+                                title: message,
+                                typeFeature: AppSystem.CONSTANT.typeFeature.danger
+                            })
+                            return
+                        }
+
+                        objD.elem.$registryAvailableModal.innerHTML = data.type_registries_count_available_list.map(type_registries =>
+                            objD.fun.getTypeTegistriesCard(
+                                {
+                                    ...type_registries,
+                                    value: type_registries.quotas_balance
+                                }
+                            )
+                        ).join('')
+
+                        $('#id-registryAvailableModal').modal('show')
+                    }
+                }
+            }
+
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  /////////////////////////////////////////////////
+
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  ///////////////////////////////////////////////////////
+            objD.elem.$registryEntered.addEventListener('click', (e) => {
+                e.preventDefault()
+
+                objD.fun.showRegistryOrganizer()
+            })
+            objD.elem.$registryAvailable.addEventListener('click', (e) => {
+                e.preventDefault()
+
+                objD.fun.showRegistryAvailable()
+            })
+
+        });
+    </script>
 {% endblock %}

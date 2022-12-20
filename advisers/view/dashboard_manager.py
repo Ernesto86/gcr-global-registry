@@ -6,6 +6,7 @@ from django.views.generic import TemplateView
 
 from advisers.manager.payment_adviser_commissions_manager import PaymentAdviserCommissionsManager
 from advisers.models import Advisers, PaymentAdviserCommissions, Managers
+from advisers.view.dashboard_manager_refactor.manager import ManagerDashboard
 from core.common.filter_orm.filter_orm_common import FilterOrmCommon
 from core.common.filter_query.filter_query_common import FilterQueryCommon
 from core.constants import MESES, RegistrationStatus
@@ -83,7 +84,25 @@ class DashboardManagerView(PermissionMixin, TemplateView):
                 advisers_id_list = list(advisers_list.values_list('id', flat=True))
                 query_AND_1.children.append(('adviser_id__in', advisers_id_list))
 
-            data['payment_paid_list'] = self.get_commission_paid(manager.id, adviser_id, is_per_year, year_selected)
+            manager_dashboard = ManagerDashboard(manager)
+
+            # data['payment_paid_list'] = self.get_commission_paid(manager.id, adviser_id, is_per_year, year_selected)
+
+            if is_per_year:
+                if adviser_id:
+                    data['payment_paid_list'] = manager_dashboard.get_commission_collected_per_year_and_adviser(year_selected,adviser_id)
+                    # data['payment_x_cobrar_list'] = manager_dashboard.get_commission_by_collect_per_year_and_adviser(year_selected,adviser_id)
+                else:
+                    data['payment_paid_list'] = manager_dashboard.get_commission_collected_per_year(year_selected)
+                    # data['payment_x_cobrar_list'] = manager_dashboard.get_commission_by_collect_per_year(year_selected)
+
+            else:
+                if adviser_id:
+                    data['payment_paid_list'] = manager_dashboard.get_commission_collected_per_range_year_and_adviser(adviser_id)
+                    # data['payment_x_cobrar_list'] = manager_dashboard.get_commission_by_collect_per_range_year_and_adviser(adviser_id)
+                else:
+                    data['payment_paid_list'] = manager_dashboard.get_commission_collected_per_range_year()
+                    # data['payment_x_cobrar_list'] = manager_dashboard.get_commission_by_collect_per_range_year()
 
             data['payment_x_cobrar_list'] = self.get_commission_x_cobrar(
                 manager.id,
