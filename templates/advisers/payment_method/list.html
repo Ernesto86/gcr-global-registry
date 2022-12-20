@@ -16,7 +16,9 @@
             <td>{{ object.number }}</td>
             <td>{{ object.number_phone_titular }}</td>
             <td>{{ object.alias }}</td>
-            <td>{{ object.is_default }}</td>
+            <td>
+                {% include "v2/common/components/badge/badge_presentate.html" with badge_type=1 badge_value_bool=object.is_default badge_text_bool=True %}
+            </td>
             <td class="text-center">
                 <div class="btn-group" role="group">
                     <a

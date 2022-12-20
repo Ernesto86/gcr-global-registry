@@ -42,10 +42,6 @@
                             <th>Representante</th>
                             <th>Identificacion</th>
                             <th>Pais</th>
-                            <th>Direccion</th>
-                            <th>Telefono</th>
-                            <th>Email</th>
-                            <th>Habilitado?</th>
                             <th>Opciones</th>
                         </tr>
                         </thead>
@@ -53,14 +49,10 @@
                         {% for object in institutions_list %}
                             <tr>
                                 <td>{{ object.name }}</td>
-                                <td>{{ object.alias }}</td>
+                                <td>{{ object.alias |default:"-" }}</td>
                                 <td>{{ object.type_registration }}</td>
-                                <td>{{ object.representative }}</td>
-                                <td>{{ object.identification }}</td>
-                                <td>{{ object.country }}</td>
-                                <td>{{ object.address }}</td>
-                                <td>{{ object.telephone }}</td>
-                                <td>{{ object.email }}</td>
+                                <td>{{ object.representative |default:"-" }}</td>
+                                <td>{{ object.identification |default:"-" }}</td>
                                 <td class="text-center">
                                     {% include "component/badge/badge_presentate.html" with badge_type=1 badge_value_bool=object.status badge_text_bool=True %}
                                 </td>
@@ -116,7 +108,8 @@
         <div class="modal-dialog modal-xl modal-fullscreen-xl-down">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Detalle de comisiones del Asesor : <span class="badge bg-primary" id="id-modalTitle"></span></h5>
+                    <h5 class="modal-title">Detalle de comisiones del Asesor : <span class="badge bg-primary"
+                                                                                     id="id-modalTitle"></span></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -247,7 +240,10 @@
                         AppSystem.fun.hiddenLoadingUi()
 
                         if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
-                            AppSystem.handleComp.alert.show({content: message, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                            AppSystem.handleComp.alert.show({
+                                content: message,
+                                typeFeature: AppSystem.CONSTANT.typeFeature.danger
+                            })
                             return
                         }
 
@@ -342,7 +338,10 @@
                         AppSystem.fun.hiddenLoadingUi()
 
                         if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
-                            AppSystem.handleComp.alert.show({content: message, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                            AppSystem.handleComp.alert.show({
+                                content: message,
+                                typeFeature: AppSystem.CONSTANT.typeFeature.danger
+                            })
                             return
                         }
 
