@@ -102,9 +102,6 @@
                                 <th>Alias</th>
                                 <th>Tipo de registro</th>
                                 <th>Representante</th>
-                                <th>Pais</th>
-                                <th>Habilitado?</th>
-                                <th>Cantidad</th>
                                 <th>Subtotal</th>
                                 <th>Opciones</th>
                             </tr>
@@ -154,12 +151,13 @@
                                 <th>Nº</th>
                                 <th>Institucion</th>
                                 <th>Fecha compra</th>
+                                <th>Total</th>
                                 <th>% asesor</th>
-                                <th>% gerente</th>
-                                <th>Subtotal</th>
                                 <th>Comision</th>
-                                <th>C. gerente</th>
+                                <th>% asesor real</th>
                                 <th>C. asesor</th>
+                                <th>% gerente</th>
+                                <th>C. gerente</th>
                             </tr>
                             </thead>
                             <tbody id="id-detailInstitutionBody">
@@ -388,23 +386,25 @@
                             <td>${elem.number}</td>
                             <td>${elem.institution.name}</td>
                             <td>${elem.date_issue}</td>
-                            <td>${elem.commissions_advisers_percentage}</td>
-                            <td>${elem.commissions_managers_percentage}</td>
                             <td>${elem.subtotal}</td>
+                            <td>${elem.commissions_advisers_percentage}</td>
                             <td>${elem.commission_adviser_clean}</td>
-                            <td>${elem.commission_manager}</td>
+                            <td>${elem.commission_adviser_real}</td>
                             <td>${elem.commission_adviser}</td>
+                            <td>${elem.commissions_managers_percentage}</td>
+                            <td>${elem.commission_manager}</td>
                         </tr>
                     `
                 })
-                html += `<tr>
-                        <td colspan="5"></td>
-                        <td>${data.subtotal}</td>
-                        <td>${data.commission}</td>
-                        <td>${data.commission_manager}</td>
-                        <td>${data.commission_adviser}</td>
-                    </tr>
-                `
+                {#html += `<tr>#}
+                {#        <td colspan="3"></td>#}
+                {#        <td>${data.subtotal}</td>#}
+                {#        <td>${data.commission}</td>#}
+                {#        <td>${data.commission_adviser}</td>#}
+                {#        <td>${data.commission_manager}</td>#}
+                {#        <td>${data.commission_adviser}</td>#}
+                {#    </tr>#}
+                {#`#}
 
                 document.getElementById('id-detailInstitutionBody').innerHTML = html
                 $('#exampleModal').modal('show')
@@ -452,13 +452,10 @@
                     return `
                         <tr>
                             <td>${elem.name}</td>
-                            <td>${elem.alias? elem.alias: "-"}</td>
+                            <td>${elem.alias ? elem.alias : "-"}</td>
                             <td>${elem.type_registration}</td>
-                            <td>${elem.representative? elem.representative : "-"}</td>
-                            <td>${elem.country}</td>
-                            <td class="text-center"></td>
-                            <td>${elem.count}</td>
-                            <td>${elem.subtotal}</td>
+                            <td>${elem.representative ? elem.representative : "-"}</td>
+                            <td>${elem.subtotal ? elem.subtotal : '0.00'}</td>
                             <td class="text-center">
                                 <div class="bd-content">
                                     <a

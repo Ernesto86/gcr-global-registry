@@ -87,25 +87,27 @@ class DashboardManagerView(PermissionMixin, TemplateView):
 
             manager_dashboard = ManagerDashboard(manager)
 
-            # data['payment_paid_list'] = self.get_commission_paid(manager.id, adviser_id, is_per_year, year_selected)
+            data['payment_paid_list'] = self.get_commission_paid(manager.id, adviser_id, is_per_year, year_selected)
 
-            if is_per_year:
-                if adviser_id:
-                    data['payment_paid_list'] = manager_dashboard.get_commission_collected_per_year_and_adviser(
-                        year_selected, adviser_id)
-                    # data['payment_x_cobrar_list'] = manager_dashboard.get_commission_by_collect_per_year_and_adviser(year_selected,adviser_id)
-                else:
-                    data['payment_paid_list'] = manager_dashboard.get_commission_collected_per_year(year_selected)
-                    # data['payment_x_cobrar_list'] = manager_dashboard.get_commission_by_collect_per_year(year_selected)
-
-            else:
-                if adviser_id:
-                    data['payment_paid_list'] = manager_dashboard.get_commission_collected_per_range_year_and_adviser(
-                        adviser_id)
-                    # data['payment_x_cobrar_list'] = manager_dashboard.get_commission_by_collect_per_range_year_and_adviser(adviser_id)
-                else:
-                    data['payment_paid_list'] = manager_dashboard.get_commission_collected_per_range_year()
-                    # data['payment_x_cobrar_list'] = manager_dashboard.get_commission_by_collect_per_range_year()
+            # if is_per_year:
+            #     if adviser_id:
+            #         data['payment_paid_list'] = manager_dashboard.get_commission_collected_per_year_and_adviser(
+            #             year_selected, adviser_id
+            #         )
+            #         # data['payment_x_cobrar_list'] = manager_dashboard.get_commission_by_collect_per_year_and_adviser(year_selected,adviser_id)
+            #     else:
+            #         data['payment_paid_list'] = manager_dashboard.get_commission_collected_per_year(year_selected)
+            #         # data['payment_x_cobrar_list'] = manager_dashboard.get_commission_by_collect_per_year(year_selected)
+            #
+            # else:
+            #     if adviser_id:
+            #         data['payment_paid_list'] = manager_dashboard.get_commission_collected_per_range_year_and_adviser(
+            #             adviser_id
+            #         )
+            #         # data['payment_x_cobrar_list'] = manager_dashboard.get_commission_by_collect_per_range_year_and_adviser(adviser_id)
+            #     else:
+            #         data['payment_paid_list'] = manager_dashboard.get_commission_collected_per_range_year()
+            #         # data['payment_x_cobrar_list'] = manager_dashboard.get_commission_by_collect_per_range_year()
 
             data['payment_x_cobrar_list'] = self.get_commission_x_cobrar(
                 manager.id,

@@ -200,14 +200,12 @@ class DashboardAdminView(LoginRequiredMixin, TemplateView):
                     **model_to_dict(x, fields=FIELDS),
                     'subtotal': x.subtotal,
                     'type_registration': x.type_registration.name,
-                    'count': x.count,
                 }
                 for x in Institutions.objects.select_related(
                     'type_registration'
                 ).filter(
                     query_AND_1
                 ).annotate(
-                    count=Count(['id']),
                     subtotal=Sum('orderinstitutionquotas__subtotal')
                 )
             ]
