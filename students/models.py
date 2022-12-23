@@ -128,6 +128,9 @@ class StudentRegisters(ModelBaseAudited):
         return '{}'.format(self.detail)
 
 
+    def date_issue_display(self):
+        return self.date_issue.strftime("%Y-%m-%d")
+
     def save(self, *args, **kwargs):
         ModelBaseAudited.save(self)
         self.number = str(self.id).zfill(10)

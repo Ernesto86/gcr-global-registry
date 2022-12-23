@@ -51,7 +51,8 @@
                         <form id="id-form" action="" method="post">
                             {% csrf_token %}
                             <div class="form-group row">
-                                <label class="control-label col-sm-2 align-self-center mb-0 text-black" for="id-nationality">Nacionalidad *</label>
+                                <label class="control-label col-sm-2 align-self-center mb-0 text-black"
+                                       for="id-nationality">Nacionalidad *</label>
                                 <div class="col-sm-10">
                                     <select name="country" class="select form-control" id="id-nationality" required>
                                         <option value="" {% if not country %} selected="" {% endif %}>
@@ -59,7 +60,8 @@
                                         </option>
 
                                         {% for sys_country in sys_country_list %}
-                                            <option value="{{ sys_country.id }}" {% if sys_country.id == country %} selected="" {% endif %}>
+                                            <option value="{{ sys_country.id }}" {% if sys_country.id == country %}
+                                                    selected="" {% endif %}>
                                                 {{ sys_country.name }}
                                             </option>
                                         {% endfor %}
@@ -67,9 +69,11 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label class="control-label col-sm-2 align-self-center mb-0 text-black" for="id-identification">Identificacion *</label>
+                                <label class="control-label col-sm-2 align-self-center mb-0 text-black"
+                                       for="id-identification">Identificacion *</label>
                                 <div class="col-sm-10">
-                                    <input type="text" name="identification" maxlength="100" class="form-control" required value="{{ identification }}" id="id-identification">
+                                    <input type="text" name="identification" maxlength="100" class="form-control"
+                                           required value="{{ identification }}" id="id-identification">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -91,7 +95,8 @@
                     <div class="card-body">
                         <div class="">
                             {% if student %}
-                                <h2 class="text-center my-4 bg-primary py-2 rounded-4 text-white">Información del usuario</h2>
+                                <h2 class="text-center my-4 bg-primary py-2 rounded-4 text-white">Información del
+                                    usuario</h2>
                                 <div class="table-responsive mt-5">
                                     <table style="width: 100%">
                                         <tbody>
@@ -129,7 +134,7 @@
                 <div class="card">
                     <div class="card-body">
                         {% for type_registries in type_registries_list %}
-{#                            <div class="card border-bottom border-4 border-primary">#}
+                            {#                            <div class="card border-bottom border-4 border-primary">#}
                             <div class="card">
                                 <div class="card-header">
                                     <div class="bg-soft-success rounded-3 p-3">
@@ -139,7 +144,9 @@
                                                       d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z">
                                                 </path>
                                             </svg>
-                                            <h5 class="font-weight-bold ms-4">Registros de {{ type_registries.name|title }} - {{ type_registries.detail|title }}</h5>
+                                            <h5 class="font-weight-bold ms-4">Registros
+                                                de {{ type_registries.name|title }}
+                                                - {{ type_registries.detail|title }}</h5>
                                         </div>
                                     </div>
                                 </div>
@@ -152,7 +159,8 @@
                                                 <th scope="col">Institucion</th>
                                                 <th scope="col">Pais</th>
                                                 <th scope="col">Fecha de Emisión</th>
-                                                <th scope="col">Código Internacionla de Registro</th>
+                                                <th scope="col">RIC</th>
+                                                <th scope="col">Certificado</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -161,8 +169,18 @@
                                                     <td>{{ student_registers.certificate }}</td>
                                                     <td>{{ student_registers.institution }}</td>
                                                     <td>{{ student_registers.country }}</td>
-                                                    <td>{{ student_registers.date_issue }}</td>
+                                                    <td>{{ student_registers.date_issue_display }}</td>
                                                     <td>{{ student_registers.code_international_register }}</td>
+                                                    <td>
+                                                        <a
+                                                                    href="{% url "certificate_student_register" %}?student_register_id={{ student_registers.id }}"
+                                                                target="_blank"
+                                                                class="btn btn-primary btn-sm rounded-5"
+                                                                data-toggle="tooltip"
+                                                        >
+                                                            <i class="fa fa-file-pdf"></i>
+                                                        </a>
+                                                    </td>
                                                 </tr>
                                             {% endfor %}
                                             </tbody>

@@ -12,6 +12,7 @@ from institutions.models import InsTypeRegistries
 from security.functions import addUserData
 from students.models import StudentRegisters, Students
 from system.models import SysCountries
+from django.shortcuts import redirect
 
 
 class QueryGeneralView(View):
@@ -90,3 +91,31 @@ class QueryGeneralView(View):
                         )
 
         return render(request, self.template_name, context)
+
+
+from django.template.loader import get_template
+from weasyprint import HTML
+from django.http import HttpResponse, HttpResponseRedirect
+
+
+class CertificateStudentRegisterView(View):
+    template_name = 'security/query_general/certificate_student_register.html'
+
+    def get(self, request):
+        try:
+            student_registers = StudentRegisters.objects.get(id=request.GET.get('student_register_id'))
+            student = student_registers.student
+            certificate = student_registers.certificate
+
+            context = {
+                'name' : student.__str__(),
+                'certificate': certificate.__str__(),
+            }
+            template = get_template(self.template_name)
+            html_template = template.render(context)
+            pdf = HTML(string=html_template).write_pdf()
+            return HttpResponse(pdf, content_type='application/pdf')
+        except Exception as ex:
+            pass
+        # return HttpResponseRedirect(redirect('home'))
+        return redirect('home')

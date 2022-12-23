@@ -74,7 +74,8 @@ class AdviserCreateView(PermissionMixin, CreateView):
                     first_name=form.instance.first_name,
                     last_name=form.instance.last_name,
                     email=form.instance.email,
-                    password="admin123**"
+                    password="admin123**",
+                    is_active=False
                 )
                 
                 form.instance.manager_id = manager.id
