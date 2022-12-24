@@ -45,7 +45,11 @@ const AppSystem = {
                 return AppSystem.elem.$loadingUi2.classList.add('d-none')
             if (loadingType === AppSystem.CONSTANT.loadingType.three)
                 return AppSystem.elem.$loadingUi3.classList.add('d-none')
-        }
+        },
+        showLoadingSimpleFacade: () => {
+            AppSystem.fun.showLoadingUi()
+            AppSystem.handleComp.alert.alert.hidden({})
+        },
     },
     handleComp: {
         CONSTANT: {
@@ -68,7 +72,13 @@ const AppSystem = {
                     $alert.classList.remove('d-none')
                 },
                 show: function (data = {}) {
-                    const {id = '', title = '', content = '', typeFeature = AppSystem.CONSTANT.typeFeature.danger, withTitleDefault = true} = data
+                    const {
+                        id = '',
+                        title = '',
+                        content = '',
+                        typeFeature = AppSystem.CONSTANT.typeFeature.danger,
+                        withTitleDefault = true
+                    } = data
 
                     const $alert = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, this.CONSTANT.alertSuffix))
                     const $title = document.getElementById(AppSystem.handleComp.fun.getConstructId(id, this.CONSTANT.titleSuffix))
