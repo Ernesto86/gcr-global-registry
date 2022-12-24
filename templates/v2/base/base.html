@@ -3,9 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title data-setting="app_name" data-rightJoin=" Pro | Responsive Bootstrap 5 Admin Dashboard Template">{{ appName }} Pro | Responsive Bootstrap 5 Admin Dashboard Template</title>
-    <meta name="description" content="{{ appName }} Pro is a revolutionary Bootstrap Admin Dashboard Template and UI Components Library. The Admin Dashboard Template and UI Component features 8 modules.">
-    <meta name="keywords" content="premium, admin, dashboard, template, bootstrap 5, clean ui, hope ui, admin dashboard,responsive dashboard, optimized dashboard,">
+    <title data-setting="app_name" data-rightJoin=" Pro | Responsive Bootstrap 5 Admin Dashboard Template">{{ appName }}
+        Pro | Responsive Bootstrap 5 Admin Dashboard Template</title>
+    <meta name="description"
+          content="{{ appName }} Pro is a revolutionary Bootstrap Admin Dashboard Template and UI Components Library. The Admin Dashboard Template and UI Component features 8 modules.">
+    <meta name="keywords"
+          content="premium, admin, dashboard, template, bootstrap 5, clean ui, hope ui, admin dashboard,responsive dashboard, optimized dashboard,">
     <meta name="author" content="Iqonic Design">
     <meta name="DC.title" content="{{ appName }}">
 
@@ -14,6 +17,52 @@
     <script>
         const c = console.log
         const ce = console.error
+
+        // TODO: MEJORAR - REFACTORIZAR - quitar en archivo aparte
+
+        function prototipeCommon(typoObject) {
+            typoObject.prototype.isNullP = function () {
+                return this === null
+            }
+            typoObject.prototype.isNotNullP = function () {
+                return this === null
+            }
+            typoObject.prototype.isStringP = function () {
+                return typeof this === 'string' || this instanceof String
+            }
+            typoObject.prototype.isArrayP = function () {
+                return Array.isArray(this)
+            }
+            typoObject.prototype.isObjectP = function () {
+                return typeof this === 'object' && this !== null
+            }
+        }
+
+        prototipeCommon(String)
+        prototipeCommon(Array)
+        prototipeCommon(Number)
+        try {
+            Object.defineProperties(Object, {
+                isNullP: function () {
+                    return this === null
+                },
+                isNotNullP: function () {
+                    return this === null
+                },
+                isStringP: function () {
+                    return typeof this === 'string' || this instanceof String
+                },
+                isArrayP: function () {
+                    return Array.isArray(this)
+                },
+                isObjectP: function () {
+                    return typeof this === 'object' && this !== null
+                }
+            });
+        } catch (e) {
+            c(e)
+        }
+
     </script>
 
     {% block head %}

@@ -83,9 +83,18 @@ class AdviserCreateView(PermissionMixin, CreateView):
                 form.save()
                 form.instance.create_commission()
                 return JsonResponse(data, status=status.HTTP_200_OK)
+            else:
 
-            data['message'] = 'Error de validacion de formulario.'
-            data['errors'] = form.errors
+                data['message'] = 'Error de validacion de formulario.'
+                errors = {}
+                for key, value in form.errors.items():
+                    field = form.fields[key]
+                    errors[field.label] = value
+                data['errors'] = [
+                    "Erro de formulario basico",
+                    errors
+                ]
+
             return JsonResponse(data, status=status.HTTP_400_BAD_REQUEST)
 
         return JsonResponse(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -137,5 +146,8 @@ class AdviserUpdateView(PermissionMixin, UpdateView):
 class AdviserDeleteView(PermissionMixin, View):
     def delete(self, request, *args, **kwargs):
         id = kwargs.get('pk')
-        Advisers.objects.get(pk=id).delete()
+        try:
+            Advisers.objects.get(pk=id).delete()
+        except Exception as ex:
+            return JsonResponse({"message": "Error al eliminar", "errors" : ["jajaja"]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return JsonResponse({}, status=status.HTTP_200_OK)
