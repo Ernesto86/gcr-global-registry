@@ -43,16 +43,18 @@ const ConfirmCommon = {
                     text: btnInfoText,
                     btnClass: btnInfoClass,
                     action: function () {
-                        if (confirmCallback)
-                            confirmCallback()
+
+                        confirmCallback && confirmCallback()
+
                     }
                 },
                 cancel: {
                     text: btnDangerText,
                     btnClass: btnDangerClass,
                     action: function () {
-                        if (cancelCallback)
-                            cancelCallback()
+
+                        cancelCallback && cancelCallback()
+
                     }
                 },
             }

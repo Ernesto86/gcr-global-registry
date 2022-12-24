@@ -73,7 +73,7 @@
                 model: {},
                 fun: {
                     deleteRegisterFacade: (id, target) => ConfirmCommon.exec({
-                        confirmCallback: () => objD.fun.deleteRegister(id, target)
+                        confirmCallback: () => objD.fun.deleteRegister(id, target),
                     }),
                     deleteRegister: async (id, target) => {
                         const {stateExtra} = await CrudCommon.fetch.delete({
