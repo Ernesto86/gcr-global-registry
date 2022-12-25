@@ -105,7 +105,8 @@ class PaymentAdviserCommissionsForm(forms.ModelForm):
 class AdviserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # FormCommon.update_required_field(self.fields)
+        FormCommon.update_required_field(self.fields)
+        FormCommon.update_readonly_field([self.fields['code']], is_list=True)
 
     class Meta:
         model = Advisers

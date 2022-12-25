@@ -1,3 +1,6 @@
+import string
+import random
+
 from decimal import Decimal
 
 from django.db import models
@@ -41,7 +44,8 @@ class Advisers(ModelBaseAudited):
         on_delete=models.PROTECT,
         blank=True, null=True
     )
-    user = models.OneToOneField("security.User", verbose_name="Usuario", on_delete=models.CASCADE, blank=True, null=True)
+    user = models.OneToOneField("security.User", verbose_name="Usuario", on_delete=models.CASCADE, blank=True,
+                                null=True)
     code = models.CharField(max_length=20, verbose_name="Código", blank=True, null=True)
     names = models.CharField(max_length=100, verbose_name="Apellidos y nombres", blank=True, null=True, editable=False)
     last_name = models.CharField(max_length=100, verbose_name="Apellidos")
@@ -76,6 +80,28 @@ class Advisers(ModelBaseAudited):
             commissions_period_2=period_commission.advisers_percentage_period_2,
             commissions_period_3=period_commission.advisers_percentage_period_3,
         )
+
+    @classmethod
+    def generate_code(cls):
+        code_found = False
+
+        code = ''
+
+        def get_string():
+            code_chars = string.ascii_uppercase + string.digits
+            code = ""
+            for character in range(6):
+                code += random.choice(code_chars)
+            return code
+
+        while not code_found:
+            code = get_string()
+            if cls.objects.filter(code=code).exists():
+                pass
+            else:
+                code_found = True
+
+        return f"AD-{code}"
 
     def save(self, *args, **kwargs):
 
@@ -173,7 +199,8 @@ class PaymentAdviserCommissionsDetails(ModelBaseAudited):
         on_delete=models.CASCADE,
         verbose_name="Pago Asesor Comisión"
     )
-    adviser = models.ForeignKey("advisers.Advisers", verbose_name="Asesor", on_delete=models.CASCADE, blank=True, null=True)
+    adviser = models.ForeignKey("advisers.Advisers", verbose_name="Asesor", on_delete=models.CASCADE, blank=True,
+                                null=True)
     manager = models.ForeignKey(
         "advisers.Managers",
         verbose_name="Gerente",
@@ -204,7 +231,8 @@ class Managers(ModelBaseAudited):
         on_delete=models.PROTECT,
         related_name='country_residence_advisers'
     )
-    user = models.OneToOneField("security.User", verbose_name="Usuario", on_delete=models.CASCADE, blank=True, null=True)
+    user = models.OneToOneField("security.User", verbose_name="Usuario", on_delete=models.CASCADE, blank=True,
+                                null=True)
     code = models.CharField(max_length=20, verbose_name="Código", blank=True, null=True)
     names = models.CharField(max_length=100, verbose_name="Apellidos y nombres", blank=True, null=True, editable=False)
     last_name = models.CharField(max_length=100, verbose_name="Apellidos")

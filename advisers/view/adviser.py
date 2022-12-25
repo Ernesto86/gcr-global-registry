@@ -8,6 +8,7 @@ from rest_framework import status
 from advisers.forms import AdviserForm
 from advisers.models import Advisers, Managers
 from core.common.filter_orm.filter_orm_common import FilterOrmCommon
+from core.common.form.form_common import FormCommon
 from security.functions import addUserData
 from core.util_functions import ListViewFilter
 from security.mixins import *
@@ -59,6 +60,11 @@ class AdviserCreateView(PermissionMixin, CreateView):
     success_url = reverse_lazy('advisers:adviser_list')
     permission_required = 'add_advisers'
 
+    def get_initial(self):
+        initial_dict = super(AdviserCreateView, self).get_initial()
+        initial_dict['code'] = Advisers.generate_code()
+        return initial_dict
+
     def post(self, request, *args, **kwargs):
         data = {'errors': [], 'message': ""}
         action = request.POST['action']
@@ -77,23 +83,15 @@ class AdviserCreateView(PermissionMixin, CreateView):
                     password="admin123**",
                     is_active=False
                 )
-                
+
                 form.instance.manager_id = manager.id
                 form.instance.user_id = user.pk
                 form.save()
                 form.instance.create_commission()
                 return JsonResponse(data, status=status.HTTP_200_OK)
             else:
-
                 data['message'] = 'Error de validacion de formulario.'
-                errors = {}
-                for key, value in form.errors.items():
-                    field = form.fields[key]
-                    errors[field.label] = value
-                data['errors'] = [
-                    "Erro de formulario basico",
-                    errors
-                ]
+                data['errors'] = [FormCommon.get_errors_dict(form)]
 
             return JsonResponse(data, status=status.HTTP_400_BAD_REQUEST)
 
@@ -116,6 +114,11 @@ class AdviserUpdateView(PermissionMixin, UpdateView):
     success_url = reverse_lazy('advisers:adviser_list')
     permission_required = 'change_advisers'
 
+    def get_form(self, *args, **kwargs):
+        form = super(AdviserUpdateView, self).get_form(*args, **kwargs)
+        FormCommon.update_readonly_field([form.fields['email']], is_list=True)
+        return form
+
     def post(self, request, *args, **kwargs):
         data = {'errors': [], 'message': ""}
         action = request.POST['action']
@@ -126,10 +129,13 @@ class AdviserUpdateView(PermissionMixin, UpdateView):
 
             if form.is_valid():
                 form.save()
+                form.instance.user.first_name = form.instance.first_name
+                form.instance.user.last_name = form.instance.last_name
+                form.instance.user.save()
                 return JsonResponse(data, status=status.HTTP_200_OK)
 
             data['message'] = 'Error de validacion de formulario.'
-            data['errors'] = form.errors
+            data['errors'] = [FormCommon.get_errors_dict(form)]
             return JsonResponse(data, status=status.HTTP_400_BAD_REQUEST)
 
         return JsonResponse(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -149,5 +155,6 @@ class AdviserDeleteView(PermissionMixin, View):
         try:
             Advisers.objects.get(pk=id).delete()
         except Exception as ex:
-            return JsonResponse({"message": "Error al eliminar", "errors" : ["jajaja"]}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return JsonResponse({"message": "Error al eliminar", "errors": ["jajaja"]},
+                                status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return JsonResponse({}, status=status.HTTP_200_OK)

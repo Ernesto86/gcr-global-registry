@@ -5,6 +5,14 @@ class FormCommon:
     CLS_BACKGROUND_READONLY = "bg-secondary bg-opacity-10"
 
     @staticmethod
+    def get_errors_dict(form):
+        errors = {}
+        for key, value in form.errors.items():
+            field = form.fields[key]
+            errors[field.label] = value
+        return errors
+
+    @staticmethod
     def update_disabled_field(fields, is_list=False):
         """
             HACER UN CAMPO COMO DESACTIVADO
