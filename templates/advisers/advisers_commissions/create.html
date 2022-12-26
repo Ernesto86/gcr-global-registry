@@ -111,11 +111,15 @@
                 fun: {
                     getSelectValues: function (select) {
                         // TODO: getSelectValues debe ser llevadas a una clase para ser reutilizada
+                        // https://stackoverflow.com/questions/5866169/how-to-get-all-selected-values-of-a-multiple-select-box
+
+                        {#var options = document.getElementById('select-meal-type');#}
+                        {#var values = Array.from(options.selectedOptions).map(({ value }) => value);#}
 
                         let result = []
                         const options = select && select.options
 
-                        for (var i = 0, iLen = options.length; i < iLen; i++) {
+                        for (let i = 0, iLen = options.length; i < iLen; i++) {
                             const opt = options[i]
 
                             if (opt.selected) {

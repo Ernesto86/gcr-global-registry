@@ -9,8 +9,11 @@ class FormCommon:
     def get_errors_dict(form):
         errors = {}
         for key, value in form.errors.items():
-            field = form.fields[key]
-            errors[field.label] = value
+            try:
+                field = form.fields[key]
+                errors[field.label] = value
+            except:
+                pass
         return errors
 
     @staticmethod
