@@ -94,10 +94,9 @@ class AdviserCreateView(PermissionMixin, CreateView):
                 form.save()
                 form.instance.create_commission()
                 return JsonResponse(data, status=status.HTTP_200_OK)
-            else:
-                data['message'] = 'Error de validacion de formulario.'
-                data['errors'] = [FormCommon.get_errors_dict(form)]
 
+            data['message'] = 'Error de validacion de formulario.'
+            data['errors'] = [FormCommon.get_errors_dict(form)]
             return JsonResponse(data, status=status.HTTP_400_BAD_REQUEST)
 
         return JsonResponse(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

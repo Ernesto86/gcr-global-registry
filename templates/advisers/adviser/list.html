@@ -73,6 +73,7 @@
                 model: {},
                 fun: {
                     deleteRegisterFacade: (id, target) => ConfirmCommon.exec({
+                        title: ConfirmCommon.CONSTANT.titleDelete,
                         confirmCallback: () => objD.fun.deleteRegister(id, target),
                     }),
                     deleteRegister: async (id, target) => {

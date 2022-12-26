@@ -49,14 +49,20 @@ const ErrorCommon = {
                 } else if (typeof elem === 'object' && elem !== null) {
 
                     Object.keys(elem).map(key => {
+                        const value = elem[key]
 
                         html += `<li>${key}</li>`
 
                         let html2 = '<ul class="ms-5 d-block">'
 
-                        elem[key].map(element2 => {
-                            html2 += `<li>${element2}</li>`
-                        })
+                        if (Array.isArray(value)) {
+                            value.map(element2 => {
+                                html2 += `<li>${element2}</li>`
+                            })
+                        } else {
+                            html2 += `<li>${value}</li>`
+                        }
+
 
                         html2 += '</ul>'
                         html += `<li>${html2}</li>`

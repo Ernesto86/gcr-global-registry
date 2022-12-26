@@ -5,7 +5,8 @@ const ConfirmCommon = {
     CONSTANT: {
         theme: 'bootstrap',
         title: 'Confirmación',
-        icon: 'fas fa-info-circle',
+        titleDelete: 'Eliminación',
+        icon: 'fas fa-globe-americas',
         content: '¿Esta seguro de realizar la siguiente acción?',
     },
     fun: {},

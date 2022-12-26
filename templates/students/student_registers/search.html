@@ -93,15 +93,7 @@
                         const formData = new FormData(objD.elem.$form)
                         formData.append("action", "search")
 
-                        AppSystem.fun.showLoadingUi()
-                        AppSystem.handleComp.alert.alert.hidden({})
-
-                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
-                            location.pathname,
-                            formData
-                        )
-
-                        AppSystem.fun.hiddenLoadingUi()
+                        const {code, message, data, ...stateExtra} = await CrudCommon.fetch.submitForm({formData})
 
                         if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
 
@@ -109,7 +101,6 @@
                                 objD.elem.$btnAddStudent.classList.remove('d-none');
 
                             objD.elem.$name.value = data.message
-                            AppSystem.handleComp.alert.alert.show({title: message, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
                             return
                         }
 

@@ -45,8 +45,8 @@ class Students(ModelBaseAudited):
     code_postal = models.CharField(max_length=10, verbose_name="Cod. postal", blank=True, null=True)
     telephone = models.CharField(max_length=20, verbose_name="Teléfono", blank=True, null=True)
     cell_phone = models.CharField(max_length=20, verbose_name="Celular", blank=True, null=True)
-    email = models.CharField(max_length=191, verbose_name="Email", blank=True, null=True)
-    email_alternate = models.CharField(max_length=150, verbose_name="Email alterno", blank=True, null=True)
+    email = models.EmailField(max_length=191, verbose_name="Email", blank=True, null=True)
+    email_alternate = models.EmailField(max_length=150, verbose_name="Email alterno", blank=True, null=True)
 
     def __str__(self):
         return "{}".format(self.names)

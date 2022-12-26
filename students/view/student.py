@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
+from core.common.form.form_common import FormCommon
 from security.functions import addUserData
 from students.forms import StudentsForm
 from students.models import Students
@@ -41,8 +42,8 @@ class StudentsCreateView(CreateView):
                 form.save()
                 return JsonResponse(data, status=status)
 
-            data['message'] = 'Error'
-            data['errors'] = form.errors
+            data['message'] = 'Error de validacion de formulario.'
+            data['errors'] = [FormCommon.get_errors_dict(form)]
             return JsonResponse(data, status=status)
 
         data['code'] = 'failed'

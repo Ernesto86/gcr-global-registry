@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, TemplateView
 
+from core.common.form.form_common import FormCommon
 from security.functions import addUserData
 from security.manager.organizador_registros_manager import OrganizadorRegistrosManager
 from security.mixins import PermissionMixin
@@ -73,13 +74,11 @@ class StudentRegistersSearchView(PermissionMixin, TemplateView):
 
             try:
                 student = Students.objects.get(dni=identification)
-
-                data['message'] = 'No existe el estudiante ingresado'
                 data['student'] = model_to_dict(student)
                 return JsonResponse(data, status=200)
 
             except Students.DoesNotExist:
-                data['message'] = 'No existe el estudiante ingresado'
+                data['message'] = 'No existe el estudiante con el dni buscado'
                 return JsonResponse(data, status=404)
             except Exception as ex:
                 data['message'] = 'Error inesperado'
@@ -153,12 +152,10 @@ class StudentRegistersCreateView(PermissionMixin, CreateView):
 
                 return JsonResponse(data, status=status)
 
-            data['code'] = 'failed'
-            data['message'] = 'Error'
-            data['errors'] = form.errors
+            data['message'] = 'Error de validacion de formulario.'
+            data['errors'] = [FormCommon.get_errors_dict(form)]
             return JsonResponse(data, status=status)
 
-        data['code'] = 'failed'
         return JsonResponse(data, status=status)
 
     def get_context_data(self, *args, **kwargs):

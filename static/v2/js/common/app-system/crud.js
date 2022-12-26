@@ -16,18 +16,20 @@ const CrudCommon = {
         ) => {
             AppSystem.fun.showLoadingSimpleFacade()
 
-            const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+            const dataJson = await ClientHttpFetch.exec(
                 path,
                 formData,
                 method
             )
+
+            const {code, message, data, ...stateExtra} = dataJson
 
             AppSystem.fun.hiddenLoadingUi()
 
             if (ErrorResponse.KIND_STATIC === stateExtra.kind)
                 ErrorCommon.funHTML.showErrorsSimpleFacade(message, data?.errors)
 
-            return {code, message, data, stateExtra}
+            return dataJson
         },
         submitFormOnlyLoading: async (
             {
@@ -38,18 +40,20 @@ const CrudCommon = {
         ) => {
             AppSystem.fun.showLoadingUi()
 
-            const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+            const dataJson = await ClientHttpFetch.exec(
                 path,
                 formData,
                 method
             )
+
+            const {code, message, data, ...stateExtra} = dataJson
 
             AppSystem.fun.hiddenLoadingUi()
 
             if (ErrorResponse.KIND_STATIC === stateExtra.kind)
                 ErrorCommon.funHTML.showErrorsOnlyAlert(message, data?.errors)
 
-            return {code, message, data, stateExtra}
+            return dataJson
         },
         delete: async (
             {
@@ -60,11 +64,13 @@ const CrudCommon = {
 
             AppSystem.fun.showLoadingUi()
 
-            const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+            const dataJson = await ClientHttpFetch.exec(
                 path,
                 dataFetch,
                 {method: ClientHttpFetch.CONSTANT.verboseMethod.DELETE.description}
             )
+
+            const {code, message, data, ...stateExtra} = dataJson
 
             AppSystem.fun.hiddenLoadingUi()
 
@@ -75,7 +81,7 @@ const CrudCommon = {
             //     typeFeature: AppSystem.CONSTANT.typeFeature.danger
             // })
 
-            return {code, message, data, stateExtra}
+            return dataJson
         },
 
     },

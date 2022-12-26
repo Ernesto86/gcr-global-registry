@@ -20,6 +20,9 @@
                 loadFirst: {},
                 model: {},
                 fun: {
+                    submitFacade: () => ConfirmCommon.exec({
+                        confirmCallback: () => objD.fun.submit()
+                    }),
                     submit: async () => {
                         const formData = new FormData(objD.elem.$form)
                         formData.append("action", 'add')
@@ -29,24 +32,10 @@
                             return AppSystem.handleComp.alert.alert.show({title: "Dni debe tener mas de un digito.", typeFeature: AppSystem.CONSTANT.typeFeature.danger})
 
 
-                        AppSystem.fun.showLoadingUi()
-                        AppSystem.handleComp.alert.alert.hidden({})
+                        const {code, message, data, ...stateExtra} = await CrudCommon.fetch.submitForm({formData})
 
-                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
-                            location.pathname,
-                            formData
-                        )
-
-                        AppSystem.fun.hiddenLoadingUi()
-
-                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
-                            let errorHtml = '<ul class="ms-5 d-block">'
-                            data?.errors.map(elem => errorHtml += `<li>${elem}</li>`)
-                            errorHtml += '</ul>'
-
-                            AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind)
                             return
-                        }
 
                         window.location = objElevate.successUrl
                     }
@@ -61,7 +50,7 @@
             objD.elem.$form.addEventListener('submit', (e) => {
                 e.preventDefault()
 
-                objD.fun.submit()
+                objD.fun.submitFacade()
             })
 
         });

@@ -19,23 +19,21 @@ class StudentRegistersForm(forms.ModelForm):
         )
         widgets = {
             'student': forms.Select(attrs={
-                'readonly': True
+                'readonly': True,
+                'class': FormCommon.CLS_BACKGROUND_READONLY
             }),
             'type_register': forms.Select(
                 attrs={
-                    'class': 'select2-design',
                     'required': True
                 },
             ),
             'certificate': forms.Select(
                 attrs={
-                    'class': 'select2-design',
                     'required': True
                 }
             ),
             'country': forms.Select(
                 attrs={
-                    'class': 'select2-design',
                     'required': True
                 }
             ),
@@ -49,6 +47,7 @@ class StudentRegistersForm(forms.ModelForm):
             ),
             'code_international_register': forms.TextInput(attrs={
                 'readonly': True,
+                'class': FormCommon.CLS_BACKGROUND_READONLY
             }),
         }
 
@@ -88,7 +87,7 @@ class StudentsForm(forms.ModelForm):
                     'required': True
                 }
             ),
-            'email': forms.TextInput(
+            'email': forms.EmailInput(
                 attrs={
                     'required': True
                 },
