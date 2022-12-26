@@ -24,7 +24,7 @@ const ErrorCommon = {
     funHTML: {
         getErrors: (errors) => {
 
-            // TODO: MEJORAR - REFACTORIZAR
+            // TODO: getErrors  MEJORAR - REFACTORIZAR
 
             let html = '<ul class="ms-5 d-block">'
             ErrorCommon.fun.getErrors(errors).map(elem => {

@@ -2,28 +2,31 @@
 
 {% block form-card-body %}
     <div class="form-group row">
-        <label class="control-label col-sm-3 align-self-center mb-0 text-black" for="{{ form_2.advisers_specific.id_for_label }}">{{ form_2.advisers_specific.label }}:</label>
+        <label class="control-label col-sm-3 align-self-center mb-0 text-black"
+               for="{{ form_2.advisers_specific.id_for_label }}">{{ form_2.advisers_specific.label }}:</label>
         <div class="col-sm-9">
             {{ form_2.advisers_specific }}
         </div>
     </div>
-
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
-                <label class="form-label text-black" for="{{ form_2.advisers_percentage_period_1.id_for_label }}">{{ form_2.advisers_percentage_period_1.label }}:</label>
+                <label class="form-label text-black"
+                       for="{{ form_2.advisers_percentage_period_1.id_for_label }}">{{ form_2.advisers_percentage_period_1.label }}:</label>
                 {{ form_2.advisers_percentage_period_1 }}
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label class="form-label text-black" for="{{ form_2.days_commissions_period_1.id_for_label }}">{{ form_2.days_commissions_period_1.label }}:</label>
+                <label class="form-label text-black"
+                       for="{{ form_2.days_commissions_period_1.id_for_label }}">{{ form_2.days_commissions_period_1.label }}:</label>
                 {{ form_2.days_commissions_period_1 }}
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label class="form-label text-black" for="{{ form_2.advisers_percentage_max_period_1.id_for_label }}">{{ form_2.advisers_percentage_max_period_1.label }}:</label>
+                <label class="form-label text-black"
+                       for="{{ form_2.advisers_percentage_max_period_1.id_for_label }}">{{ form_2.advisers_percentage_max_period_1.label }}:</label>
                 {{ form_2.advisers_percentage_max_period_1 }}
             </div>
         </div>
@@ -31,19 +34,22 @@
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
-                <label class="form-label text-black" for="{{ form_2.advisers_percentage_period_2.id_for_label }}">{{ form_2.advisers_percentage_period_2.label }}:</label>
+                <label class="form-label text-black"
+                       for="{{ form_2.advisers_percentage_period_2.id_for_label }}">{{ form_2.advisers_percentage_period_2.label }}:</label>
                 {{ form_2.advisers_percentage_period_2 }}
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label class="form-label text-black" for="{{ form_2.days_commissions_period_2.id_for_label }}">{{ form_2.days_commissions_period_2.label }}:</label>
+                <label class="form-label text-black"
+                       for="{{ form_2.days_commissions_period_2.id_for_label }}">{{ form_2.days_commissions_period_2.label }}:</label>
                 {{ form_2.days_commissions_period_2 }}
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label class="form-label text-black" for="{{ form_2.advisers_percentage_max_period_2.id_for_label }}">{{ form_2.advisers_percentage_max_period_2.label }}:</label>
+                <label class="form-label text-black"
+                       for="{{ form_2.advisers_percentage_max_period_2.id_for_label }}">{{ form_2.advisers_percentage_max_period_2.label }}:</label>
                 {{ form_2.advisers_percentage_max_period_2 }}
             </div>
         </div>
@@ -51,19 +57,22 @@
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
-                <label class="form-label text-black" for="{{ form_2.advisers_percentage_period_3.id_for_label }}">{{ form_2.advisers_percentage_period_3.label }}:</label>
+                <label class="form-label text-black"
+                       for="{{ form_2.advisers_percentage_period_3.id_for_label }}">{{ form_2.advisers_percentage_period_3.label }}:</label>
                 {{ form_2.advisers_percentage_period_3 }}
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label class="form-label text-black" for="{{ form_2.days_commissions_period_3.id_for_label }}">{{ form_2.days_commissions_period_3.label }}:</label>
+                <label class="form-label text-black"
+                       for="{{ form_2.days_commissions_period_3.id_for_label }}">{{ form_2.days_commissions_period_3.label }}:</label>
                 {{ form_2.days_commissions_period_3 }}
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label class="form-label text-black" for="{{ form_2.advisers_percentage_max_period_3.id_for_label }}">{{ form_2.advisers_percentage_max_period_3.label }}:</label>
+                <label class="form-label text-black"
+                       for="{{ form_2.advisers_percentage_max_period_3.id_for_label }}">{{ form_2.advisers_percentage_max_period_3.label }}:</label>
                 {{ form_2.advisers_percentage_max_period_3 }}
             </div>
         </div>
@@ -78,9 +87,16 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function (e) {
+
+            $('#id_advisers_specific').select2();
+
             const objD = {
                 CONSTANT: {},
                 elem: {
+                    $form: document.getElementById('id-form'),
+
+                    $advisers_specific: document.getElementById('id_advisers_specific'),
+
                     $advisers_percentage_max_period_1: document.getElementById('id_advisers_percentage_max_period_1'),
                     $advisers_percentage_max_period_2: document.getElementById('id_advisers_percentage_max_period_2'),
                     $advisers_percentage_max_period_3: document.getElementById('id_advisers_percentage_max_period_3'),
@@ -92,7 +108,23 @@
                 repeat: {},
                 loadFirst: {},
                 model: {},
-                fun: {}
+                fun: {
+                    getSelectValues: function (select) {
+                        // TODO: getSelectValues debe ser llevadas a una clase para ser reutilizada
+
+                        let result = []
+                        const options = select && select.options
+
+                        for (var i = 0, iLen = options.length; i < iLen; i++) {
+                            const opt = options[i]
+
+                            if (opt.selected) {
+                                result.push(opt.value || opt.text)
+                            }
+                        }
+                        return result
+                    }
+                }
             }
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,14 +146,32 @@
                 if (parseInt(e.target.value) > parseInt(objD.elem.$advisers_percentage_max_period_3.value))
                     alert("Excedió valor maximo: " + objD.elem.$advisers_percentage_max_period_3.value)
             })
+
+            objD.elem.$form.addEventListener('submit', (e) => {
+                e.preventDefault()
+
+                ConfirmCommon.exec({
+                    title: objD.fun.getSelectValues(objD.elem.$advisers_specific).length === 0
+                        ? "A seleccionado TODOS los asesores."
+                        : "Solo se afectara a los asesores escogidos.",
+                    confirmCallback: () => objD.elem.$form.submit()
+                })
+
+            })
         })
 
         {% if messages %}
             {% for message in messages %}
                 {% if message.tags.lower == 'success' %}
-                    AppSystem.handleComp.alert.alert.show({title: "{{ message }}", typeFeature: AppSystem.CONSTANT.typeFeature.success})
+                    AppSystem.handleComp.alert.alert.show({
+                        title: "{{ message }}",
+                        typeFeature: AppSystem.CONSTANT.typeFeature.success
+                    })
                 {% elif message.tags.lower == 'error'  %}
-                    AppSystem.handleComp.alert.alert.show({title: "{{ message }}", typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                    AppSystem.handleComp.alert.alert.show({
+                        title: "{{ message }}",
+                        typeFeature: AppSystem.CONSTANT.typeFeature.danger
+                    })
                 {% endif %}
             {% endfor %}
         {% endif %}

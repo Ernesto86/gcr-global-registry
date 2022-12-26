@@ -1,4 +1,5 @@
-from core.common.form.form_constant import CONSTANT_CLS_BOOTSTRAP, CONSTANT_STANDARD_PRESENT
+from core.common.form.form_constant import CONSTANT_CLS_BOOTSTRAP, CONSTANT_STANDARD_PRESENT, \
+    CONSTANT_CLS_CHECKBOX_BOOTSTRAP
 
 
 class FormCommon:
@@ -73,7 +74,14 @@ class FormCommon:
             class_cls = field.widget.attrs.get('class')
             style = field.widget.attrs.get('style')
 
-            class_cls = f' {class_cls} {CONSTANT_CLS_BOOTSTRAP} ' if class_cls else CONSTANT_CLS_BOOTSTRAP
+            if field.widget.input_type == 'checkbox':
+                class_cls = f' {class_cls} {CONSTANT_CLS_CHECKBOX_BOOTSTRAP} ' if class_cls else CONSTANT_CLS_CHECKBOX_BOOTSTRAP
+            # TODO: en algun momento realizar pruebas para cambir la condicional if hasattr(field, 'choices'):
+            # elif field.widget.input_type == 'select':
+            #     pass
+            else:
+                class_cls = f' {class_cls} {CONSTANT_CLS_BOOTSTRAP} ' if class_cls else CONSTANT_CLS_BOOTSTRAP
+
             if class_cls.__contains__('cls_decimal'):
                 class_cls = f'{class_cls} input-large text-right'
 
