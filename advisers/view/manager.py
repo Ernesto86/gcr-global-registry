@@ -5,8 +5,8 @@ from django.views.generic import ListView, CreateView, UpdateView
 from django.http import JsonResponse
 from rest_framework import status
 
-from advisers.forms import AdviserForm
-from advisers.models import Advisers, Managers, AdvisersCommissions
+from advisers.forms import ManagerForm
+from advisers.models import Managers, Managers, ManagersCommissions
 from core.common.filter_orm.filter_orm_common import FilterOrmCommon
 from core.common.form.form_common import FormCommon
 from security.functions import addUserData
@@ -15,19 +15,19 @@ from security.mixins import *
 from security.models import User
 
 
-class AdviserListView(PermissionMixin, ListViewFilter, ListView):
+class ManagerListView(PermissionMixin, ListViewFilter, ListView):
     login_url = '/security/login'
     redirect_field_name = 'redirect_to'
-    template_name = 'advisers/adviser/list.html'
+    template_name = 'advisers/manager/list.html'
     context_object_name = 'advisers'
-    permission_required = 'view_advisers'
+    permission_required = 'view_managers'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         addUserData(self.request, context)
-        context['create_url'] = reverse_lazy('advisers:adviser_create')
-        context['title_label'] = "Listado de asesores"
-        context['clear_url'] = reverse_lazy('advisers:adviser_list')
+        context['create_url'] = reverse_lazy('advisers:manager_create')
+        context['title_label'] = "Listado de gerentes"
+        context['clear_url'] = reverse_lazy('advisers:manager_list')
 
         get_params = FilterOrmCommon.get_url_params(self.request.GET)
         context.update(get_params)
@@ -36,9 +36,8 @@ class AdviserListView(PermissionMixin, ListViewFilter, ListView):
 
     def get_queryset(self, **kwargs):
         self.query_AND_1, self.query_OR_1 = FilterOrmCommon.get_query_connector_tuple()
-        self.query_AND_1.children.append(("manager__user_id", self.request.user.pkid))
-        self.query_AND_1.children.append(("deleted", False))
         search = self.request.GET.get('search', '')
+        self.query_AND_1.children.append(("deleted", False))
 
         if search:
             self.query_OR_1.children.append(("last_name__icontains", search))
@@ -46,7 +45,7 @@ class AdviserListView(PermissionMixin, ListViewFilter, ListView):
             self.query_OR_1.children.append(("code__icontains", search))
             self.query_OR_1.children.append(("dni__icontains", search))
 
-        return Advisers.objects.filter(
+        return Managers.objects.filter(
             self.query_AND_1,
             self.query_OR_1
         ).order_by(
@@ -54,16 +53,16 @@ class AdviserListView(PermissionMixin, ListViewFilter, ListView):
         )
 
 
-class AdviserCreateView(PermissionMixin, CreateView):
-    model = Advisers
-    template_name = 'advisers/adviser/create.html'
-    form_class = AdviserForm
-    success_url = reverse_lazy('advisers:adviser_list')
-    permission_required = 'add_advisers'
+class ManagerCreateView(PermissionMixin, CreateView):
+    model = Managers
+    template_name = 'advisers/manager/create.html'
+    form_class = ManagerForm
+    success_url = reverse_lazy('advisers:manager_list')
+    permission_required = 'add_managers'
 
     def get_initial(self):
-        initial_dict = super(AdviserCreateView, self).get_initial()
-        initial_dict['code'] = Advisers.generate_code()
+        initial_dict = super(ManagerCreateView, self).get_initial()
+        initial_dict['code'] = Managers.generate_code()
         return initial_dict
 
     def post(self, request, *args, **kwargs):
@@ -72,8 +71,6 @@ class AdviserCreateView(PermissionMixin, CreateView):
 
         if action == 'add':
             form = self.get_form()
-
-            manager = Managers.objects.get(user_id=self.request.user.pk)
 
             if form.is_valid():
                 if User.objects.filter(email=form.cleaned_data['email']).exists():
@@ -89,10 +86,8 @@ class AdviserCreateView(PermissionMixin, CreateView):
                     is_active=False
                 )
 
-                form.instance.manager_id = manager.id
                 form.instance.user_id = user.pk
                 form.save()
-                form.instance.create_commission()
                 return JsonResponse(data, status=status.HTTP_200_OK)
             else:
                 data['message'] = 'Error de validacion de formulario.'
@@ -106,21 +101,20 @@ class AdviserCreateView(PermissionMixin, CreateView):
         context = super().get_context_data()
         addUserData(self.request, context)
         context['back_url'] = self.success_url
-        context['title_label'] = "Crear asesores"
-        context['title_label'] = "Crear asesores"
+        context['title_label'] = "Crear gerentes"
         context['action'] = 'add'
         return context
 
 
-class AdviserUpdateView(PermissionMixin, UpdateView):
-    model = Advisers
-    template_name = 'advisers/adviser/create.html'
-    form_class = AdviserForm
-    success_url = reverse_lazy('advisers:adviser_list')
-    permission_required = 'change_advisers'
+class ManagerUpdateView(PermissionMixin, UpdateView):
+    model = Managers
+    template_name = 'advisers/manager/create.html'
+    form_class = ManagerForm
+    success_url = reverse_lazy('advisers:manager_list')
+    permission_required = 'change_managers'
 
     def get_form(self, *args, **kwargs):
-        form = super(AdviserUpdateView, self).get_form(*args, **kwargs)
+        form = super(ManagerUpdateView, self).get_form(*args, **kwargs)
         FormCommon.update_readonly_field([form.fields['email']], is_list=True)
         return form
 
@@ -154,17 +148,17 @@ class AdviserUpdateView(PermissionMixin, UpdateView):
         return context
 
 
-class AdviserDeleteView(PermissionMixin, View):
+class ManagerDeleteView(PermissionMixin, View):
     def delete(self, request, *args, **kwargs):
         id = kwargs.get('pk')
         try:
-            adviser = Advisers.objects.get(pk=id)
-            adviser.user.is_active = False
-            adviser.deleted = True
-            adviser_commissions = AdvisersCommissions.objects.get(adviser_id=adviser.id)
-            adviser_commissions.deleted = True
-            adviser_commissions.save()
-            adviser.save()
+            manager = Managers.objects.get(pk=id)
+            manager.user.is_active = False
+            manager.deleted = True
+            manager_commissions = ManagersCommissions.objects.get(manager_id=manager.id)
+            manager_commissions.deleted = True
+            manager_commissions.save()
+            manager.save()
         except Exception as ex:
             return JsonResponse(
                 {"message": "Error al eliminar", "errors": ["Error al eliminar"]},

@@ -5,6 +5,7 @@ from advisers.view.adviser_profile import AdviserProfileUpdateView
 from advisers.view.advisers_commissions import AdvisersCommissionsListView, AdvisersCommissionsCreateView, AdvisersCommissionsUpdateView
 from advisers.view.dashboard_admin import DashboardAdminView
 from advisers.view.dashboard_advisor import DashboardAdvisorView
+from advisers.view.manager import ManagerListView, ManagerCreateView, ManagerUpdateView, ManagerDeleteView
 from advisers.view.manager_profile import ManagerProfileUpdateView
 from advisers.view.managers_commissions import ManagersCommissionsListView, ManagersCommissionsCreateView, ManagersCommissionsUpdateView
 from advisers.view.dashboard_manager import DashboardManagerView
@@ -21,6 +22,10 @@ urlpatterns = [
     path('advisers/delete/<int:pk>', AdviserDeleteView.as_view(), name='adviser_delete'),
     path('adviser-profile/update', AdviserProfileUpdateView.as_view(), name='adviser_profile_update'),
 
+    path('managers', ManagerListView.as_view(), name='manager_list'),
+    path('managers/create', ManagerCreateView.as_view(), name='manager_create'),
+    path('managers/update/<int:pk>', ManagerUpdateView.as_view(), name='manager_update'),
+    path('managers/delete/<int:pk>', ManagerDeleteView.as_view(), name='manager_delete'),
     path('manager-profile/update', ManagerProfileUpdateView.as_view(), name='manager_profile_update'),
 
     path('dashboard-advisor', DashboardAdvisorView.as_view(), name='dashboard_advisor'),

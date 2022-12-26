@@ -55,7 +55,7 @@ class Advisers(ModelBaseAudited):
     code_postal = models.CharField(max_length=10, verbose_name="Cod. postal", blank=True, null=True)
     telephone = models.CharField(max_length=20, verbose_name="Teléfono", blank=True, null=True)
     cell_phone = models.CharField(max_length=20, verbose_name="Celular", blank=True, null=True)
-    email = models.EmailField(max_length=150, verbose_name="Email", blank=True, null=True)
+    email = models.EmailField(max_length=150, verbose_name="Email", blank=True, null=True, unique=True)
     email_alternate = models.EmailField(max_length=150, verbose_name="Email alterno", blank=True, null=True)
 
     def __str__(self):
@@ -242,8 +242,8 @@ class Managers(ModelBaseAudited):
     code_postal = models.CharField(max_length=10, verbose_name="Cod. postal", blank=True, null=True)
     telephone = models.CharField(max_length=20, verbose_name="Teléfono", blank=True, null=True)
     cell_phone = models.CharField(max_length=20, verbose_name="Celular", blank=True, null=True)
-    email = models.CharField(max_length=150, verbose_name="Email", blank=True, null=True)
-    email_alternate = models.CharField(max_length=150, verbose_name="Email alterno", blank=True, null=True)
+    email = models.EmailField(max_length=150, verbose_name="Email", blank=True, null=True, unique=True)
+    email_alternate = models.EmailField(max_length=150, verbose_name="Email alterno", blank=True, null=True)
 
     def __str__(self):
         return '{}'.format(self.names)
@@ -253,6 +253,28 @@ class Managers(ModelBaseAudited):
         verbose_name_plural = 'Gerentes'
         permissions = (('dashboard_managers', 'Dashboard gerente'),)
         ordering = ('created_at',)
+
+    @classmethod
+    def generate_code(cls):
+        code_found = False
+
+        code = ''
+
+        def get_string():
+            code_chars = string.ascii_uppercase + string.digits
+            code = ""
+            for character in range(6):
+                code += random.choice(code_chars)
+            return code
+
+        while not code_found:
+            code = get_string()
+            if cls.objects.filter(code=code).exists():
+                pass
+            else:
+                code_found = True
+
+        return f"MA-{code}"
 
     def save(self, *args, **kwargs):
 
