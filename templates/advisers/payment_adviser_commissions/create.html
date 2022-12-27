@@ -71,42 +71,42 @@
             </div>
         </div>
     </div>
-{##}
-{#    <!-- Modal -->#}
-{#    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">#}
-{#        <div class="modal-dialog modal-xl">#}
-{#            <div class="modal-content">#}
-{#                <div class="modal-header">#}
-{#                    <h5 class="modal-title" id="id-modalTitle">Detalle</h5>#}
-{#                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">#}
-{#                        <span aria-hidden="true">&times;</span>#}
-{#                    </button>#}
-{#                </div>#}
-{#                <div class="modal-body">#}
-{#                    <table class="table">#}
-{#                        <thead>#}
-{#                        <tr>#}
-{#                            <th>Numero de compra</th>#}
-{#                            <th>Institucion</th>#}
-{#                            <th>Fecha de compra</th>#}
-{#                            <th>% comision asesor</th>#}
-{#                            <th>% comision gerente</th>#}
-{#                            <th>Subtotal</th>#}
-{#                            <th>Comision</th>#}
-{#                            <th>Comision gerente</th>#}
-{#                            <th>Comision asesor</th>#}
-{#                        </tr>#}
-{#                        </thead>#}
-{#                        <tbody id="id-detailAdviserBody">#}
-{#                        </tbody>#}
-{#                    </table>#}
-{#                </div>#}
-{#                <div class="modal-footer">#}
-{#                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#    </div>#}
+    {##}
+    {#    <!-- Modal -->#}
+    {#    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">#}
+    {#        <div class="modal-dialog modal-xl">#}
+    {#            <div class="modal-content">#}
+    {#                <div class="modal-header">#}
+    {#                    <h5 class="modal-title" id="id-modalTitle">Detalle</h5>#}
+    {#                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">#}
+    {#                        <span aria-hidden="true">&times;</span>#}
+    {#                    </button>#}
+    {#                </div>#}
+    {#                <div class="modal-body">#}
+    {#                    <table class="table">#}
+    {#                        <thead>#}
+    {#                        <tr>#}
+    {#                            <th>Numero de compra</th>#}
+    {#                            <th>Institucion</th>#}
+    {#                            <th>Fecha de compra</th>#}
+    {#                            <th>% comision asesor</th>#}
+    {#                            <th>% comision gerente</th>#}
+    {#                            <th>Subtotal</th>#}
+    {#                            <th>Comision</th>#}
+    {#                            <th>Comision gerente</th>#}
+    {#                            <th>Comision asesor</th>#}
+    {#                        </tr>#}
+    {#                        </thead>#}
+    {#                        <tbody id="id-detailAdviserBody">#}
+    {#                        </tbody>#}
+    {#                    </table>#}
+    {#                </div>#}
+    {#                <div class="modal-footer">#}
+    {#                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </div>#}
 {% endblock %}
 
 {% block base-body-js %}
@@ -138,24 +138,10 @@
 
                         objD.elem.$detailBody.innerHTML = ''
 
-                        AppSystem.fun.showLoadingUi()
-                        AppSystem.handleComp.alert.alert.hidden({})
+                        const {code, message, data, ...stateExtra} = await CrudCommon.fetch.submitForm({formData})
 
-                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
-                            location.pathname,
-                            formData
-                        )
-
-                        AppSystem.fun.hiddenLoadingUi()
-
-                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
-                            let errorHtml = '<ul class="ms-5 d-block">'
-                            data?.errors.map(elem => `<li>${elem}</li>`)
-                            errorHtml += '</ul>'
-
-                            AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind)
                             return
-                        }
 
                         let html = ''
 
@@ -182,28 +168,32 @@
 
                         objD.elem.$detailBody.innerHTML = html
                     },
-                    createCommission: async () => {
+                    createCommissionFacade: () => {
                         const formData = new FormData(objD.elem.$form)
                         formData.append("action", objElevate.action)
+                        const type_functionary = formData.get('type_functionary')
+                        const month = formData.get('month')
 
-                        AppSystem.fun.showLoadingUi()
-                        AppSystem.handleComp.alert.alert.hidden({})
-
-                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
-                            location.pathname,
-                            formData,
-                        )
-
-                        AppSystem.fun.hiddenLoadingUi()
-
-                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
-                            let errorHtml = '<ul class="ms-5 d-block">'
-                            data?.errors.map(elem => `<li>${elem}</li>`)
-                            errorHtml += '</ul>'
-
-                            AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
-                            return
+                        if (type_functionary === '') {
+                            return AppSystem.handleComp.alert.alert.show({
+                                title: "Debe se escoger un tipo de funcionario.",
+                            })
                         }
+                        if (month === '')
+                            return AppSystem.handleComp.alert.alert.show({
+                                title: "Debe se escoger un el mes.",
+                            })
+
+                        ConfirmCommon.exec({
+                            confirmCallback: () => objD.fun.createCommission({formData})
+                        })
+                    },
+                    createCommission: async ({formData}) => {
+
+                        const {code, message, data, ...stateExtra} = await CrudCommon.fetch.submitForm({formData})
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind)
+                            return
 
                         window.location = '{{ back_url }}'
                     },
@@ -211,25 +201,10 @@
                         const formData = new FormData(objD.elem.$form)
                         formData.append("action", 'get_next_date_payment')
 
-                        AppSystem.fun.showLoadingUi()
-                        AppSystem.handleComp.alert.alert.hidden({})
+                        const {code, message, data, ...stateExtra} = await CrudCommon.fetch.submitForm({formData})
 
-                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
-                            location.pathname,
-                            formData,
-                        )
-
-                        AppSystem.fun.hiddenLoadingUi()
-
-                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
-                            let errorHtml = '<ul class="ms-5 d-block">'
-                            data?.errors.map(elem => errorHtml += `<li>${elem}</li>`)
-                            {#FormCommon.fun.getErrorList(data?.errors).map(elem => `<li>${elem}</li>`)#}
-                            errorHtml += '</ul>'
-
-                            AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind)
                             return
-                        }
 
                         objD.elem.$month.value = data.month.toString()
                         objD.elem.$year.value = data.year.toString()
@@ -242,28 +217,12 @@
                         formData.append("action", 'view_detail')
                         formData.append("object_id", object_id)
 
-                        AppSystem.fun.showLoadingUi()
-                        AppSystem.handleComp.alert.alert.hidden({})
+                        const {code, message, data, ...stateExtra} = await CrudCommon.fetch.submitForm({formData})
 
-                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
-                            location.pathname,
-                            formData,
-                        )
-
-                        AppSystem.fun.hiddenLoadingUi()
-
-                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
-                            let errorHtml = '<ul class="ms-5 d-block">'
-                            data?.errors.map(elem => errorHtml += `<li>${elem}</li>`)
-                            errorHtml += '</ul>'
-
-                            AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind)
                             return
-                        }
 
                         let html = ''
-
-                        c("los èrez; ", data)
 
                         data.order_institution_quotas_list.forEach(elem => {
                             html += `
@@ -306,6 +265,7 @@
 
             if (objElevate.action === 'edit' || objElevate.action === 'view_detail') {
 
+
                 if (objElevate.action === 'view_detail') {
                     document.getElementById('id-btnSave').classList.add('d-none')
                     document.getElementById('id-btnCalculate').classList.add('d-none')
@@ -329,7 +289,7 @@
             })
 
             document.getElementById('id-btnSave').addEventListener("click", async (e) => {
-                await objD.fun.createCommission()
+                objD.fun.createCommissionFacade()
             })
 
             objD.elem.$typeFunctionary.addEventListener("change", async (e) => {

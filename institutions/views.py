@@ -22,7 +22,6 @@ class InstitutionsListView(PermissionMixin, ListViewFilter, ListView):
     template_name = 'institutions/list.html'
     context_object_name = 'institutions'
     permission_required = 'view_institutions'
-    paginate_by = 2
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

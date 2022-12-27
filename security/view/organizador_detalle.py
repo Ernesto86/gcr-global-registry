@@ -16,7 +16,6 @@ class OrganizadorRegistroListView(ListViewFilter, LoginRequiredMixin, ListView):
     redirect_field_name = 'redirect_to'
     template_name = 'security/organizador_registros/listado.html'
     context_object_name = 'StudentRegisters'
-    paginate_by = 2
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

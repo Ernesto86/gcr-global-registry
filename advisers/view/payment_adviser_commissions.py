@@ -6,7 +6,7 @@ from django.views.generic import ListView, CreateView, UpdateView
 from rest_framework import status as status_verbose
 from urllib.parse import urlencode
 
-from advisers.choices import TL_MONTH
+from advisers.choices import TL_MONTH, TL_YEAR
 from advisers.forms import PaymentAdviserCommissionsForm
 from advisers.manager.payment_adviser_commissions_manager import PaymentAdviserCommissionsManager
 from advisers.models import PaymentAdviserCommissions, PaymentAdviserCommissionsDetails
@@ -19,7 +19,6 @@ class PaymentAdviserCommissionsListView(LoginRequiredMixin, ListView):
     login_url = '/security/login'
     redirect_field_name = 'redirect_to'
     template_name = 'advisers/payment_adviser_commissions/list.html'
-    paginate_by = 2
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -52,7 +51,6 @@ class PaymentAdviserCommissionsListView(LoginRequiredMixin, ListView):
 class PaymentAdviserCommissionsCreateView(CreateView):
     model = PaymentAdviserCommissions
     template_name = 'advisers/payment_adviser_commissions/create.html'
-    # template_name = 'advisers/payment_adviser_commissions/create_original.html'
     form_class = PaymentAdviserCommissionsForm
     success_url = reverse_lazy('advisers:payment_adviser_commissions_list')
     permission_required = 'add_institutions'
@@ -86,23 +84,19 @@ class PaymentAdviserCommissionsCreateView(CreateView):
         if action == 'add':
             try:
                 status = 200
-                print("akaaaaaaaaa")
                 type_functionary = int(request.POST.get('type_functionary', ''))
                 year = int(request.POST.get('year', ''))
                 month = int(request.POST.get('month', ''))
                 date_payment = datetime.datetime.now()
 
-                print("adentro")
-                data['calculate_payment_commissions'] = PaymentAdviserCommissionsManager.get_calculate_payment_commissions(
+                data[
+                    'calculate_payment_commissions'] = PaymentAdviserCommissionsManager.get_calculate_payment_commissions(
                     type_functionary,
                     year,
                     month
                 )
-                print("afuera")
 
                 PaymentAdviserCommissionsManager.validate_or_raise_name_error(year, month, type_functionary)
-
-                print("no te cachoooooooo")
 
                 try:
                     payment_adviser_commissions = PaymentAdviserCommissions.objects.get(
@@ -114,32 +108,28 @@ class PaymentAdviserCommissionsCreateView(CreateView):
                 except Exception as ex:
                     payment_adviser_commissions = None
 
-                print("no te aaaaaaaa")
-
                 if payment_adviser_commissions:
                     PaymentAdviserCommissionsDetails.objects.filter(
                         payment_adviser_commissions_id=payment_adviser_commissions.id
                     ).delete()
                 else:
-                    print("debugear")
                     payment_adviser_commissions = PaymentAdviserCommissions.objects.create(
                         type_functionary=type_functionary,
                         date_payment=date_payment,
                         year=year,
                         month=month,
                         # TODO: INCLUIR PROCESO DE PAYPAL PARA PAY_PERYOD TRUE
-                        pay_period=True
+                        pay_period=False
                     )
-                    print("debugear 1111111")
 
                     update_common = {}
 
                     if int(type_functionary) == PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0]:
                         # TODO: INCLUIR PROCESO DE PAYPAL PARA pay_adviser TRUE
-                        update_common["pay_adviser"] = True
+                        update_common["pay_adviser"] = False
                     else:
                         # TODO: INCLUIR PROCESO DE PAYPAL PARA pay_adviser TRUE
-                        update_common["pay_manager"] = True
+                        update_common["pay_manager"] = False
 
                     OrderInstitutionQuotas.objects.filter(
                         deleted=False,
@@ -169,7 +159,8 @@ class PaymentAdviserCommissionsCreateView(CreateView):
                 year = request.POST.get('year', '')
                 month = request.POST.get('month', '')
 
-                data['calculate_payment_commissions'] = PaymentAdviserCommissionsManager.get_calculate_payment_commissions(
+                data[
+                    'calculate_payment_commissions'] = PaymentAdviserCommissionsManager.get_calculate_payment_commissions(
                     type_functionary,
                     year,
                     month
@@ -249,6 +240,29 @@ class PaymentAdviserCommissionsUpdateView(UpdateView):
     success_url = reverse_lazy('advisers:payment_adviser_commissions_list')
     permission_required = 'add_institutions'
 
+    def get_tuple_correct_value(self, value, choices):
+        for choice in choices:
+            if choice[0] == value:
+                return choice,
+
+    def get_form(self, *args, **kwargs):
+        form = super(PaymentAdviserCommissionsUpdateView, self).get_form(*args, **kwargs)
+        payment_adviser_commissions = self.get_object()
+
+        form.fields['type_functionary'].choices = self.get_tuple_correct_value(
+            payment_adviser_commissions.type_functionary,
+            PaymentAdviserCommissions.TYPE_FUNCTIONARY
+        )
+        form.fields['year'].choices = self.get_tuple_correct_value(
+            payment_adviser_commissions.year,
+            TL_YEAR
+        )
+        form.fields['month'].choices = self.get_tuple_correct_value(
+            payment_adviser_commissions.month,
+            TL_MONTH
+        )
+        return form
+
     def post(self, request, *args, **kwargs):
         data = {'errors': []}
         status = 500
@@ -263,7 +277,8 @@ class PaymentAdviserCommissionsUpdateView(UpdateView):
                 payment_adviser_commissions = self.get_object()
                 date_payment = datetime.datetime.now()
 
-                data['calculate_payment_commissions'] = PaymentAdviserCommissionsManager.get_calculate_payment_commissions(
+                data[
+                    'calculate_payment_commissions'] = PaymentAdviserCommissionsManager.get_calculate_payment_commissions(
                     type_functionary,
                     year,
                     month
@@ -297,7 +312,8 @@ class PaymentAdviserCommissionsUpdateView(UpdateView):
                 year = request.POST.get('year', '')
                 month = request.POST.get('month', '')
 
-                data['calculate_payment_commissions'] = PaymentAdviserCommissionsManager.get_calculate_payment_commissions(
+                data[
+                    'calculate_payment_commissions'] = PaymentAdviserCommissionsManager.get_calculate_payment_commissions(
                     type_functionary,
                     year,
                     month

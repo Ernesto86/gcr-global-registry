@@ -181,16 +181,15 @@ class PeriodCommissionsManagerForm(forms.ModelForm):
 
 
 class PaymentAdviserCommissionsForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        FormCommon.update_required_field(self.fields)
+        FormCommon.update_all_field(self.fields)
+
     class Meta:
         model = PaymentAdviserCommissions
         fields = ('type_functionary', 'month', 'year')
-
-        widgets = {
-            'type_functionary': forms.Select(attrs={'class': "select2 select2-design"}),
-            'month': forms.Select(attrs={'class': "select2 select2-design"}),
-            'year': forms.Select(attrs={'class': "select2 select2-design"}),
-        }
-
 
 class AdviserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
