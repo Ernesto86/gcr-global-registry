@@ -8,6 +8,7 @@ from rest_framework import status
 from advisers.forms import PaymentMethodForm
 from advisers.models import PaymentMethod, Managers
 from core.common.filter_orm.filter_orm_common import FilterOrmCommon
+from core.common.form.form_common import FormCommon
 from security.functions import addUserData
 from core.util_functions import ListViewFilter
 from security.mixins import *
@@ -35,6 +36,7 @@ class PaymentMethodListView(PermissionMixin, ListViewFilter, ListView):
     def get_queryset(self, **kwargs):
         self.query_AND_1, self.query_OR_1 = FilterOrmCommon.get_query_connector_tuple()
         self.query_AND_1.children.append(("user_id", self.request.user.pkid))
+        self.query_AND_1.children.append(("deleted", False))
 
         return PaymentMethod.objects.filter(
             self.query_AND_1,
@@ -74,7 +76,7 @@ class PaymentMethodCreateView(PermissionMixin, CreateView):
                 return JsonResponse(data, status=status.HTTP_200_OK)
 
             data['message'] = 'Error de validacion de formulario.'
-            data['errors'] = form.errors
+            data['errors'] = [FormCommon.get_errors_dict(form)]
             return JsonResponse(data, status=status.HTTP_400_BAD_REQUEST)
 
         return JsonResponse(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -120,7 +122,7 @@ class PaymentMethodUpdateView(PermissionMixin, UpdateView):
                 return JsonResponse(data, status=status.HTTP_200_OK)
 
             data['message'] = 'Error de validacion de formulario.'
-            data['errors'] = form.errors
+            data['errors'] = [FormCommon.get_errors_dict(form)]
             return JsonResponse(data, status=status.HTTP_400_BAD_REQUEST)
 
         return JsonResponse(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -137,5 +139,7 @@ class PaymentMethodUpdateView(PermissionMixin, UpdateView):
 class PaymentMethodDeleteView(PermissionMixin, View):
     def delete(self, request, *args, **kwargs):
         id = kwargs.get('pk')
-        PaymentMethod.objects.get(pk=id).delete()
+        payment_method = PaymentMethod.objects.get(pk=id)
+        payment_method.deleted = True
+        payment_method.save()
         return JsonResponse({}, status=status.HTTP_200_OK)

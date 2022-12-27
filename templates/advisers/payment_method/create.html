@@ -20,30 +20,17 @@
                 loadFirst: {},
                 model: {},
                 fun: {
+                    submitFacade: () => ConfirmCommon.exec({
+                        confirmCallback: () => objD.fun.submit()
+                    }),
                     submit: async () => {
                         const formData = new FormData(objD.elem.$form)
                         formData.append("action", objElevate.action)
 
-                        AppSystem.fun.showLoadingUi()
-                        AppSystem.handleComp.alert.alert.hidden({})
+                        const {code, message, data, ...stateExtra} = await CrudCommon.fetch.submitForm({formData})
 
-                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
-                            location.pathname,
-                            formData
-                        )
-
-                        AppSystem.fun.hiddenLoadingUi()
-
-                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
-
-                            let errorHtml = '<ul class="ms-5 d-block">'
-                            c(data?.errors)
-                            FormCommon.fun.getErrorList(data?.errors).map(elem => `<li>${elem}</li>`)
-                            errorHtml += '</ul>'
-
-                            AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind)
                             return
-                        }
 
                         window.location = objElevate.back_url
                     }
@@ -60,7 +47,7 @@
             objD.elem.$form.addEventListener('submit', (e) => {
                 e.preventDefault()
 
-                objD.fun.submit()
+                objD.fun.submitFacade()
             })
         })
 

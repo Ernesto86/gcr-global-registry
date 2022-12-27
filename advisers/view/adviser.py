@@ -166,7 +166,7 @@ class AdviserDeleteView(PermissionMixin, View):
             adviser.save()
         except Exception as ex:
             return JsonResponse(
-                {"message": "Error al eliminar", "errors": ["Error al eliminar"]},
+                {"message": "Error al eliminar", "errors": []},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
         return JsonResponse({}, status=status.HTTP_200_OK)

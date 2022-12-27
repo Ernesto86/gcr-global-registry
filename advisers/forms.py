@@ -242,6 +242,7 @@ class PaymentMethodForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         FormCommon.update_required_field(self.fields, excludes=('is_default',))
+        FormCommon.update_all_field(self.fields)
 
     class Meta:
         model = PaymentMethod

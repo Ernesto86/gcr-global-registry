@@ -75,7 +75,7 @@
                         confirmCallback: () => objD.fun.deleteRegister(id, target),
                     }),
                     deleteRegister: async (id, target) => {
-                        const {stateExtra} = await CrudCommon.fetch.delete({
+                        const {code, message, data, ...stateExtra} = await CrudCommon.fetch.delete({
                             path: `${objElevate.deleteUrl}/${id}`
                         })
 
