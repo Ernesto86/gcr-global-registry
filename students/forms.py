@@ -7,6 +7,7 @@ from students.models import StudentRegisters, Students
 
 
 class StudentRegistersForm(forms.ModelForm):
+
     class Meta:
         model = StudentRegisters
         fields = (

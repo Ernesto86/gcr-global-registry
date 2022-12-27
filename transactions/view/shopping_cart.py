@@ -129,7 +129,6 @@ class ShoppingCartBuyView(PermissionMixin, TemplateView):
             date_buy = datetime.datetime.now()
 
             if shopping_cart:
-                print("mas arriba")
                 managers_commissions = ManagersCommissions.objects.get(manager_id=institution.adviser.manager_id, deleted=False)
 
                 commissions_advisers_find = self.commissions_advisers_find(institution)

@@ -11,10 +11,15 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function (e) {
+
             const objD = {
                 CONSTANT: {},
                 elem: {
                     $form: document.getElementById('id-form'),
+                    $selectTypeRegister: document.getElementById('id_type_register'),
+                    $selectTypeRegisterJQ: $('#id_type_register'),
+                    $selectCertificate: document.getElementById('id_certificate'),
+                    $selectCertificateJQ: $('#id_certificate'),
                 },
                 repeat: {},
                 loadFirst: {},
@@ -34,12 +39,39 @@
                             return
 
                         window.location = objElevate.successUrl
+                    },
+                    loadCertificates: async (typeRegisterId) => {
+                        const formData = new FormData(objD.elem.$form)
+                        formData.append("action", 'certificates')
+                        formData.append("type_registry_id", typeRegisterId)
+
+                        objD.elem.$selectCertificateJQ.empty().trigger("change")
+
+                        const {
+                            code,
+                            message,
+                            data,
+                            ...stateExtra
+                        } = await CrudCommon.fetch.fetchFormOnlyLoading({formData})
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind)
+                            return
+
+                        const certificatesOption = data.certificates.map(
+                            elem => new Option(elem.name, elem.id, false, false)
+                        )
+
+                        objD.elem.$selectCertificateJQ.append(certificatesOption).trigger('change');
+
                     }
                 }
             }
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+            $('#id_type_register, #id_certificate, #id_country').select2()
+
+            objD.elem.$selectCertificateJQ.empty().trigger("change")
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
@@ -47,6 +79,14 @@
                 e.preventDefault()
 
                 objD.fun.submitFacade()
+            })
+
+            objD.elem.$selectTypeRegisterJQ.on('change', function (e) {
+                const typeRegisterId = e.target.value
+
+                if (typeRegisterId !== '') {
+                    objD.fun.loadCertificates(typeRegisterId)
+                }
             })
 
         });

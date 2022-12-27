@@ -31,7 +31,7 @@ const CrudCommon = {
 
             return dataJson
         },
-        submitFormOnlyLoading: async (
+        fetchFormOnlyLoading: async (
             {
                 formData,
                 path = location.pathname,

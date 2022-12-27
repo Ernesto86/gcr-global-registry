@@ -121,56 +121,32 @@
                 loadFirst: {},
                 model: {},
                 fun: {
-                    deleteItemCart: async function (typeRegisterId) {
+                    deleteItemCartFacade: (params) => ConfirmCommon.exec({
+                        confirmCallback: () => objD.fun.deleteItemCart(params)
+                    }),
+                    deleteItemCart: async function ({typeRegisterId}) {
                         const formData = new FormData();
                         formData.append("action", 'delete_item')
                         formData.append("typeRegisterId", typeRegisterId)
 
-                        AppSystem.fun.showLoadingUi()
-                        AppSystem.handleComp.alert.alert.hidden({})
+                        const {code, message, data, ...stateExtra} = await CrudCommon.fetch.submitForm({formData})
 
-                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
-                            location.pathname,
-                            formData
-                        )
-
-                        AppSystem.fun.hiddenLoadingUi()
-
-                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
-                            let errorHtml = '<ul class="ms-5 d-block">'
-                            data?.errors.map(elem => `<li>${elem}</li>`)
-                            errorHtml += '</ul>'
-
-                            objD.elem.$name.value = data.message
-                            AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind)
                             return
-                        }
 
                         window.location.reload()
                     },
+                    payFacade: () => ConfirmCommon.exec({
+                        confirmCallback: () => objD.fun.pay()
+                    }),
                     pay: async function () {
                         const formData = new FormData();
                         formData.append("action", 'pay')
 
-                        AppSystem.fun.showLoadingUi()
-                        AppSystem.handleComp.alert.alert.hidden({})
+                        const {code, message, data, ...stateExtra} = await CrudCommon.fetch.submitForm({formData})
 
-                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
-                            location.pathname,
-                            formData
-                        )
-
-                        AppSystem.fun.hiddenLoadingUi()
-
-                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
-                            let errorHtml = '<ul class="ms-5 d-block">'
-                            data?.errors.map(elem => `<li>${elem}</li>`)
-                            errorHtml += '</ul>'
-
-                            objD.elem.$name.value = data.message
-                            AppSystem.handleComp.alert.alert.show({title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind)
                             return
-                        }
 
                         window.location.reload()
                     },
@@ -183,13 +159,13 @@
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
             document.getElementById('id-btn-pay').addEventListener('click', function () {
-                objD.fun.pay()
+                objD.fun.payFacade()
             })
 
             document.addEventListener('click', (e) => {
                 if (e.target.matches(".cls-btn-delete-item")) {
                     const typeRegisterId = e.target.dataset.typeregisterid
-                    objD.fun.deleteItemCart(typeRegisterId)
+                    objD.fun.deleteItemCartFacade({typeRegisterId})
                 }
             })
         });

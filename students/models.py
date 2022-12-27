@@ -3,6 +3,13 @@ from core.models import ModelBase, ModelBaseAudited
 from core.constants import Gender
 
 class Certificates(ModelBase):
+    type_registry = models.ForeignKey(
+        "institutions.InsTypeRegistries",
+        verbose_name="Tipo de registro",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
     code = models.CharField(max_length=10, verbose_name="Código", blank=True, null=True)
     name = models.CharField(max_length=100, verbose_name="Nombre")
     description = models.CharField(max_length=250, verbose_name="Descripción", blank=True, null=True)
