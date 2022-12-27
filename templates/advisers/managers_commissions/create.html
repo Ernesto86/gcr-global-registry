@@ -34,17 +34,43 @@
             const objD = {
                 CONSTANT: {},
                 elem: {
+                    $form: document.getElementById('id-form'),
+
+                    $managers_specific: document.getElementById('id_managers_specific'),
+
                     $manager_percentage_max: document.getElementById('id_manager_percentage_max'),
                     $manager_percentage: document.getElementById('id_manager_percentage'),
                 },
                 repeat: {},
                 loadFirst: {},
                 model: {},
-                fun: {}
+                fun: {
+                    getSelectValues: function (select) {
+                        // TODO: getSelectValues debe ser llevadas a una clase para ser reutilizada
+                        // https://stackoverflow.com/questions/5866169/how-to-get-all-selected-values-of-a-multiple-select-box
+
+                        {#var options = document.getElementById('select-meal-type');#}
+                        {#var values = Array.from(options.selectedOptions).map(({ value }) => value);#}
+
+                        let result = []
+                        const options = select && select.options
+
+                        for (let i = 0, iLen = options.length; i < iLen; i++) {
+                            const opt = options[i]
+
+                            if (opt.selected) {
+                                result.push(opt.value || opt.text)
+                            }
+                        }
+                        return result
+                    }
+                }
             }
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+            $('#id_managers_specific').select2();
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
@@ -52,6 +78,18 @@
             objD.elem.$manager_percentage.addEventListener('change', (e) => {
                 if (parseInt(e.target.value) > parseInt(objD.elem.$manager_percentage_max.value))
                     alert("Excedió valor maximo: " + objD.elem.$manager_percentage_max.value)
+            })
+
+            objD.elem.$form.addEventListener('submit', (e) => {
+                e.preventDefault()
+
+                ConfirmCommon.exec({
+                    title: objD.fun.getSelectValues(objD.elem.$managers_specific).length === 0
+                        ? "A seleccionado TODOS los gerentes."
+                        : "Solo se afectara a los gerentes escogidos.",
+                    confirmCallback: () => objD.elem.$form.submit()
+                })
+
             })
 
         })

@@ -18,6 +18,11 @@ class AdvisersCommissionsForm(forms.ModelForm):
 
 
 class ManagersCommissionsForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        FormCommon.update_required_field(self.fields)
+
     class Meta:
         model = ManagersCommissions
         fields = '__all__'
@@ -177,6 +182,7 @@ class PeriodCommissionsManagerForm(forms.ModelForm):
         queryset=Managers.objects.filter(deleted=False),
         label='Gerentes especificos',
         required=False,
+        empty_label=None
     )
 
 

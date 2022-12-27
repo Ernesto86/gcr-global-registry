@@ -26,7 +26,6 @@ def advisers_commissions_save(request, *args, **kwargs):
     period_commissions = PeriodCommissions.objects.filter(deleted=False).last()
     list_id_specific = request.POST.getlist('advisers_specific')
     is_specific = True if list_id_specific else False
-    print("list_id_specific: ",list_id_specific)
 
     validate_commissions_max(period_commissions, request)
 
@@ -43,7 +42,6 @@ def advisers_commissions_save(request, *args, **kwargs):
     }
 
     if is_specific:
-        print("passssss")
         query_AND_1.children.append(("adviser_id__in", list_id_specific))
         dict_update['is_exclude'] = True
     else:
@@ -52,14 +50,11 @@ def advisers_commissions_save(request, *args, **kwargs):
         period_commissions.advisers_percentage_period_3 = request.POST.get('advisers_percentage_period_3')
         period_commissions.save()
 
-    print("nelllllll")
-
     AdvisersCommissions.objects.filter(
         query_AND_1
     ).update(
         **dict_update
     )
-    print("possssssssss")
 
 
 class AdvisersCommissionsListView(PermissionMixin, ListView):
@@ -83,6 +78,7 @@ class AdvisersCommissionsListView(PermissionMixin, ListView):
     def get_queryset(self, **kwargs):
         self.query_AND_1, self.query_OR_1 = FilterOrmCommon.get_query_connector_tuple()
         self.query_AND_1.children.append(("adviser__manager__user_id", self.request.user.pkid))
+        self.query_AND_1.children.append(("deleted", False))
         search = self.request.GET.get('search', '')
 
         if search:
@@ -131,7 +127,6 @@ class AdvisersCommissionsCreateView(PermissionMixin, CreateView):
 
         context['back_url'] = reverse_lazy('advisers:advisers_commissions_list')
         context['title_label'] = "Actualizacion masiva"
-        context['form_action'] = 'Crear'
 
         period_commissions = PeriodCommissions.objects.filter(deleted=False).last()
         form = PeriodCommissionsForm(instance=period_commissions)
