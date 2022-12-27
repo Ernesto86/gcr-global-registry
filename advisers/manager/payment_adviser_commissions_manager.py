@@ -41,7 +41,7 @@ class PaymentAdviserCommissionsManager:
                 raise NameError('No existe el pago del mes antecesor.')
 
     @staticmethod
-    def get_calculate_payment_commissions(type_functionary, year, month):
+    def get_calculate_payment_commissions(type_functionary, year, month, pay=False):
         value_commission_sum = Decimal(0)
 
         query_AND_1 = Q()
@@ -51,9 +51,9 @@ class PaymentAdviserCommissionsManager:
         query_AND_1.children.append(("date_issue__month", month))
 
         if type_functionary == PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0]:
-            query_AND_1.children.append(("pay_adviser", False))
+            query_AND_1.children.append(("pay_adviser", pay))
         else:
-            query_AND_1.children.append(("pay_manager", False))
+            query_AND_1.children.append(("pay_manager", pay))
 
         order_list = OrderInstitutionQuotas.objects.filter(query_AND_1)
 

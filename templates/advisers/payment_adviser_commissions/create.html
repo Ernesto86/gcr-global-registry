@@ -132,9 +132,9 @@
                 loadFirst: {},
                 model: {},
                 fun: {
-                    loadDataTable: async () => {
+                    loadDataTable: async ({action = 'calculate'}) => {
                         const formData = new FormData(objD.elem.$form)
-                        formData.append("action", 'calculate')
+                        formData.append("action", action)
 
                         objD.elem.$detailBody.innerHTML = ''
 
@@ -146,7 +146,7 @@
                         let html = ''
 
                         data.calculate_payment_commissions.payment_commissions_details_list.forEach(elem => {
-                            c(elem)
+
                             const nameFuncionary = elem.type_functionary === 0
                                 ? `${elem.adviser.first_name} ${elem.adviser.last_name}`
                                 : `${elem.manager.first_name} ${elem.manager.last_name}`
@@ -174,11 +174,11 @@
                         const type_functionary = formData.get('type_functionary')
                         const month = formData.get('month')
 
-                        if (type_functionary === '') {
+                        if (type_functionary === '')
                             return AppSystem.handleComp.alert.alert.show({
                                 title: "Debe se escoger un tipo de funcionario.",
                             })
-                        }
+
                         if (month === '')
                             return AppSystem.handleComp.alert.alert.show({
                                 title: "Debe se escoger un el mes.",
@@ -209,8 +209,7 @@
                         objD.elem.$month.value = data.month.toString()
                         objD.elem.$year.value = data.year.toString()
 
-                        await objD.fun.loadDataTable()
-
+                        await objD.fun.loadDataTable({})
                     },
                     getDetailPaymentSpecific: async (object_id) => {
                         const formData = new FormData(objD.elem.$form)
@@ -260,32 +259,35 @@
                 }
             }
 
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ////////////////////////////////////////////
 
             if (objElevate.action === 'edit' || objElevate.action === 'view_detail') {
 
-
                 if (objElevate.action === 'view_detail') {
+
                     document.getElementById('id-btnSave').classList.add('d-none')
                     document.getElementById('id-btnCalculate').classList.add('d-none')
+                    objD.fun.loadDataTable({action: 'view_detail_edit'})
+
+                } else if (objElevate.action === 'edit') {
+
+                    objD.fun.loadDataTable({})
+
                 }
 
                 {#objD.elem.$typeFunctionary.disabled = true#}
                 {#objD.elem.$year.disabled = true#}
                 {#objD.elem.$month.disabled = true#}
-
-                objD.fun.loadDataTable()
             }
 
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
-
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  //////////////////////////////////////////////////
 
             objD.elem.$form.addEventListener('submit', (e) => {
                 e.preventDefault()
 
-                objD.fun.loadDataTable()
+                objD.fun.loadDataTable({})
             })
 
             document.getElementById('id-btnSave').addEventListener("click", async (e) => {

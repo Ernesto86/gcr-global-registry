@@ -159,8 +159,7 @@ class PaymentAdviserCommissionsCreateView(CreateView):
                 year = request.POST.get('year', '')
                 month = request.POST.get('month', '')
 
-                data[
-                    'calculate_payment_commissions'] = PaymentAdviserCommissionsManager.get_calculate_payment_commissions(
+                data['calculate_payment_commissions'] = PaymentAdviserCommissionsManager.get_calculate_payment_commissions(
                     type_functionary,
                     year,
                     month
@@ -341,6 +340,25 @@ class PaymentAdviserCommissionsUpdateView(UpdateView):
 
             status = 200
             data['message'] = ''
+
+        elif action == 'view_detail_edit':
+            try:
+                status = 200
+                type_functionary = int(request.POST.get('type_functionary'))
+                year = request.POST.get('year')
+                month = request.POST.get('month')
+
+                data['calculate_payment_commissions'] = PaymentAdviserCommissionsManager.get_calculate_payment_commissions(
+                    type_functionary,
+                    year,
+                    month,
+                    pay=True
+                )
+
+            except Exception as e:
+                status = 500
+                data['message'] = 'Internal error in code'
+                data['errors'].append(str(e))
 
         return JsonResponse(data, status=status)
 
