@@ -43,7 +43,7 @@ def addUserData(request, data):
         data['title'] = "Home"
         data['active'] = "index"
         # data['bodyClass'] = "uikit"
-        data['isTour'] = True
+        data['isTour'] = False
         data['isFlatpickr'] = True
         data['isBanner'] = True
         data['isSidebar'] = True

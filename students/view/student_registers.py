@@ -397,6 +397,9 @@ class StudentRegistersCreateView(PermissionMixin, CreateView):
 
             if form.is_valid():
                 status = 200
+
+
+
                 value_new = SysParameters.get_value_formate_next()
                 form.instance.institution_id = self.request.user.institution_id
                 form.instance.code_international_register = value_new['format']

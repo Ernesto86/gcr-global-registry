@@ -134,6 +134,8 @@ class StudentRegisters(ModelBaseAudited):
     def __str__(self):
         return '{}'.format(self.detail)
 
+    def is_degree(self):
+        return self.type_register.code == '001'
 
     def date_issue_display(self):
         return self.date_issue.strftime("%Y-%m-%d")

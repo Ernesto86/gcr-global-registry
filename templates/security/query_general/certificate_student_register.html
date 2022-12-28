@@ -2,10 +2,77 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{{ title }}</title>
+
+    <style type="text/css">
+
+        @page {
+            size: A4 landscape;
+        }
+
+        .text-justified {
+            text-align: justify;
+        }
+
+        .text-black-m {
+            color: black;
+        }
+
+        html {
+            background-image: url("http://192.168.88.231:8001/static/img/fondo/marcodiploma.jpg");
+            background-repeat: no-repeat;
+            background-size: 88%, 100%, 100%;
+        }
+
+        .fw-bold {
+            font-weight: bold;
+        }
+
+    </style>
+
 </head>
-<body>
-    <h1>Certificado de estudiante {{ name }}</h1>
-    <h2>Tipo de registro: {{ certificate }}</h2>
+<body >
+
+<div style="width: 70%; text-align: center; margin-top: 180px; margin-left: 88px; border-radius: 10px">
+
+    <div class="row">
+        <div class="col-lg-12 text-center text-black-m">
+            <h2 class="fw-bold">CERTIFICADO DE REGISTRO #{{ number }}</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <p class="text-justified text-black-m mt-5">
+
+            Global Register, certifíca que <span class="fw-bold">{{ student.names }}</span>, con documento de
+
+            identificación número <span class="fw-bold">{{ student.dni }}</span>, registra en
+
+            <span class="fw-bold"> {{ institution.name }} </span> un <span class="fw-bold">{{ name_specific }}</span> de
+
+            <span class="fw-bold">{{ type_register.name }}</span> de <span class="fw-bold">{{ certificate.name }}</span>
+
+            en el  país de <span class="fw-bold">{{ country.name }}</span> con fecha de registro
+
+            <span class="fw-bold">{{ date_issue }}</span>.
+
+        </p>
+    </div>
+
+    <div class="row" style="margin-top: 100px">
+        <div class="col-lg-12">
+            <div class="d-flex justify-content-center align-items-center">
+                <img
+                        src="http://192.168.88.231:8001/static/img/logo/logo-global-2.jpeg"
+                        width="50px"
+                        class="border rounded-5"
+                        style="width: 100px"
+                >
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>
