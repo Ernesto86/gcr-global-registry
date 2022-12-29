@@ -78,7 +78,7 @@ class OrganizadorRegistroListView(ListViewFilter, LoginRequiredMixin, ListView):
 
             if quota_balance <= 0:
                 status = 400
-                data['message'] = 'No tiene cupos, obtenga mas en el modulo OBTEN MAS REGISTRO.'
+                data['message'] = 'No tiene cupos disponibles, obtenga mas en el modulo OBTEN MAS REGISTRO.'
                 return JsonResponse(data, status=status)
 
             date_issue_old = student_register.date_issue
