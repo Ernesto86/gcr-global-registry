@@ -8,6 +8,10 @@ from students.models import StudentRegisters, Students
 
 class StudentRegistersForm(forms.ModelForm):
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        FormCommon.update_all_field(self.fields)
+
     class Meta:
         model = StudentRegisters
         fields = (
