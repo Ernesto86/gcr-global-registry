@@ -33,7 +33,7 @@ class StudentsCreateView(CreateView):
 
             if Students.objects.filter(dni=self.request.POST.get('dni')).exists():
                 status = 400
-                data['message'] = 'Error'
+                data['message'] = 'Validacion'
                 data['errors'] = ['Ya existe un dni registrado.']
                 return JsonResponse(data, status=status)
 

@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 DEFAULT_GRUP_USER = 'Solicitantes'
 SYS_PARAMETER_CODE = 'RIC'
+SYS_PARAMETER_DATE_EXPIRY_OF_REGISTER_CODE = 'FER'
 
 class Gender(models.TextChoices):
     MALE = "Male", _("Masculino")

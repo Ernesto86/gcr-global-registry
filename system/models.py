@@ -1,6 +1,6 @@
 from django.db import models
 
-from core.constants import SYS_PARAMETER_CODE
+from core.constants import SYS_PARAMETER_CODE, SYS_PARAMETER_DATE_EXPIRY_OF_REGISTER_CODE
 from core.models import ModelBase
 
 
@@ -72,6 +72,10 @@ class SysParameters(ModelBase):
         return "{}".format(self.name)
 
     @staticmethod
+    def get_parameter_fer_value():
+        return int(SysParameters.objects.get(code=SYS_PARAMETER_DATE_EXPIRY_OF_REGISTER_CODE).value)
+
+    @staticmethod
     def get_parameter_next():
         return int(SysParameters.objects.get(code=SYS_PARAMETER_CODE).value) + 1
 
@@ -86,9 +90,9 @@ class SysParameters(ModelBase):
         }
 
     @staticmethod
-    def update_value(value):
+    def update_value():
         sys_parameters = SysParameters.objects.get(code=SYS_PARAMETER_CODE)
-        sys_parameters.value = value
+        sys_parameters.value = int(sys_parameters.value) + 1
         sys_parameters.save()
 
     class Meta:

@@ -422,7 +422,7 @@ class StudentRegistersCreateView(PermissionMixin, CreateView):
                 institution_quotes_type_register.quotas_balance -= 1
                 institution_quotes_type_register.save()
 
-                SysParameters.update_value(value_new['next_value'])
+                SysParameters.update_value()
 
                 return JsonResponse(data, status=status)
 

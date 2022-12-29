@@ -1,6 +1,9 @@
+import datetime
+
 from django.db import models
 from core.models import ModelBase, ModelBaseAudited
 from core.constants import Gender
+
 
 class Certificates(ModelBase):
     type_registry = models.ForeignKey(
@@ -34,9 +37,12 @@ class Certificates(ModelBase):
 
         ModelBase.save(self)
 
+
 class Students(ModelBaseAudited):
-    country = models.ForeignKey("system.SysCountries", verbose_name="Pais", on_delete=models.CASCADE, blank=True, null=True)
-    user = models.OneToOneField("security.User", verbose_name="Usuario", on_delete=models.CASCADE, blank=True, null=True)
+    country = models.ForeignKey("system.SysCountries", verbose_name="Pais", on_delete=models.CASCADE, blank=True,
+                                null=True)
+    user = models.OneToOneField("security.User", verbose_name="Usuario", on_delete=models.CASCADE, blank=True,
+                                null=True)
     code = models.CharField(max_length=20, verbose_name="Código", blank=True, null=True)
     names = models.CharField(max_length=100, verbose_name="Apellidos y nombres", blank=True, null=True, editable=False)
     last_name = models.CharField(max_length=100, verbose_name="Apellidos")
@@ -87,6 +93,7 @@ class Students(ModelBaseAudited):
 
         ModelBaseAudited.save(self)
 
+
 class StudentRegisters(ModelBaseAudited):
     institution = models.ForeignKey(
         "institutions.Institutions",
@@ -120,6 +127,7 @@ class StudentRegisters(ModelBaseAudited):
     )
     number = models.CharField(max_length=10, blank=True, null=True, editable=False)
     date_issue = models.DateTimeField(blank=True, null=True)
+    date_expiry = models.DateTimeField(blank=True, null=True)
     code_international_register = models.CharField(
         max_length=100,
         verbose_name='Código Internacional de Registro',
@@ -140,7 +148,36 @@ class StudentRegisters(ModelBaseAudited):
     def date_issue_display(self):
         return self.date_issue.strftime("%Y-%m-%d")
 
+    def date_expiry_display(self):
+        if self.date_expiry is None:
+            return '-'
+        return self.date_expiry.strftime("%Y-%m-%d")
+
+    def certificate_is_active(self):
+        if self.date_expiry is None:
+            return False
+
+        if self.date_expiry.date() >= datetime.datetime.now().date():
+            return True
+
+        return False
+
     def save(self, *args, **kwargs):
         ModelBaseAudited.save(self)
         self.number = str(self.id).zfill(10)
         ModelBaseAudited.save(self)
+
+
+class StudentRegistersRenovationHistory(ModelBase):
+    student_registers = models.ForeignKey(
+        StudentRegisters,
+        on_delete=models.DO_NOTHING,
+    )
+    date_issue_old = models.DateTimeField()
+    date_expiry_old = models.DateTimeField()
+
+    class Meta:
+        verbose_name = "Estudiante Registro historial"
+        verbose_name_plural = "Estudiante Registros historial"
+        ordering = ('created_at',)
+

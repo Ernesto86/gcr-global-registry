@@ -18,25 +18,123 @@
 {% endblock %}
 
 {% block list-table-head-colums %}
+    <th>Opciones</th>
+    <th>Activo</th>
+    <th>RIC</th>
     <th>Identificación</th>
     <th>Estudiante</th>
     <th>Titulo o Certificado</th>
     <th>Pais</th>
-    <th>Fecha de Emisión</th>
-    <th>Código Internacional de Registro</th>
+    <th>Fecha Emisión</th>
+    <th>Fecha Expiración</th>
     <th>Correo Electrónico</th>
 {% endblock %}
 
 {% block list-table-body-rows %}
     {% for student_registers  in StudentRegisters %}
         <tr>
-            <td>{{ student_registers.student.dni }}</td>
-            <td>{{ student_registers.student }}</td>
-            <td>{{ student_registers.certificate }}</td>
-            <td>{{ student_registers.country }}</td>
-            <td>{{ student_registers.date_issue }}</td>
-            <td>{{ student_registers.code_international_register }}</td>
-            <td>{{ student_registers.student.email }}</td>
+            {% with certificate_is_active=student_registers.certificate_is_active %}
+                <td class="text-center">
+                    <a
+                            class="btn btn-icon btn-outline-danger"
+                            rel="action-renovate-register"
+                            data-studentregisterid="{{ student_registers.id }}"
+                            data-certificateisactive="{{ certificate_is_active }}"
+                            data-studentname="{{ student_registers.student.names }}"
+                            data-bs-toggle="tooltip" data-bs-placement="top" title="Renovar registro"
+                    >
+                        <span class="btn-inner"><i class="fas fa-registered"></i></span>
+                    </a>
+                </td>
+                <td>
+                    {% include "v2/common/components/badge/badge_presentate.html" with badge_type=1 badge_value_bool=certificate_is_active badge_text_bool=True %}
+                </td>
+                <td>{{ student_registers.code_international_register }}</td>
+                <td>{{ student_registers.student.dni }}</td>
+                <td>{{ student_registers.student }}</td>
+                <td>{{ student_registers.certificate }}</td>
+                <td>{{ student_registers.country }}</td>
+                <td>{{ student_registers.date_issue_display }}</td>
+                <td>{{ student_registers.date_expiry_display }}</td>
+                <td>{{ student_registers.student.email }}</td>
+            {% endwith %}
         </tr>
     {% endfor %}
+{% endblock %}
+
+{% block base-body-js %}
+
+    <script>
+        const objElevate = {}
+    </script>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', function (e) {
+            const objD = {
+                CONSTANT: {},
+                elem: {
+                    $table: document.querySelector('#id-table > tbody'),
+                },
+                repeat: {},
+                loadFirst: {},
+                model: {},
+                fun: {
+                    renovateRegisterFacade: (params) => {
+                        const {certificateIsActive, studentName} = params
+
+                        AppSystem.handleComp.alert.alert.hidden({})
+
+                        if (certificateIsActive)
+                            return AppSystem.handleComp.alert.alert.show({
+                                title: "No puede actualizar un certificado activo."
+                            })
+
+                        ConfirmCommon.exec({
+                            title: "Esta seguro de renovar el registro?",
+                            content: studentName,
+                            confirmCallback: () => objD.fun.renovateRegister(params)
+                        })
+                    },
+                    renovateRegister: async ({studentRegisterId}) => {
+                        const formData = new FormData(objD.elem.$form)
+                        formData.append("action", "renovate_register")
+                        formData.append("student_register_id", studentRegisterId)
+
+                        const {code, message, data, ...stateExtra} = await CrudCommon.fetch.submitForm({formData})
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind)
+                            return
+
+                        window.location.reload()
+                    }
+                }
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+
+
+            objD.elem.$table.addEventListener('click', async (event) => {
+                const targetRenovateRegister = event.target.closest('a[rel="action-renovate-register"]');
+
+                if (targetRenovateRegister) {
+                    event.preventDefault();
+
+                    await objD.fun.renovateRegisterFacade({
+                        studentRegisterId: targetRenovateRegister.dataset.studentregisterid,
+                        studentName: targetRenovateRegister.dataset.studentname,
+                        certificateIsActive: JSON.parse(targetRenovateRegister.dataset.certificateisactive.toLowerCase())
+                    })
+
+                }
+
+            });
+
+        })
+    </script>
 {% endblock %}
