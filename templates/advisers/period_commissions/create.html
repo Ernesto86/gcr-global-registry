@@ -1,0 +1,166 @@
+{% extends 'v2/base/crud/form/form.html' %}
+
+{% block base-head-style-2 %}
+    <style>
+        input {
+            color: black !important;
+            font-weight: bold;
+            font-size: 1.2rem !important;
+        }
+    </style>
+{% endblock %}
+
+{% block form-card-body %}
+    <fieldset class="border p-4 border-dark rounded-3 text-black">
+        <legend class="float-none w-auto p-2">Gerente</legend>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label
+                            class="form-label text-black"
+                            for="{{ form.manager_percentage.id_for_label }}"
+                    >
+                        {{ form.manager_percentage.label }}:
+                    </label>
+                    {{ form.manager_percentage }}
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label text-black"
+                           for="{{ form.manager_percentage_max.id_for_label }}">{{ form.manager_percentage_max.label }}:</label>
+                    {{ form.manager_percentage_max }}
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="border p-4 border-dark rounded-3 text-black">
+        <legend class="float-none w-auto p-2">Asesor</legend>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label text-black"
+                           for="{{ form.advisers_percentage_period_1.id_for_label }}">{{ form.advisers_percentage_period_1.label }}:</label>
+                    {{ form.advisers_percentage_period_1 }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label text-black"
+                           for="{{ form.days_commissions_period_1.id_for_label }}">{{ form.days_commissions_period_1.label }}:</label>
+                    {{ form.days_commissions_period_1 }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label text-black"
+                           for="{{ form.advisers_percentage_max_period_1.id_for_label }}">{{ form.advisers_percentage_max_period_1.label }}:</label>
+                    {{ form.advisers_percentage_max_period_1 }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label text-black"
+                           for="{{ form.advisers_percentage_period_2.id_for_label }}">{{ form.advisers_percentage_period_2.label }}:</label>
+                    {{ form.advisers_percentage_period_2 }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label text-black"
+                           for="{{ form.days_commissions_period_2.id_for_label }}">{{ form.days_commissions_period_2.label }}:</label>
+                    {{ form.days_commissions_period_2 }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label text-black"
+                           for="{{ form.advisers_percentage_max_period_2.id_for_label }}">{{ form.advisers_percentage_max_period_2.label }}:</label>
+                    {{ form.advisers_percentage_max_period_2 }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label text-black"
+                           for="{{ form.advisers_percentage_period_3.id_for_label }}">{{ form.advisers_percentage_period_3.label }}:</label>
+                    {{ form.advisers_percentage_period_3 }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label text-black"
+                           for="{{ form.days_commissions_period_3.id_for_label }}">{{ form.days_commissions_period_3.label }}:</label>
+                    {{ form.days_commissions_period_3 }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label text-black"
+                           for="{{ form.advisers_percentage_max_period_3.id_for_label }}">{{ form.advisers_percentage_max_period_3.label }}:</label>
+                    {{ form.advisers_percentage_max_period_3 }}
+                </div>
+            </div>
+        </div>
+    </fieldset>
+{% endblock %}
+
+{% block base-body-js %}
+
+    <script>
+        const objElevate = {
+            action: '{{ action }}',
+            back_url: '{{ back_url | safe }}'
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function (e) {
+
+            const objD = {
+                CONSTANT: {},
+                elem: {
+                    $form: document.getElementById('id-form'),
+                },
+                repeat: {},
+                loadFirst: {},
+                model: {},
+                fun: {
+                    submitFacade: () => ConfirmCommon.exec({
+                        confirmCallback: () => objD.fun.submit()
+                    }),
+                    submit: async () => {
+                        const formData = new FormData(objD.elem.$form)
+                        formData.append("action", objElevate.action)
+
+                        const {code, message, data, ...stateExtra} = await CrudCommon.fetch.submitForm({formData})
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind)
+                            return
+
+                        window.location = objElevate.back_url
+                    }
+                }
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+            $('#id_advisers_specific, #id_managers_specific').select2();
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+
+            objD.elem.$form.addEventListener('submit', (e) => {
+                e.preventDefault()
+
+                objD.fun.submitFacade()
+
+            })
+        })
+
+    </script>
+{% endblock %}

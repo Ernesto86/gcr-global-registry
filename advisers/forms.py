@@ -142,24 +142,6 @@ class PeriodCommissionsForm(forms.ModelForm):
         label='Asesores especificos',
         required=False,
     )
-    # is_all = unique_delivery = forms.BooleanField(required=False, initial=False)
-    # is_allas = forms.BooleanField(
-    #     required=False,
-    #     initial=True,
-    #     widget=forms.CheckboxInput(attrs={'id': 'id_unique_delivery'})
-    # )
-    # is_all =  forms.BooleanField(
-    #     # widget=forms.SelectMultiple(attrs={'class': "select2 select2-design"}),
-    #     label='Copy permissions',
-    #     required=False,
-    #     initial=True,
-    # )
-
-    is_all = forms.BooleanField(
-        label='Agree',
-        # widget=forms.widgets.CheckboxInput(),
-    )
-    # is_all = forms.CheckboxSelectMultiple(), required=False)
 
 
 class PeriodCommissionsManagerForm(forms.ModelForm):
@@ -197,6 +179,7 @@ class PaymentAdviserCommissionsForm(forms.ModelForm):
         model = PaymentAdviserCommissions
         fields = ('type_functionary', 'month', 'year')
 
+
 class AdviserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -207,6 +190,7 @@ class AdviserForm(forms.ModelForm):
         model = Advisers
         fields = '__all__'
         exclude = ('deleted', 'manager', 'user')
+
 
 class ManagerForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -219,6 +203,7 @@ class ManagerForm(forms.ModelForm):
         fields = '__all__'
         exclude = ('deleted', 'user')
 
+
 class AdviserProfileForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -229,6 +214,25 @@ class AdviserProfileForm(forms.ModelForm):
         model = Advisers
         fields = '__all__'
         exclude = ('deleted', 'manager', 'user')
+
+
+class PeriodCommissionsAdminForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        FormCommon.update_all_field(self.fields)
+        FormCommon.update_readonly_field(
+            [
+                self.fields['advisers_percentage_period_1'],
+                self.fields['advisers_percentage_period_2'],
+                self.fields['advisers_percentage_period_3'],
+                self.fields['manager_percentage']
+            ],
+            is_list=True)
+
+    class Meta:
+        model = PeriodCommissions
+        fields = '__all__'
 
 
 class ManagerProfileForm(forms.ModelForm):

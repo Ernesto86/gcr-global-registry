@@ -12,6 +12,7 @@ from advisers.view.dashboard_manager import DashboardManagerView
 from advisers.view.payment_adviser_commissions import PaymentAdviserCommissionsListView, PaymentAdviserCommissionsCreateView, PaymentAdviserCommissionsUpdateView
 from advisers.view.payment_method.view import PaymentMethodDeleteView, PaymentMethodUpdateView, PaymentMethodCreateView, \
     PaymentMethodListView
+from advisers.view.period_commissions.view import PeriodCommissionsUpdateView
 
 app_name = 'advisers'
 
@@ -57,4 +58,6 @@ urlpatterns = [
     path('payment-method/create', PaymentMethodCreateView.as_view(), name='payment_method_create'),
     path('payment-method/update/<int:pk>', PaymentMethodUpdateView.as_view(), name='payment_method_update'),
     path('payment-method/delete/<int:pk>', PaymentMethodDeleteView.as_view(), name='payment_method_delete'),
+
+    path('period-commissions/update', PeriodCommissionsUpdateView.as_view(), name='period_commissions_update'),
 ]
