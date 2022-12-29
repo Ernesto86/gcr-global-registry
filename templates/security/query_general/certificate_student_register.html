@@ -19,12 +19,13 @@
             color: black;
         }
 
-        html {
-            background-image: url("http://192.168.88.231:8001/static/img/fondo/marcodiploma.jpg");
-            background-repeat: no-repeat;
-            background-size: 88%, 100%, 100%;
-        }
-
+        /*
+                body {
+                    background-image: url("http://192.168.88.231:8001/static/img/fondo/marcodiploma.jpg");
+                    background-repeat: no-repeat;
+                    background-size: 100%, 50%, 50%;
+                }
+        */
         .fw-bold {
             font-weight: bold;
         }
@@ -32,9 +33,31 @@
     </style>
 
 </head>
-<body >
+<body>
 
-<div style="width: 70%; text-align: center; margin-top: 180px; margin-left: 88px; border-radius: 10px">
+<img
+        src="http://192.168.88.231:8001/static/img/fondo/marco.jpg"
+        style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto
+        "
+>
+
+<div
+        style="
+            width: 70%;
+            text-align: center;
+            margin-top: 180px;
+            margin-left: 135px;
+            border-radius: 10px;
+            top: 10px;
+            position: absolute
+        "
+>
 
     <div class="row">
         <div class="col-lg-12 text-center text-black-m">
@@ -53,7 +76,7 @@
 
             <span class="fw-bold">{{ type_register.name }}</span> de <span class="fw-bold">{{ certificate.name }}</span>
 
-            en el  país de <span class="fw-bold">{{ country.name }}</span> con fecha de registro
+            en el país de <span class="fw-bold">{{ country.name }}</span> con fecha de registro
 
             <span class="fw-bold">{{ date_issue }}</span>.
 
@@ -65,9 +88,9 @@
             <div class="d-flex justify-content-center align-items-center">
                 <img
                         src="http://192.168.88.231:8001/static/img/logo/logo-global-2.jpeg"
-                        width="50px"
+                        width="150px"
                         class="border rounded-5"
-                        style="width: 100px"
+                        style="width: 190px"
                 >
             </div>
         </div>
