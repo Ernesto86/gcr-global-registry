@@ -40,7 +40,6 @@ class ShoppingCartView(PermissionMixin, TemplateView):
             }
             for x in InsTypeRegistries.objects.all().order_by('code')
         ]
-        print("no paso")
 
         return context
 

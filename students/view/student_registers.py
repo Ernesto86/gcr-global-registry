@@ -11,6 +11,7 @@ from security.mixins import PermissionMixin
 from students.forms import StudentRegistersSearchForm, StudentRegistersForm
 from students.models import Students, StudentRegisters, Certificates
 from system.models import SysParameters, SysCountries
+from transactions.manager.shopping_cart_manager import ShoppingCartManager
 from transactions.models import InstitutionQuotesTypeRegister
 
 
@@ -398,7 +399,15 @@ class StudentRegistersCreateView(PermissionMixin, CreateView):
             if form.is_valid():
                 status = 200
 
+                quota_balance = ShoppingCartManager.get_quota_balance(
+                    form.instance.type_register_id,
+                    self.request.user.institution_id
+                )
 
+                if quota_balance <= 0:
+                    status = 400
+                    data['message'] = 'No tiene cupos, obtenga mas en el modulo OBTEN MAS REGISTRO.'
+                    return JsonResponse(data, status=status)
 
                 value_new = SysParameters.get_value_formate_next()
                 form.instance.institution_id = self.request.user.institution_id
