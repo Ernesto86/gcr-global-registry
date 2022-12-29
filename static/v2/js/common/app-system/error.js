@@ -77,7 +77,8 @@ const ErrorCommon = {
             let errorHtml = ErrorCommon.funHTML.getErrors(errors)
 
             AppSystem.handleComp.alert.alert.show({
-                title: message, content: errorHtml, typeFeature: AppSystem.CONSTANT.typeFeature.danger
+                title: message,
+                content: errorHtml
             })
         },
         showErrorsOnlyAlert: (message, errors) => {
@@ -88,6 +89,7 @@ const ErrorCommon = {
             ].join(', ')
 
             alert(errorsList)
+
         }
     }
 }
