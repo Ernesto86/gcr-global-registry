@@ -64,6 +64,7 @@
     <th>Tipo Registro</th>
     <th>Representante</th>
     <th>Documentos</th>
+    <th>Creado</th>
     <th>Estado</th>
     <th class="text-center">Opciones</th>
 {% endblock %}
@@ -74,7 +75,7 @@
         <tr>
             <td class="text-center">{{ i.code }}</td>
             <td>{{ i.name }}</td>
-            <td>{{ i.adviser.name }}</td>
+            <td>{{ i.adviser.names }}</td>
             <td>{{ i.country.name }}</td>
             <td>{{ i.type_registration.name }}</td>
             <td>{{ i.representative }}</td>
@@ -123,6 +124,9 @@
                 <span class="badge bg-{{ i.get_bg_status }} badge-status">
                  {{ i.get_registration_status_display|upper }}
                 </span>
+            </td>
+            <td class="text-center">
+                {{ i.created_at }}
             </td>
             <td class="text-center">
                 <div class="btn-group" role="group">
@@ -180,20 +184,19 @@
                         </div>
                         <div class="tab-pane fade" id="nav-profile-11" role="tabpanel" aria-labelledby="nav-profile-11-tab">
                             <form id="id-form-aprobacion-modal">
-                                <input type="hidden" name="accion" value="aspirante_estado">
                                 <input type="hidden" name="institution_id" value="">
                                 <div class="form-row">
                                     <div class="form-group col-md">
                                         <label><b>Observaciones</b></label>
                                         <div class="">
-                                            <textarea name="observacion" id="id-observacion" rows="4" maxlength="700"
+                                            <textarea name="observation" id="id-observation" rows="4" maxlength="700"
                                                       class="form-control"></textarea>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-row">
                                     <div class="form-group col">
-                                        <input class="custom-checkbox" type="checkbox" checked name="con_email">
+                                        <input class="custom-checkbox" type="checkbox" checked name="with_mail">
                                         <label><b>Con envio de correo</b></label>
                                     </div>
                                 </div>
@@ -274,6 +277,7 @@
                 event.preventDefault();
                 const pk = target.dataset.id;
                 frmModalActions.elements['institution_id'].value = '';
+                frmModalActions.elements['observation'].value = '';
 
                 AppSystem.fun.showLoadingUi()
 
@@ -289,6 +293,7 @@
                 }
 
                 frmModalActions.elements['institution_id'].value = data.id;
+                frmModalActions.elements['observation'].value = data.observation;
                 frmModalTbody.innerHTML = `<tr class="">
                     <td style="width: 30%;"><b>Codigo: </b>${data.code}</td>
                     <td style="width: 40%;"><b>Nombre: </b>${data.name}</td>
@@ -323,7 +328,7 @@
 
                 const pk = frmModalActions.elements['institution_id'].value;
                 const statusId = target.value;
-                const formData = new FormData();
+                const formData = new FormData(frmModalActions);
                 formData.append('status_id', statusId);
 
                 AppSystem.fun.showLoadingUi()

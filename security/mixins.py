@@ -44,16 +44,15 @@ class PermissionMixin(object):
     def get(self, request, *args, **kwargs):
         try:
             user = request.user
+            user.set_group_session()
             if user.is_superuser:
                 return super().get(request, *args, **kwargs)
 
-            user.set_group_session()
             if 'group_id' in request.session:
                 group = user.get_group_session()
                 permissions = self.get_permissions()
 
                 for permission in permissions:
-
                     if not group.modulegruppermissions_set.filter(permissions__codename=permission).exists():
                         messages.error(request, 'No tiene permiso para ingresar a este módulo')
                         return redirect('home')
@@ -65,5 +64,7 @@ class PermissionMixin(object):
                     request.session['module_id'] = modulegruppermission.module.id
                 return super().get(request, *args, **kwargs)
         except Exception as ex:
-            print("error de que", ex)
-            return redirect('login')
+            if request.user.is_authenticated:
+                return redirect('home')
+            else:
+                return redirect('login')
