@@ -65,4 +65,5 @@ class PermissionMixin(object):
                     request.session['module_id'] = modulegruppermission.module.id
                 return super().get(request, *args, **kwargs)
         except Exception as ex:
+            print("error de que", ex)
             return redirect('login')

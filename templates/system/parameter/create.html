@@ -1,0 +1,57 @@
+{% extends 'v2/base/crud/form/form.html' %}
+
+{% block base-body-js %}
+
+    <script>
+
+        const objElevate = {
+            action: '{{ action }}',
+            back_url: '{{ back_url | safe }}'
+        }
+
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function (e) {
+            const objD = {
+                CONSTANT: {},
+                elem: {
+                    $form: document.getElementById('id-form')
+                },
+                repeat: {},
+                loadFirst: {},
+                model: {},
+                fun: {
+                    submitFacade: () => ConfirmCommon.exec({
+                        confirmCallback: () => objD.fun.submit()
+                    }),
+                    submit: async () => {
+                        const formData = new FormData(objD.elem.$form)
+                        formData.append("action", objElevate.action)
+
+                        const {code, message, data, ...stateExtra} = await CrudCommon.fetch.submitForm({formData})
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind)
+                            return
+
+                        window.location = objElevate.back_url
+                    }
+                }
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+
+
+            objD.elem.$form.addEventListener('submit', (e) => {
+                e.preventDefault()
+
+                objD.fun.submitFacade()
+            })
+        })
+
+    </script>
+{% endblock %}

@@ -77,23 +77,27 @@ class FormCommon:
             class_cls = field.widget.attrs.get('class')
             style = field.widget.attrs.get('style')
 
-            if field.widget.input_type == 'checkbox':
-                class_cls = f' {class_cls} {CONSTANT_CLS_CHECKBOX_BOOTSTRAP} ' if class_cls else CONSTANT_CLS_CHECKBOX_BOOTSTRAP
-            # TODO: en algun momento realizar pruebas para cambir la condicional if hasattr(field, 'choices'):
-            # elif field.widget.input_type == 'select':
-            #     pass
+            if hasattr(field.widget, 'input_type'):
+
+                if field.widget.input_type == 'checkbox':
+                    class_cls = f' {class_cls} {CONSTANT_CLS_CHECKBOX_BOOTSTRAP} ' if class_cls else CONSTANT_CLS_CHECKBOX_BOOTSTRAP
+                # TODO: en algun momento realizar pruebas para cambir la condicional if hasattr(field, 'choices'):
+                # elif field.widget.input_type == 'select':
+                #     pass
+                else:
+                    class_cls = f' {class_cls} {CONSTANT_CLS_BOOTSTRAP} ' if class_cls else CONSTANT_CLS_BOOTSTRAP
+
+                if class_cls.__contains__('cls_decimal'):
+                    class_cls = f'{class_cls} input-large text-right'
+
+                if hasattr(field, 'choices'):
+                    class_cls += ' select2 '
+                    if style:
+                        style += ' width: 100%; '
+                    else:
+                        style = ' width: 100%; '
             else:
                 class_cls = f' {class_cls} {CONSTANT_CLS_BOOTSTRAP} ' if class_cls else CONSTANT_CLS_BOOTSTRAP
-
-            if class_cls.__contains__('cls_decimal'):
-                class_cls = f'{class_cls} input-large text-right'
-
-            if hasattr(field, 'choices'):
-                class_cls += ' select2 '
-                if style:
-                    style += ' width: 100%; '
-                else:
-                    style = ' width: 100%; '
 
             if with_place_holder_cover:
                 settings = {
