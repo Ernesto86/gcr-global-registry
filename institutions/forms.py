@@ -14,22 +14,44 @@ class InstitutionForm(forms.ModelForm):
         model = Institutions
         exclude = ('detail','created_at', 'created_by', 'deleted', 'deleted_at', 'deleted_by', 'deleted_reason')
         widgets = {
+            'email': forms.TextInput(attrs={
+                'class': 'form-control',
+                'required': True,
+                'placeholder': 'Ingrese cuenta de correo electrónico',
+                'type': 'email',
+            }),
             'adviser': forms.TextInput(attrs={
                 'class': 'form-control',
-                'required': False,
-                'placeholder': 'Ingreso codigo del Asesor'
+                'required': True,
+                'placeholder': 'Ingrese el código del Asesor'
             }),
             'type_registration': forms.Select(attrs={
                 'class': 'select2-design',
-                'required': False
+                'required': True
+            }),
+            'file_constitution': forms.FileInput(attrs={
+                'class': 'custom-file-input',
+                'accept': '.pdf',
+                'required': True
+            }),
+            'file_nomination': forms.FileInput(attrs={
+                'class': 'custom-file-input',
+                'accept': '.pdf',
+                'required': True
+            }),
+            'file_title_academic': forms.FileInput(attrs={
+                'class': 'custom-file-input',
+                'accept': '.pdf',
+                'required': True
             }),
             'representative_academic_level': forms.Select(attrs={
                 'class': 'select2-design',
-                'required': False
+                'required': True
             }),
             'logo': forms.FileInput(attrs={
                 'class': 'custom-file-input',
-                'accept': '.png'
+                'accept': 'image/png, image/jpeg',
+                'required': True
             }),
         }
         labels = {

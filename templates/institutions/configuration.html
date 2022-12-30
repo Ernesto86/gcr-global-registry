@@ -68,8 +68,7 @@
         <div class="form-group col-6 mb-0">
             <label class="text-black">Cargar constitucion (Formato PDF)<span style="color: red">*</span></label>
             <div class="custom-file">
-                <input type="file" name="file_constitution" class="custom-file-input form-control"
-                       accept=".pdf" id="id_file_constitution">
+                {{ form.file_constitution }}
                 <label class="custom-file-label text-primary"
                        for="{{ form.file_constitution.id_for_label }}">
                     {% if form.file_constitution.value %}
@@ -94,8 +93,7 @@
             <label class="text-black">Cargar nominacion (Formato PDF)
                 <span style="color: red">*</span></label>
             <div class="custom-file">
-                <input type="file" name="file_nomination" class="custom-file-input form-control"
-                       accept=".pdf" id="id_file_nomination">
+               {{ form.file_nomination }}
                 <label class="custom-file-label text-primary" for="{{ form.file_nomination.id_for_label }}">
                     {% if form.file_nomination.value %}
                         {{ form.file_nomination.value }}
@@ -118,8 +116,7 @@
         <div class="form-group col-6 mb-0">
             <label class="text-black">Grado Academico (Formato PDF) <span style="color: red">*</span></label>
             <div class="custom-file">
-                <input type="file" name="file_title_academic" class="custom-file-input form-control"
-                       accept=".pdf" id="id_file_title_academic">
+                {{ form.file_title_academic }}
                 <label class="custom-file-label text-primary"
                        for="{{ form.file_title_academic.id_for_label }}">
                     {% if form.file_title_academic.value %}
@@ -150,7 +147,7 @@
         </div>
     </div>
 {% endblock %}
-{% block jscript %}
+{% block base-body-js %}
     <script>
         const MAXIMOSIZE = 2097152;
         const formFields = document.querySelector('#id-form')
@@ -211,6 +208,17 @@
                     })
                 {% endif %}
             {% endfor %}
+        {% endif %}
+
+
+        {% if institution.file_constitution %}
+            document.querySelector('#id_file_constitution').removeAttribute('required');
+        {% endif %}
+        {% if institution.file_nomination %}
+            document.querySelector('#id_file_nomination').removeAttribute('required');
+        {% endif %}
+        {% if institution.file_title_academic %}
+            document.querySelector('#id_file_title_academic').removeAttribute('required');
         {% endif %}
 
     </script>

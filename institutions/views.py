@@ -12,8 +12,9 @@ from security.functions import addUserData
 from core.util_functions import ListViewFilter
 from security.mixins import *
 from advisers.models import Advisers, Managers
-from core.constants import RegistrationStatus
-from system.models import SysCountries
+from core.constants import RegistrationStatus, SYSTEM_NAME
+from core.send_email import render_to_email_send
+from system.models import SysCountries, SysParameters
 import datetime
 
 class InstitutionsListView(PermissionMixin, ListViewFilter, ListView):
@@ -123,11 +124,13 @@ class InstitutionconfigurationView(PermissionMixin, TemplateView):
             return render(request, self.template_name, {'form': form })
 
 
-class InstitutionRegisterStatus(ListViewFilter, ListView):
+class InstitutionRegisterStatus(PermissionMixin, ListViewFilter, ListView):
     login_url = '/security/login'
     redirect_field_name = 'redirect_to'
     template_name = 'institutions/register_status.html'
     context_object_name = 'institutions'
+    group_permissions = ['Gerentes']
+    permission_required = 'view_institutions'
     paginate_by = 10
 
     def get_context_data(self, **kwargs):
@@ -149,15 +152,23 @@ class InstitutionRegisterStatus(ListViewFilter, ListView):
         return context
 
     def get_queryset(self, **kwargs):
+        user = self.request.user
         search = self.request.GET.get('search', '')
         self.query_filter = {
             'registration_status': self.request.GET.get('status_id', ''),
-            'country_id': self.request.GET.get('country_id', ''),
+            'country_id': self.request.GET.get('country_id', '')
         }
-        manager = Managers.objects.get(user_id=self.request.user.pk)
-        print("manageraaaaaaaaaaaaa")
+
+        group = user.get_group_session()
+        if group.name in self.group_permissions:
+            manager = Managers.objects.filter(user_id=user.pk).first()
+            if manager is not None:
+                self.query_filter['adviser__manager_id'] = manager.id
+            else:
+                messages.add_message(request, messages.ERROR, "No tiene permisos para ingresar al modulo.")
+                return redirect('/')
+
         return Institutions.objects.filter(
-            Q(adviser__manager_id=manager.id),
             Q(deleted=False),
             Q(code__icontains=search)|
             Q(name__icontains=search),
@@ -171,17 +182,46 @@ class InstitutionViewByPk(PermissionMixin, View):
 
     def post(self, request, *args, **kwargs):
         data = {'errors': []}
-        status = 200
         try:
             pk = kwargs.get('pk')
             institution = Institutions.objects.filter(deleted=False, pk=pk).first()
             if institution is not None:
                 status_id = self.request.POST.get('status_id')
+                with_mail = self.request.POST.get('with_mail')
+                observation = self.request.POST.get('observation', '')
+
                 institution.registration_status = status_id
                 institution.date_approval = datetime.datetime.now()
+                institution.details = observation
                 institution.save()
-            else:
+
+                try:
+                    if with_mail:
+                        user = request.user
+                        reseptores = [institution.email, user.email]
+                        parameter = SysParameters.objects.filter(status=True, code='EMAIL-ADMIN').first()
+                        if parameter is not None:
+                            reseptores.append(parameter.value)
+
+                        render_to_email_send(
+                            subject= f"Aprobacion de estado de registro en {SYSTEM_NAME}",
+                            body={
+                                'institution': institution,
+                                'message': observation,
+                                'system_name': SYSTEM_NAME
+                            },
+                            receiver=reseptores,
+                            template='email/template_register_status.html'
+                        )
+                except:
+                    pass
+
                 status = 200
+                data['code'] = 'successful'
+                data['message'] = 'Registro actualizado correctamente'
+
+            else:
+                status = 400
                 data['code'] = 'failed'
                 data['message'] = 'No se encontro institucion'
 
@@ -212,6 +252,7 @@ class InstitutionViewByPk(PermissionMixin, View):
                     "representative": institution.representative,
                     "representative_academic_level": institution.representative_academic_level.name if institution.representative_academic_level else '',
                     "email": institution.email,
+                    "observation": institution.detail if institution.detail else '',
                 }
             else:
                 status = 200
