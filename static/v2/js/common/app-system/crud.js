@@ -11,7 +11,9 @@ const CrudCommon = {
             {
                 formData,
                 path = location.pathname,
-                method = ClientHttpFetch.CONSTANT.verboseMethod.POST.description
+                configExtra = {
+                    method: ClientHttpFetch.CONSTANT.verboseMethod.POST.description,
+                }
             }
         ) => {
             AppSystem.fun.showLoadingSimpleFacade()
@@ -19,7 +21,7 @@ const CrudCommon = {
             const dataJson = await ClientHttpFetch.exec(
                 path,
                 formData,
-                method
+                configExtra,
             )
 
             const {code, message, data, ...stateExtra} = dataJson

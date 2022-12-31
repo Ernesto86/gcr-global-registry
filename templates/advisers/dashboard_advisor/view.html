@@ -324,23 +324,12 @@
                         formData.append("institution_id", institutionId)
                         formData.append("option_view", optionView)
 
-                        AppSystem.fun.showLoadingUi()
-                        AppSystem.handleComp.alert.alert.hidden({})
-
-                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
-                            location.pathname,
+                        const {code, message, data, ...stateExtra} = await CrudCommon.fetch.submitForm({
                             formData
-                        )
+                        })
 
-                        AppSystem.fun.hiddenLoadingUi()
-
-                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
-                            AppSystem.handleComp.alert.show({
-                                content: message,
-                                typeFeature: AppSystem.CONSTANT.typeFeature.danger
-                            })
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind)
                             return
-                        }
 
                         let html = ''
 

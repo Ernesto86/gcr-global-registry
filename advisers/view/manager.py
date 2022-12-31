@@ -6,13 +6,14 @@ from django.http import JsonResponse
 from rest_framework import status
 
 from advisers.forms import ManagerForm
-from advisers.models import Managers, Managers, ManagersCommissions
+from advisers.models import Managers, Managers, ManagersCommissions, Advisers
 from core.common.filter_orm.filter_orm_common import FilterOrmCommon
 from core.common.form.form_common import FormCommon
 from security.functions import addUserData
 from core.util_functions import ListViewFilter
 from security.mixins import *
 from security.models import User
+from system.models import SysCountries
 
 
 class ManagerListView(PermissionMixin, ListViewFilter, ListView):
@@ -21,6 +22,35 @@ class ManagerListView(PermissionMixin, ListViewFilter, ListView):
     template_name = 'advisers/manager/list.html'
     context_object_name = 'advisers'
     permission_required = 'view_managers'
+
+    def post(self, request, *args, **kwargs):
+        data = {'errors': []}
+        status = 500
+
+        action = request.POST.get('action', '')
+
+        if action == 'adviser_list':
+            manager_id = self.request.POST.get("manager_id")
+            print("weeeeee")
+            print(manager_id)
+
+            manager = Managers.objects.get(id=manager_id)
+
+            data['adviser_list'] = [
+                {
+                    "code": x.code,
+                    "names": x.names,
+                    "dni": x.dni,
+                    "cell_phone": x.cell_phone,
+                    "email": x.email
+                }
+                for x in Advisers.objects.filter(manager_id=manager.id)
+            ]
+
+            status = 200
+            data['message'] = ''
+
+        return JsonResponse(data, status=status)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -32,11 +62,17 @@ class ManagerListView(PermissionMixin, ListViewFilter, ListView):
         get_params = FilterOrmCommon.get_url_params(self.request.GET)
         context.update(get_params)
         context['url_params'] = urlencode(get_params)
+        context['countries'] = SysCountries.objects.filter(deleted=False)
+        try:
+            context['country_id'] = int(context['country_id']) if context['country_id'] else ''
+        except:
+            pass
         return context
 
     def get_queryset(self, **kwargs):
         self.query_AND_1, self.query_OR_1 = FilterOrmCommon.get_query_connector_tuple()
         search = self.request.GET.get('search', '')
+        country_id = self.request.GET.get('country_id', '')
         self.query_AND_1.children.append(("deleted", False))
 
         if search:
@@ -44,6 +80,9 @@ class ManagerListView(PermissionMixin, ListViewFilter, ListView):
             self.query_OR_1.children.append(("first_name__icontains", search))
             self.query_OR_1.children.append(("code__icontains", search))
             self.query_OR_1.children.append(("dni__icontains", search))
+
+        if country_id:
+            self.query_OR_1.children.append(("country_residence_id", country_id))
 
         return Managers.objects.filter(
             self.query_AND_1,

@@ -2,8 +2,20 @@
 
 {% block list-search %}
     <div class="row">
-        <div class="col-md col-md-9">
+        <div class="col-md col-md-6">
             {% include "v2/common/forms/search/input_search_simple.html" with placeholder_input_search='Buscar asesor por codigo, dni, nombre..' %}
+        </div>
+        <div class="col-md-3 col-lg-3">
+            <div class="input-group">
+                <select id="id-select-country" name="country_id" class="custom-select form-control"
+                        rel="action-select">
+                    <option value="">Seleccione pais</option>
+                    {% for c in countries %}
+                        <option value="{{ c.id }}"
+                                {% if c.id == country_id %}selected{% endif %}>{{ c.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
         </div>
         <div class="col-md col-md-3">
             {% include "v2/common/forms/search/btn_search.html" %}
@@ -43,10 +55,57 @@
                     >
                         <i class="fa fa-trash"></i>
                     </a>
+                    <a href="#"
+                       rel="rel-view-adviser"
+                       class="rounded-5 btn btn-info btn-sm"
+                       data-id="{{ object.id }}"
+                       data-toggle="tooltip"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="top"
+                       title="Ver asesores">
+                        <i class="fa fa-eye"></i>
+                    </a>
                 </div>
             </td>
         </tr>
     {% endfor %}
+{% endblock %}
+
+
+{% block content-modal %}
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-fullscreen-xl-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Asesores
+                        <span class="badge bg-primary" id="id-modalTitle"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive mt-4">
+                        <table class="table table-striped mb-0" role="grid">
+                            <thead class="table-primary">
+                            <tr>
+                                <th>Codigo</th>
+                                <th>DNI</th>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Celular</th>
+                            </tr>
+                            </thead>
+                            <tbody id="id-detailAdviserBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block base-body-js %}
@@ -83,7 +142,34 @@
                             return
 
                         target.closest('tr').remove()
-                    }
+                    },
+                    getAdviserList: async (managerId) => {
+                        const formData = new FormData()
+                        formData.append("action", 'adviser_list')
+                        formData.append("manager_id", managerId)
+
+                        const {code, message, data, ...stateExtra} = await CrudCommon.fetch.submitForm({
+                            formData
+                        })
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind)
+                            return
+
+                        const  htmlP = data.adviser_list.map(elem =>
+                            `
+                                <tr>
+                                    <td>${elem.code}</td>
+                                    <td>${elem.dni}</td>
+                                    <td>${elem.names}</td>
+                                    <td>${elem.email}</td>
+                                    <td>${elem.cell_phone}</td>
+                                </tr>
+                            `
+                        ).join('')
+
+                        document.getElementById('id-detailAdviserBody').innerHTML = htmlP
+                        $('#exampleModal').modal('show')
+                    },
                 }
             }
 
@@ -95,12 +181,21 @@
 
             objD.elem.$table.addEventListener('click', async (event) => {
                 const target = event.target.closest('a[rel="rel-action-delete"]');
+                const targetViewAdviser = event.target.closest('a[rel="rel-view-adviser"]');
 
                 if (target) {
                     event.preventDefault();
                     const id = target.dataset.id
 
                     objD.fun.deleteRegisterFacade(id, target)
+                }
+
+                if (targetViewAdviser) {
+                    event.preventDefault()
+
+                    const id = targetViewAdviser.dataset.id
+
+                    await objD.fun.getAdviserList(id)
                 }
             });
 
