@@ -96,7 +96,12 @@
         </div>
         <div class="col-lg-12 col-md-12">
 
-            {% include 'advisers/dashboard_advisor/card_chart_bar.html' with id_chart_bart='id-barChartCommissionTotals' id_select_chart_bart='id-selectYearBarChartCommissionTotals' title_chart_bart='Comisiones totales' %}
+            {% include 'advisers/dashboard_advisor/card_chart_bar.html' with id_chart_bart='id-barChartInstitutionOrderTotals' id_select_chart_bart='id-selectYearBarChartInstitutionOrderTotals' title_chart_bart='Totales ventas x instituciones' %}
+
+        </div>
+        <div class="col-lg-12 col-md-12">
+
+            {% include 'advisers/dashboard_advisor/card_chart_bar.html' with id_chart_bart='id-barChartCommissionTotals' id_select_chart_bart='id-selectYearBarChartCommissionTotals' title_chart_bart='Totales ventas' %}
 
         </div>
     </div>
@@ -153,30 +158,31 @@
                     $tableInstitution: document.querySelector('#id-table-institution > tbody'),
                     $selectYearBarChartCommissionPaid: document.getElementById('id-selectYearBarChartCommissionPaid'),
                     $selectYearBarChartCommissionXCobrar: document.getElementById('id-selectYearBarChartCommissionXCobrar'),
+                    $selectYearBarChartInstitutionOrderTotals: document.getElementById('id-selectYearBarChartInstitutionOrderTotals'),
                     $selectYearBarChartCommissionTotals: document.getElementById('id-selectYearBarChartCommissionTotals'),
 
                     ctxBarChartCommissionPaid: document.getElementById("id-barChartCommissionPaid"),
                     ctxBarChartCommissionXCobrar: document.getElementById("id-barChartCommissionXCobrar"),
+                    ctxBarChartInstitutionOrderTotals: document.getElementById("id-barChartInstitutionOrderTotals"),
                     ctxBarChartCommissionTotals: document.getElementById("id-barChartCommissionTotals"),
 
                     barChartCommissionPaid: undefined,
                     barChartCommissionXCobrar: undefined,
+                    barChartInstitutionOrderTotals: undefined,
                     barChartCommissionTotals: undefined,
                 },
                 repeat: {},
                 loadFirst: {},
                 model: {},
                 fun: {
-                    getOptionBarChart: (labels, values, max) => {
+                    getOptionBarChart: (labels, series, max) => {
                         const variableColors = IQUtils.getVariableColor()
-                        const colors = [variableColors.primary]
+                        const colors = [
+                            variableColors.primary,
+                            ...AppSystem.CONSTANT.colorsRandom
+                        ]
                         return {
-                            series: [
-                                {
-                                    name: "Sales",
-                                    data: values,
-                                },
-                            ],
+                            series,
                             colors: colors,
                             chart: {
                                 height: "300px",
@@ -226,15 +232,10 @@
                         let labels = []
                         let values = []
 
-                        AppSystem.fun.showLoadingUi()
-                        AppSystem.handleComp.alert.alert.hidden({})
-
                         const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
                             location.pathname,
                             formData
                         )
-
-                        AppSystem.fun.hiddenLoadingUi()
 
                         if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
                             AppSystem.handleComp.alert.show({
@@ -265,9 +266,41 @@
                         const max = Math.max(...values);
 
                         return {
+                            data,
                             labels,
                             values,
+                            series: [
+                                {
+                                    name: data?.name ? data.name : "Series",
+                                    data: values
+                                }
+                            ],
                             max
+                        }
+                    },
+                    getChartBarValueInstitution: async (action, year) => {
+                        const formData = new FormData()
+                        formData.append("action", action)
+                        formData.append("year", year)
+
+                        const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(
+                            location.pathname,
+                            formData
+                        )
+
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
+                            AppSystem.handleComp.alert.show({
+                                content: message,
+                                typeFeature: AppSystem.CONSTANT.typeFeature.danger
+                            })
+                            return
+                        }
+
+                        return {
+                            data,
+                            labels: data.labels,
+                            series: data.series
                         }
                     },
                     getChartCommissionPaid: async (action, {year = undefined}) => {
@@ -275,11 +308,11 @@
                             if (objD.elem.barChartCommissionPaid)
                                 objD.elem.barChartCommissionPaid.destroy()
 
-                            const {labels, values, max} = await objD.fun.getChartBarValue(action, year)
+                            const {labels, series, max} = await objD.fun.getChartBarValue(action, year)
 
                             objD.elem.barChartCommissionPaid = new ApexCharts(
                                 objD.elem.ctxBarChartCommissionPaid,
-                                objD.fun.getOptionBarChart(labels, values, max)
+                                objD.fun.getOptionBarChart(labels, series, max)
                             )
                             objD.elem.barChartCommissionPaid.render()
                         } catch (e) {
@@ -291,13 +324,29 @@
                             if (objD.elem.barChartCommissionXCobrar)
                                 objD.elem.barChartCommissionXCobrar.destroy()
 
-                            const {labels, values, max} = await objD.fun.getChartBarValue(action, year)
+                            const {labels, series, max} = await objD.fun.getChartBarValue(action, year)
 
                             objD.elem.barChartCommissionXCobrar = new ApexCharts(
                                 objD.elem.ctxBarChartCommissionXCobrar,
-                                objD.fun.getOptionBarChart(labels, values, max)
+                                objD.fun.getOptionBarChart(labels, series, max)
                             )
                             objD.elem.barChartCommissionXCobrar.render()
+                        } catch (e) {
+                            ce("exception: graph payment", e)
+                        }
+                    },
+                    getChartInstitutionOrderTotals: async (action, {year = undefined}) => {
+                        try {
+                            if (objD.elem.barChartInstitutionOrderTotals)
+                                objD.elem.barChartInstitutionOrderTotals.destroy()
+
+                            const {labels, series} = await objD.fun.getChartBarValueInstitution(action, year)
+
+                            objD.elem.barChartInstitutionOrderTotals = new ApexCharts(
+                                objD.elem.ctxBarChartInstitutionOrderTotals,
+                                objD.fun.getOptionBarChart(labels, series, 100)
+                            )
+                            objD.elem.barChartInstitutionOrderTotals.render()
                         } catch (e) {
                             ce("exception: graph payment", e)
                         }
@@ -307,11 +356,12 @@
                             if (objD.elem.barChartCommissionTotals)
                                 objD.elem.barChartCommissionTotals.destroy()
 
-                            const {labels, values, max} = await objD.fun.getChartBarValue(action, year)
+                            const {labels, series, max} = await objD.fun.getChartBarValue(action, year)
+
 
                             objD.elem.barChartCommissionTotals = new ApexCharts(
                                 objD.elem.ctxBarChartCommissionTotals,
-                                objD.fun.getOptionBarChart(labels, values, max)
+                                objD.fun.getOptionBarChart(labels, series, max)
                             )
                             objD.elem.barChartCommissionTotals.render()
                         } catch (e) {
@@ -365,6 +415,8 @@
 
             objD.fun.getChartCommissionXCobrar('commission_x_cobrar', {})
 
+            objD.fun.getChartInstitutionOrderTotals('institution_order_totals', {})
+
             objD.fun.getChartCommissionTotals('commission_totals', {})
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -380,6 +432,14 @@
 
             objD.elem.$selectYearBarChartCommissionXCobrar.addEventListener('change', (e) => {
                 objD.fun.getChartCommissionXCobrar('commission_x_cobrar', {
+                    year: e.target.value === ''
+                        ? null
+                        : e.target.value
+                })
+            })
+
+            objD.elem.$selectYearBarChartInstitutionOrderTotals.addEventListener('change', (e) => {
+                objD.fun.getChartInstitutionOrderTotals('institution_order_totals', {
                     year: e.target.value === ''
                         ? null
                         : e.target.value

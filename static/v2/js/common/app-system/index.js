@@ -20,7 +20,23 @@ const AppSystem = {
             info: 'info',
             light: 'light',
             dark: 'dark',
-        }
+        },
+        colorsRandom: [
+            "#6410F1",
+            "#10f1ad",
+            "#f11081",
+            "#97DECE",
+            "#FAEAB1",
+            "#D09CFA",
+            "#E6E2C3",
+            "#0A2647",
+            "#61876E",
+            "#F1F7B5",
+            "#9EA1D4",
+            "#FFB100",
+            "#EAC7C7",
+            "#F8F4EA",
+        ]
     },
     elem: {
         $loadingUi: document.getElementById('id-loadContent'),

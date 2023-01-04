@@ -290,7 +290,7 @@
 
             const getOptionBarChart = (labels, series) => {
                 const variableColors = IQUtils.getVariableColor()
-                const colors = [variableColors.primary, "#6410F1"]
+                const colors = [variableColors.primary, ...AppSystem.CONSTANT.colorsRandom]
                 return {
                     series,
                     colors,
@@ -528,6 +528,7 @@
                         managerSeries,
                     )
                 )
+                c(xCobrarManagerInfoChart.labels, adviserSeries,)
                 objD.elem.barChartCommissionXCobrar = new ApexCharts(
                     objD.elem.ctxCommissionsXCobrarBarChart,
                     getOptionBarChart(

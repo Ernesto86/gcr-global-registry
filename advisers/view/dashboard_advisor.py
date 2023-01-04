@@ -32,7 +32,8 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
                 data.update(adviser_dashboard.get_detail_sales_collected_per_range_year_and_institution(institution_id))
 
             elif option_view == 'xcobrar':
-                data.update(adviser_dashboard.get_detail_sales_by_collect_per_range_year_and_institution(institution_id))
+                data.update(
+                    adviser_dashboard.get_detail_sales_by_collect_per_range_year_and_institution(institution_id))
 
             status = 200
             data['message'] = ''
@@ -72,6 +73,19 @@ class DashboardAdvisorView(LoginRequiredMixin, TemplateView):
                 data['payment_paid_list'] = adviser_dashboard.get_totals_sales_per_year(year_selected)
             else:
                 data['payment_paid_list'] = adviser_dashboard.get_totals_sales_per_range_year()
+
+        elif action == 'institution_order_totals':
+            year_selected = FilterQueryCommon.get_param_validate(request.POST.get('year', None))
+            adviser = Advisers.objects.get(user_id=self.request.user.pkid)
+            status = 200
+
+            adviser_dashboard = AdviserDashboard(adviser)
+
+            if year_selected:
+                data.update(adviser_dashboard.get_institution_order_totals_per_year(year_selected))
+
+            else:
+                data.update(adviser_dashboard.get_institution_order_totals_per_range_year())
 
         return JsonResponse(data, status=status)
 
