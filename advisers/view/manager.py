@@ -5,7 +5,7 @@ from django.views.generic import ListView, CreateView, UpdateView
 from django.http import JsonResponse
 from rest_framework import status
 
-from advisers.forms import ManagerForm
+from advisers.forms import ManagerForm, ManagerChangeForm
 from advisers.models import Managers, Managers, ManagersCommissions, Advisers
 from core.common.filter_orm.filter_orm_common import FilterOrmCommon
 from core.common.form.form_common import FormCommon
@@ -31,8 +31,6 @@ class ManagerListView(PermissionMixin, ListViewFilter, ListView):
 
         if action == 'adviser_list':
             manager_id = self.request.POST.get("manager_id")
-            print("weeeeee")
-            print(manager_id)
 
             manager = Managers.objects.get(id=manager_id)
 
@@ -58,6 +56,7 @@ class ManagerListView(PermissionMixin, ListViewFilter, ListView):
         context['create_url'] = reverse_lazy('advisers:manager_create')
         context['title_label'] = "Listado de gerentes"
         context['clear_url'] = reverse_lazy('advisers:manager_list')
+        context['change_form'] = ManagerChangeForm()
 
         get_params = FilterOrmCommon.get_url_params(self.request.GET)
         context.update(get_params)
@@ -188,19 +187,35 @@ class ManagerUpdateView(PermissionMixin, UpdateView):
 
 
 class ManagerDeleteView(PermissionMixin, View):
-    def delete(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         id = kwargs.get('pk')
         try:
             manager = Managers.objects.get(pk=id)
+            manager_new = Managers.objects.get(pk=request.POST.get('manager'))
+            
+            if manager.id == manager_new.id:
+                return JsonResponse(
+                    {"message": "Error al eliminar", "errors": ["No puede escoger el mismo gerente"]},
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+
             manager.user.is_active = False
             manager.deleted = True
+            
+            advisers = Advisers.objects.filter(
+                manager_id=manager.id,
+                deleted=False
+            )
+            advisers.update(manager_id=manager_new.id)
+
             manager_commissions = ManagersCommissions.objects.get(manager_id=manager.id)
             manager_commissions.deleted = True
             manager_commissions.save()
+
             manager.save()
         except Exception as ex:
             return JsonResponse(
-                {"message": "Error al eliminar", "errors": ["Error al eliminar"]},
+                {"message": "Error al eliminar", "errors": [str(ex)]},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
         return JsonResponse({}, status=status.HTTP_200_OK)

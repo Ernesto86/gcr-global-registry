@@ -49,15 +49,19 @@
                     <a
                             href="#"
                             rel="rel-action-delete"
-                            class="btn btn-danger btn-sm"
+                            class="btn btn-danger btn-sm rounded-5"
                             data-id="{{ object.id }}"
                             data-toggle="tooltip"
+                            data-toggle="tooltip"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="Dar de baja a gerente"
                     >
                         <i class="fa fa-trash"></i>
                     </a>
                     <a href="#"
                        rel="rel-view-adviser"
-                       class="rounded-5 btn btn-info btn-sm"
+                       class="btn btn-info btn-sm rounded-5 "
                        data-id="{{ object.id }}"
                        data-toggle="tooltip"
                        data-bs-toggle="tooltip"
@@ -106,6 +110,28 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="exampleModalChangeManager" tabindex="-1" aria-labelledby="exampleModalLabelChangeManager" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-fullscreen-xl-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Dar de baja a gerente actual y realizar el cambio por:
+                        <span class="badge bg-primary" id="id-modalTitleChangeManager"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="" enctype="multipart/form-data" id="id-form">
+                        {% include "v2/common/forms/form_presentate_all_field.html" with form=change_form %}
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" form="id-form">Guardar y dar de baja</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block base-body-js %}
@@ -123,25 +149,38 @@
         document.addEventListener('DOMContentLoaded', function (e) {
             const objD = {
                 CONSTANT: {},
+                attr:{
+                    id: null
+                },
                 elem: {
-                    $table: document.querySelector('#id-table > tbody')
+                    $table: document.querySelector('#id-table > tbody'),
+                    $inputManager: document.getElementById('id_manager'),
+                    $form: document.getElementById('id-form'),
                 },
                 repeat: {},
                 loadFirst: {},
                 model: {},
                 fun: {
-                    deleteRegisterFacade: (id, target) => ConfirmCommon.exec({
-                        confirmCallback: () => objD.fun.deleteRegister(id, target),
+                    deleteRegisterFacade: () => ConfirmCommon.exec({
+                        confirmCallback: () => objD.fun.deleteRegister(),
                     }),
-                    deleteRegister: async (id, target) => {
+                    deleteRegister: async () => {
+                        const formData = new FormData(objD.elem.$form)
+                        formData.append("id", objD.attr.id)
+                        formData.append("action", objElevate.action)
+
                         const {code, message, data, ...stateExtra} = await CrudCommon.fetch.delete({
-                            path: `${objElevate.deleteUrl}/${id}`
+                            path: `${objElevate.deleteUrl}/${objD.attr.id}`,
+                            dataFetch: formData,
+                            configExtra : {
+                                method: ClientHttpFetch.CONSTANT.verboseMethod.POST.description,
+                            },
                         })
 
                         if (ErrorResponse.KIND_STATIC === stateExtra.kind)
                             return
 
-                        target.closest('tr').remove()
+                        window.location.reload()
                     },
                     getAdviserList: async (managerId) => {
                         const formData = new FormData()
@@ -175,6 +214,10 @@
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+            
+            $('#id_manager').select2({ 
+                dropdownParent: $("#exampleModalChangeManager") 
+            })
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
@@ -186,8 +229,11 @@
                 if (target) {
                     event.preventDefault();
                     const id = target.dataset.id
+                    objD.attr.id = parseInt(id)
+                    
+                    $('#exampleModalChangeManager').modal('show')
 
-                    objD.fun.deleteRegisterFacade(id, target)
+                    // objD.fun.deleteRegisterFacade(id, target)
                 }
 
                 if (targetViewAdviser) {
@@ -198,6 +244,13 @@
                     await objD.fun.getAdviserList(id)
                 }
             });
+
+            objD.elem.$form.addEventListener('submit', (e)=>{
+                e.preventDefault()
+
+                objD.fun.deleteRegisterFacade()
+
+            })
 
         })
 

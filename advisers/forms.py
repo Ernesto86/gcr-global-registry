@@ -257,3 +257,20 @@ class PaymentMethodForm(forms.ModelForm):
         model = PaymentMethod
         fields = '__all__'
         exclude = ('deleted', 'user')
+
+
+class ManagerChangeForm(forms.Form):
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['manager'].widget.attrs['autofocus'] = True
+        FormCommon.update_all_field(self.fields)
+
+    manager = forms.ModelChoiceField(
+        widget=forms.Select(attrs={'class': "select2 select2-design", 'placeholder': 'Todos...'}),
+        queryset=Managers.objects.filter(deleted=False),
+        label='Gerente de reemplazo',
+        required=True,
+    )
+
+    
