@@ -209,7 +209,7 @@ for p in Permission.objects.filter(content_type__model=OrderInstitutionQuotas._m
 
 module = Module.objects.create(
     url='/security/organizador-registros',
-    name='Organiador de registros',
+    name='Organizador de registros',
     **module_common
 )
 module_group_permissions = ModuleGrupPermissions.objects.create(
