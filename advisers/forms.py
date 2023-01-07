@@ -270,7 +270,7 @@ class ManagerChangeForm(forms.Form):
         widget=forms.Select(attrs={'class': "select2 select2-design", 'placeholder': 'Todos...'}),
         queryset=Managers.objects.filter(deleted=False),
         label='Gerente de reemplazo',
-        required=True,
+        required=False,
     )
 
     

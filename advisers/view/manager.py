@@ -190,23 +190,40 @@ class ManagerDeleteView(PermissionMixin, View):
     def post(self, request, *args, **kwargs):
         id = kwargs.get('pk')
         try:
-            manager = Managers.objects.get(pk=id)
-            manager_new = Managers.objects.get(pk=request.POST.get('manager'))
             
-            if manager.id == manager_new.id:
-                return JsonResponse(
-                    {"message": "Error al eliminar", "errors": ["No puede escoger el mismo gerente"]},
-                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
-                )
+            manager_new_id = request.POST.get('manager', None)
+            manager = Managers.objects.get(pk=id)
+            manager_new = None
+
+            if manager_new_id == '':
+                
+                if Advisers.objects.filter(
+                    manager_id=manager.id,
+                    deleted=False
+                ).exists():
+                    return JsonResponse(
+                        {"message": "Error al eliminar", "errors": ["El gerente actual tiene asesores, tiene que escoger un gerente de reemplazo."]},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    )
+
+            else:
+                manager_new = Managers.objects.get(pk=manager_new_id)
+            
+                if manager.id == manager_new.id:
+                    return JsonResponse(
+                        {"message": "Error al eliminar", "errors": ["No puede escoger el mismo gerente"]},
+                        status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    )
 
             manager.user.is_active = False
             manager.deleted = True
             
-            advisers = Advisers.objects.filter(
-                manager_id=manager.id,
-                deleted=False
-            )
-            advisers.update(manager_id=manager_new.id)
+            if manager_new is not None:
+                advisers = Advisers.objects.filter(
+                    manager_id=manager.id,
+                    deleted=False
+                )
+                advisers.update(manager_id=manager_new.id)
 
             manager_commissions = ManagersCommissions.objects.get(manager_id=manager.id)
             manager_commissions.deleted = True
