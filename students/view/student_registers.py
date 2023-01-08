@@ -1,3 +1,5 @@
+import datetime
+
 from django.db.models import Sum
 from django.forms import model_to_dict
 from django.http import JsonResponse
@@ -412,6 +414,7 @@ class StudentRegistersCreateView(PermissionMixin, CreateView):
                 value_new = SysParameters.get_value_formate_next()
                 form.instance.institution_id = self.request.user.institution_id
                 form.instance.code_international_register = value_new['format']
+                form.instance.date_expiry = form.instance.date_issue + datetime.timedelta(days=SysParameters.get_parameter_fer_value())
                 form.save()
 
                 institution_quotes_type_register = InstitutionQuotesTypeRegister.objects.get(
