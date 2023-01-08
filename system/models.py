@@ -59,7 +59,6 @@ class AcademicLevel(ModelBase):
 
         ModelBase.save(self)
 
-
 class SysParameters(ModelBase):
     code = models.CharField(max_length=50, verbose_name="Código", blank=True, null=True)
     name = models.CharField(max_length=200, verbose_name="Nombre")
