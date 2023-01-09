@@ -6,7 +6,8 @@ from django.views import View
 from django.views.generic.base import TemplateView
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, CreateView, UpdateView
-from institutions.forms import InstitutionForm
+from core.common.form.form_common import FormCommon
+from institutions.forms import InstitutionDiscountForm, InstitutionForm
 from institutions.models import Institutions
 from security.functions import addUserData
 from core.util_functions import ListViewFilter
@@ -141,6 +142,7 @@ class InstitutionRegisterStatus(PermissionMixin, ListViewFilter, ListView):
             get_params.pop('page')
         except:
             pass
+        context['discount_form'] = InstitutionDiscountForm()
         context['url_params'] = urlencode(get_params)
         context['status'] = RegistrationStatus.choices
         context['countries'] = SysCountries.objects.filter(deleted=False)
@@ -176,6 +178,28 @@ class InstitutionRegisterStatus(PermissionMixin, ListViewFilter, ListView):
             '-created_at',
             'name'
         )
+
+    def post(self, request, *args, **kwargs):
+        data = {'errors': []}
+
+        action = request.POST.get('action', '')
+
+        if action == 'change_discount':
+            institution_id = self.request.POST.get("institution_id")
+
+            institution = Institutions.objects.get(id=institution_id)
+
+            form = InstitutionDiscountForm(request.POST, instance=institution)
+
+            if form.is_valid():
+                form.save()
+                
+                return JsonResponse(data, status=200)
+            else:
+                data['message'] = 'Error de validacion de formulario.'
+                data['errors'] = [FormCommon.get_errors_dict(form)]
+
+        return JsonResponse(data, status=400)
 
 class InstitutionViewByPk(PermissionMixin, View):
 

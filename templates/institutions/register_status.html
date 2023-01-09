@@ -134,6 +134,20 @@
                        data-bs-toggle="tooltip" data-bs-placement="top" title="Ver datos">
                         <i class="fa fa-eye"></i>
                     </a>
+                    <a 
+                        href="#" 
+                        rel="action-change-discount" 
+                        class="rounded-5 btn btn-info btn-sm" 
+                        data-id="{{ i.id }}" 
+                        data-name="{{ i.name }}" 
+                        data-discount="{{ i.discount }}" 
+                        data-toggle="tooltip"
+                        data-bs-toggle="tooltip" 
+                        data-bs-placement="top" 
+                        title="Aplicar descuentos"
+                    >
+                       <i class="fas fa-percentage"></i>
+                    </a>
                 </div>
             </td>
         </tr>
@@ -249,6 +263,28 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="exampleModalChangeDiscount" tabindex="-1" aria-labelledby="exampleModalLabelChangeDiscount" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-fullscreen-xl-down">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        Institucion: 
+                        <span class="badge bg-primary" id="id-modalTitleChangeDiscount"></span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="" enctype="multipart/form-data" id="id-form">
+                        {% include "v2/common/forms/form_presentate_all_field.html" with form=discount_form %}
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" form="id-form">Guardar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block base-body-js %}
@@ -261,6 +297,40 @@
         const frmModalTbody = document.querySelector('#id-table-data-institution > tbody');
         const frmModalActions = document.querySelector('#id-form-aprobacion-modal');
         const instanceModal = new bootstrap.Modal(frmModal);
+        
+        const objD = {
+            CONSTANT: {},
+            attr:{
+                institution: {
+                    id: null
+                }
+            },
+            elem: {
+                $form: document.getElementById('id-form'),
+                $modalTitleChangeDiscount: document.getElementById('id-modalTitleChangeDiscount'),
+                $discountChangeDiscount: document.getElementById('id_discount'),
+            },
+            repeat: {},
+            loadFirst: {},
+            model: {},
+            fun: {
+                submitDiscountFacade: () => ConfirmCommon.exec({
+                    confirmCallback: () => objD.fun.submitDiscount(),
+                }),
+                submitDiscount: async () => {
+                    const formData = new FormData(objD.elem.$form)
+                    formData.append("institution_id", objD.attr.institution.id)
+                    formData.append("action", "change_discount")
+
+                    const {code, message, data, ...stateExtra} = await CrudCommon.fetch.submitForm({formData})
+
+                    if (ErrorResponse.KIND_STATIC === stateExtra.kind)
+                        return
+
+                    window.location.reload()
+                },
+            }
+        }
 
 
         btnGroupDrop1.addEventListener('click', async (event) => {
@@ -273,6 +343,8 @@
 
         tbody.addEventListener('click', async (event) => {
             let target = event.target.closest('a[rel="action-view"]');
+            let targetchangeDiscount = event.target.closest('a[rel="action-change-discount"]');
+            
             if (target) {
                 event.preventDefault();
                 const pk = target.dataset.id;
@@ -312,6 +384,17 @@
 
                 instanceModal.show();
             }
+            
+            if (targetchangeDiscount) {
+                event.preventDefault()
+                const id = targetchangeDiscount.dataset.id
+                objD.attr.institution.id = parseInt(id)
+                objD.elem.$modalTitleChangeDiscount.innerText = targetchangeDiscount.dataset.name
+                c(targetchangeDiscount.dataset.discount)
+                objD.elem.$discountChangeDiscount.value = targetchangeDiscount.dataset.discount.replace(",",'.')
+
+                $('#exampleModalChangeDiscount').modal('show')
+            }
         });
 
         form.addEventListener('change', async (event) => {
@@ -320,7 +403,7 @@
                 form.submit();
             }
         });
-
+        
         frmModalActions.addEventListener('click', async (event) => {
             event.preventDefault();
             const target = event.target.closest('button[rel="md-btn-accion"]');
@@ -349,5 +432,13 @@
                 window.location.reload();
             }
         });
+        
+        objD.elem.$form.addEventListener('submit', (e)=>{
+            e.preventDefault()
+
+            objD.fun.submitDiscountFacade()
+
+        })
     </script>
+
 {% endblock %}

@@ -57,3 +57,15 @@ class InstitutionForm(forms.ModelForm):
         labels = {
                 'adviser': 'Asesor (Opcional)',
         }
+
+
+class InstitutionDiscountForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        FormCommon.update_all_field(self.fields)
+        FormCommon.update_required_field(self.fields)
+
+    class Meta:
+        model = Institutions
+        fields = ('discount',)
