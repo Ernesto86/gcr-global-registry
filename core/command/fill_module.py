@@ -1,10 +1,38 @@
 from django.contrib.auth.models import Group, Permission
 
-from advisers.models import Managers, PaymentMethod, Advisers, AdvisersCommissions
+from advisers.models import PaymentMethod, AdvisersCommissions, PeriodCommissions
+from core.command.fill_country import load_countries
 from core.constants import CategoryModule, TypeModule
 from security.models import Module, ModuleGrupPermissions, ModuleGrupCategory
 from system.models import SysParameters
 from transactions.models import OrderInstitutionQuotas
+
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# /////////////////////////////////////// LOAD COUNTRY /////////////////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+load_countries()
+
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# //////////////////////////////////// COMMISSIONS /////////////////////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+PeriodCommissions.objects.create()
+
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# /////////////////////////////////////// LOAD DATA DEFAULT ////////////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+# TODO: los gerentes y asesores dependen de load country
+from core.command.fill_data_institution import *
+
+print(fill_data_institution_py)
+
+# TODO: los gerentes y asesores dependen de load country
+from core.command.fill_adviser_manager_default import *
+
+print(fill_adviser_manager_default)
 
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # /////////////////////////////////////// CATEGORIA PRINCIPAL //////////////////////////////////////////////////////////
@@ -108,6 +136,13 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
 )
 for p in Permission.objects.filter(codename__in=("view_institutions", "add_institutions", "change_institutions",)):
     module_group_permissions.permissions.add(p)
+module_group_permissions = ModuleGrupPermissions.objects.create(
+    main_category_id=registry_mdc.id,
+    group_id=instituciones.id,
+    module_id=module.id,
+)
+for p in Permission.objects.filter(codename__in=("view_institutions", "add_institutions", "change_institutions",)):
+    module_group_permissions.permissions.add(p)
 
 module = Module.objects.create(
     url='/advisers/dashboard-admin',
@@ -173,6 +208,8 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
     group_id=instituciones.id,
     module_id=module.id,
 )
+for p in Permission.objects.filter(codename__in=("add_studentregisters",)):
+    module_group_permissions.permissions.add(p)
 
 module = Module.objects.create(
     url='/institutions/register-status',
@@ -202,7 +239,7 @@ module = Module.objects.create(
 module_group_permissions = ModuleGrupPermissions.objects.create(
     main_category_id=registry_mdc.id,
     group_id=instituciones.id,
-    module_id=instituciones.id,
+    module_id=module.id,
 )
 for p in Permission.objects.filter(content_type__model=OrderInstitutionQuotas._meta.label.split('.')[1].lower()):
     module_group_permissions.permissions.add(p)
@@ -313,3 +350,44 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
 )
 for p in Permission.objects.filter(content_type__model=PaymentMethod._meta.label.split('.')[1].lower()):
     module_group_permissions.permissions.add(p)
+
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# //////////////////////////////////// PARAMETERS //////////////////////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+SysParameters.objects.create(
+    code="RIC",
+    name="CODIGO INTERNACIONAL DE CERTIFICADO",
+    value="2060",
+    status=True,
+)
+
+SysParameters.objects.create(
+    code="FER",
+    name="FECHA DE EXPIRACION DE REGISTRO",
+    value="760",
+    status=True,
+)
+
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# //////////////////////////////////// USER ////////////////////////////////////////////////////////////////////////////
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+user = User.objects.create_superuser(
+    username='admin',
+    first_name='Jefferson',
+    last_name='Berrones',
+    email='admin@gmail.com',
+    password="admin123**",
+    is_staff=True,
+    is_superuser=True,
+    is_active=True,
+)
+
+user.groups.add(accionistas)
+user.groups.add(asesores)
+user.groups.add(directivos)
+user.groups.add(gerentes)
+user.groups.add(instituciones)
+user.groups.add(solicitantes)

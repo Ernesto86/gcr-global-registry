@@ -103,7 +103,7 @@ class InstitutionconfigurationView(PermissionMixin, TemplateView):
         if adviser_code:
             adviser = Advisers.objects.filter(code=adviser_code, deleted=False).first()
         else:
-            adviser = Advisers.objects.filter(code='ASESOR-DEFAULT', deleted=False).first()
+            adviser = Advisers.objects.filter(code='ADVISER-DEFAULT', deleted=False).first()
 
         if adviser is None:
             messages.add_message(request, messages.ERROR, "No se encontro codigo de Asesor")
