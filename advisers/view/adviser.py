@@ -4,11 +4,13 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView
 from django.http import JsonResponse
 from rest_framework import status
+from django.contrib.auth.models import Group
 
 from advisers.forms import AdviserForm
 from advisers.models import Advisers, Managers, AdvisersCommissions
 from core.common.filter_orm.filter_orm_common import FilterOrmCommon
 from core.common.form.form_common import FormCommon
+from core.constants import GROUP_NAME_ADVISER
 from security.functions import addUserData
 from core.util_functions import ListViewFilter
 from security.mixins import *
@@ -88,6 +90,10 @@ class AdviserCreateView(PermissionMixin, CreateView):
                     password="admin123**",
                     is_active=False
                 )
+
+                adviser_group = Group.objects.get(name=GROUP_NAME_ADVISER)
+
+                user.groups.add(adviser_group)
 
                 form.instance.manager_id = manager.id
                 form.instance.user_id = user.pk

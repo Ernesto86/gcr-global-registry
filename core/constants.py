@@ -5,6 +5,14 @@ DEFAULT_GRUP_USER = 'Solicitantes'
 SYS_PARAMETER_CODE = 'RIC'
 SYS_PARAMETER_DATE_EXPIRY_OF_REGISTER_CODE = 'FER'
 
+GROUP_NAME_ACCIONISTA="Accionistas"
+GROUP_NAME_ADVISER="Asesores"
+GROUP_NAME_DIRECTIVO="Directivos"
+GROUP_NAME_MANAGER="Gerentes"
+GROUP_NAME_INSTITUTION="Instituciones"
+GROUP_NAME_SOLICITANTES="Solicitantes"
+
+
 class Gender(models.TextChoices):
     MALE = "Male", _("Masculino")
     FEMALE = "Female", _("Femenino")

@@ -2,7 +2,8 @@ from django.contrib.auth.models import Group, Permission
 
 from advisers.models import PaymentMethod, AdvisersCommissions, PeriodCommissions
 from core.command.fill_country import load_countries
-from core.constants import CategoryModule, TypeModule
+from core.constants import CategoryModule, TypeModule, GROUP_NAME_SOLICITANTES, GROUP_NAME_INSTITUTION, \
+    GROUP_NAME_MANAGER, GROUP_NAME_DIRECTIVO, GROUP_NAME_ADVISER, GROUP_NAME_ACCIONISTA
 from security.models import Module, ModuleGrupPermissions, ModuleGrupCategory
 from system.models import SysParameters
 from transactions.models import OrderInstitutionQuotas
@@ -52,22 +53,22 @@ maintenance_mdc = ModuleGrupCategory.objects.create(
 # /////////////////////////////////////// GRUPO ////////////////////////////////////////////////////////////////////////
 
 accionistas = Group.objects.create(
-    name="Accionistas"
+    name=GROUP_NAME_ACCIONISTA
 )
 asesores = Group.objects.create(
-    name="Asesores"
+    name=GROUP_NAME_ADVISER
 )
 directivos = Group.objects.create(
-    name="Directivos"
+    name=GROUP_NAME_DIRECTIVO
 )
 gerentes = Group.objects.create(
-    name="	Gerentes"
+    name=GROUP_NAME_MANAGER
 )
 instituciones = Group.objects.create(
-    name="Instituciones"
+    name=GROUP_NAME_INSTITUTION
 )
 solicitantes = Group.objects.create(
-    name="	Solicitantes"
+    name=GROUP_NAME_SOLICITANTES
 )
 
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,6 +79,8 @@ module_common = {
     "type_module": TypeModule.MENU,
     "visible": True
 }
+
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module = Module.objects.create(
     url='/advisers/advisers',
@@ -92,11 +95,15 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
 for p in Permission.objects.filter(content_type__model=Advisers._meta.label.split('.')[1].lower()):
     module_group_permissions.permissions.add(p)
 
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 module = Module.objects.create(
     url='/security/change-password',
     name='Cambiar contraseña',
     **module_common
 )
+
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module = Module.objects.create(
     url='/advisers/advisers-commissions',
@@ -111,6 +118,8 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
 for p in Permission.objects.filter(content_type__model=AdvisersCommissions._meta.label.split('.')[1].lower()):
     module_group_permissions.permissions.add(p)
 
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 module = Module.objects.create(
     url='/advisers/managers-commissions',
     name='Comisiones gerentes',
@@ -123,6 +132,15 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
 )
 for p in Permission.objects.filter(content_type__model=Managers._meta.label.split('.')[1].lower()):
     module_group_permissions.permissions.add(p)
+module_group_permissions = ModuleGrupPermissions.objects.create(
+    main_category_id=registry_mdc.id,
+    group_id=accionistas.id,
+    module_id=module.id,
+)
+for p in Permission.objects.filter(content_type__model=Managers._meta.label.split('.')[1].lower()):
+    module_group_permissions.permissions.add(p)
+
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module = Module.objects.create(
     url='/institutions/configuration',
@@ -144,6 +162,8 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
 for p in Permission.objects.filter(codename__in=("view_institutions", "add_institutions", "change_institutions",)):
     module_group_permissions.permissions.add(p)
 
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 module = Module.objects.create(
     url='/advisers/dashboard-admin',
     name='Dashboard admin',
@@ -160,6 +180,8 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
     module_id=module.id,
 )
 
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 module = Module.objects.create(
     url='/advisers/dashboard-advisor',
     name='Dashboard asesores',
@@ -171,6 +193,8 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
     module_id=module.id,
 )
 module_group_permissions.permissions.add()
+
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module = Module.objects.create(
     url='/advisers/dashboard-manager',
@@ -185,6 +209,8 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
 for p in Permission.objects.filter(codename__in=("dashboard_managers",)):
     module_group_permissions.permissions.add(p)
 
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 module = Module.objects.create(
     url='/advisers/managers',
     name='Gerentes',
@@ -197,6 +223,15 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
 )
 for p in Permission.objects.filter(content_type__model=Managers._meta.label.split('.')[1].lower()):
     module_group_permissions.permissions.add(p)
+module_group_permissions = ModuleGrupPermissions.objects.create(
+    main_category_id=registry_mdc.id,
+    group_id=accionistas.id,
+    module_id=module.id,
+)
+for p in Permission.objects.filter(content_type__model=Managers._meta.label.split('.')[1].lower()):
+    module_group_permissions.permissions.add(p)
+
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module = Module.objects.create(
     url='/students/students-registers',
@@ -210,6 +245,8 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
 )
 for p in Permission.objects.filter(codename__in=("add_studentregisters",)):
     module_group_permissions.permissions.add(p)
+
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module = Module.objects.create(
     url='/institutions/register-status',
@@ -230,6 +267,15 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
 )
 for p in Permission.objects.filter(codename__in=("view_institutions",)):
     module_group_permissions.permissions.add(p)
+module_group_permissions = ModuleGrupPermissions.objects.create(
+    main_category_id=registry_mdc.id,
+    group_id=accionistas.id,
+    module_id=module.id,
+)
+for p in Permission.objects.filter(codename__in=("view_institutions",)):
+    module_group_permissions.permissions.add(p)
+
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module = Module.objects.create(
     url='/transactions/shopping-cart',
@@ -244,6 +290,8 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
 for p in Permission.objects.filter(content_type__model=OrderInstitutionQuotas._meta.label.split('.')[1].lower()):
     module_group_permissions.permissions.add(p)
 
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 module = Module.objects.create(
     url='/security/organizador-registros',
     name='Organizador de registros',
@@ -257,6 +305,8 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
 for p in Permission.objects.filter(codename__in=('view_studentregisters',)):
     module_group_permissions.permissions.add(p)
 
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 module = Module.objects.create(
     url='/advisers/advisers-commissions-payment',
     name='Pagos de comisiones',
@@ -267,11 +317,13 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
     group_id=accionistas.id,
     module_id=module.id,
 )
-module_group_permissions = ModuleGrupPermissions.objects.create(
-    main_category_id=registry_mdc.id,
-    group_id=directivos.id,
-    module_id=module.id,
-)
+# module_group_permissions = ModuleGrupPermissions.objects.create(
+#     main_category_id=registry_mdc.id,
+#     group_id=directivos.id,
+#     module_id=module.id,
+# )
+
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module = Module.objects.create(
     url='/advisers/adviser-profile/update',
@@ -286,6 +338,8 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
 for p in Permission.objects.filter(codename__in=("change_advisers",)):
     module_group_permissions.permissions.add(p)
 
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 module = Module.objects.create(
     url='/advisers/manager-profile/update',
     name='Perfil gerente',
@@ -298,6 +352,8 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
 )
 for p in Permission.objects.filter(content_type__model=Managers._meta.label.split('.')[1].lower()):
     module_group_permissions.permissions.add(p)
+
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module = Module.objects.create(
     url='/institutions/institutions/view',
@@ -312,6 +368,8 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
 for p in Permission.objects.filter(codename__in=("view_institutions",)):
     module_group_permissions.permissions.add(p)
 
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 module = Module.objects.create(
     url='/system/sys-parameters',
     name='Parametros',
@@ -319,11 +377,13 @@ module = Module.objects.create(
 )
 module_group_permissions = ModuleGrupPermissions.objects.create(
     main_category_id=registry_mdc.id,
-    group_id=directivos.id,
+    group_id=accionistas.id,
     module_id=module.id,
 )
 for p in Permission.objects.filter(content_type__model=SysParameters._meta.label.split('.')[1].lower()):
     module_group_permissions.permissions.add(p)
+
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module = Module.objects.create(
     url='/advisers/period-commissions/update',
@@ -332,11 +392,13 @@ module = Module.objects.create(
 )
 module_group_permissions = ModuleGrupPermissions.objects.create(
     main_category_id=registry_mdc.id,
-    group_id=directivos.id,
+    group_id=accionistas.id,
     module_id=module.id,
 )
 for p in Permission.objects.filter(codename__in=("change_periodcommissions",)):
     module_group_permissions.permissions.add(p)
+
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module = Module.objects.create(
     url='/advisers/payment-method',

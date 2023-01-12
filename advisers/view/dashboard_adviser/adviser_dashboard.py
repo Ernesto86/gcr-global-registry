@@ -27,13 +27,12 @@ class AdviserDashboard:
         institution_dict = {}
         labels = []
 
-        query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
-        query_AND_1.children.append(('deleted', False))
-
         for year in self.get_range_last_year():
             labels.append(year)
 
             query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
+            query_AND_1.children.append(('deleted', False))
+            query_AND_1.children.append(('adviser_id', self.__adviser.id))
             query_AND_1.children.append(('date_issue__year', year))
 
             subquery = self.__get_subquery_order_institution_quotas(query_AND_1)
@@ -58,7 +57,8 @@ class AdviserDashboard:
 
             query_AND_1, _ = FilterOrmCommon.get_query_connector_tuple()
             query_AND_1.children.append(('date_issue__month', mes[0]))
-            query_AND_1.children.append(('date_issue__year', year))
+            query_AND_1.children.append(('date_issue__year',year))
+            query_AND_1.children.append(('adviser_id', self.__adviser.id))
 
             subquery = self.__get_subquery_order_institution_quotas(query_AND_1)
 
@@ -89,6 +89,7 @@ class AdviserDashboard:
             'type_registration'
         ).filter(
             deleted=False,
+            adviser_id=self.__adviser.id
         ).annotate(
             subtotal=subquery
         )
