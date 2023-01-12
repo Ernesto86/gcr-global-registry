@@ -4,6 +4,7 @@ from rest_framework_simplejwt import views as jwt_views
 from security.login import LogoutRedirectView, LoginAuthView
 from security.main import MainView
 from security.sign_up import SignUpView
+from security.view.directive.view import UserListView, UserCreateView, UserUpdateView, UserDeleteView
 from security.view.organizador_detalle import OrganizadorRegistroListView
 from security.view.organizador_registros import OrganizadorRegistrosView
 from security.view.query_general import QueryGeneralView, CertificateStudentRegisterView
@@ -31,4 +32,9 @@ urlpatterns = [
     path('organizador-registros', OrganizadorRegistrosView.as_view(), name='organizador-registros'),
     path('organizador-detalle/<int:typeregisterid>', OrganizadorRegistroListView.as_view(), name='organizador_detalle'),
     path('change-password', UserUpdatePasswordView.as_view(), name='user_change_password'),
+
+    path('users', UserListView.as_view(), name='user_list'),
+    path('users/create', UserCreateView.as_view(), name='user_create'),
+    path('users/update/<int:pk>', UserUpdateView.as_view(), name='user_update'),
+    path('users/delete/<int:pk>', UserDeleteView.as_view(), name='user_delete'),
 ]

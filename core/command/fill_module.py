@@ -106,6 +106,21 @@ module = Module.objects.create(
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module = Module.objects.create(
+    url='/security/users',
+    name='Directivos',
+    **module_common
+)
+module_group_permissions = ModuleGrupPermissions.objects.create(
+    main_category_id=registry_mdc.id,
+    group_id=accionistas.id,
+    module_id=module.id
+)
+for p in Permission.objects.filter(content_type__model=User._meta.label.split('.')[1].lower()):
+    module_group_permissions.permissions.add(p)
+
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+module = Module.objects.create(
     url='/advisers/advisers-commissions',
     name='Comisiones asesores',
     **module_common

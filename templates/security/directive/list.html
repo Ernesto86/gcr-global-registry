@@ -1,0 +1,116 @@
+{% extends 'v2/base/crud/list/list.html' %}
+
+{% block list-search %}
+    <div class="row">
+        <div class="col-md col-md-9">
+            {% include "v2/common/forms/search/input_search_simple.html" with placeholder_input_search='Buscar asesor por codigo, dni, nombre..' %}
+        </div>
+        <div class="col-md col-md-3">
+            {% include "v2/common/forms/search/btn_search.html" %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block list-table-head-colums %}
+    <th>Correo electrónico</th>
+    <th>Usuario</th>
+    <th>Nombres</th>
+    <th>Apellidos</th>
+    <th>Es activo?</th>
+    <th class="text-center">Opciones</th>
+{% endblock %}
+
+{% block list-table-body-rows %}
+    {% for object in object_list %}
+        <tr>
+            <td>{{ object.email }}</td>
+            <td>{{ object.username }}</td>
+            <td>{{ object.first_name }}</td>
+            <td>{{ object.last_name }}</td>
+            <td>
+                {% include "v2/common/components/badge/badge_presentate.html" with badge_type=0 badge_value_bool=object.is_active badge_text_bool=True %}
+            </td>
+            <td class="text-center">
+                <div class="btn-group" role="group">
+                    <a
+                            href="{% url 'user_update' object.pkid %}"
+                            class="btn btn-primary btn-sm"
+                            data-toggle="tooltip"
+                    >
+                        <i class="fa fa-edit"></i>
+                    </a>
+                    <a
+                            href="#"
+                            rel="rel-action-delete"
+                            class="btn btn-danger btn-sm"
+                            data-id="{{ object.pkid }}"
+                            data-toggle="tooltip"
+                    >
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock %}
+
+{% block base-body-js %}
+
+    <script>
+        const objElevate = {
+            action: '{{ action }}',
+            backUrl: '{{ back_url | safe }}',
+            deleteUrl: `{{ request.path }}/delete`
+
+        }
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function (e) {
+            const objD = {
+                CONSTANT: {},
+                elem: {
+                    $table: document.querySelector('#id-table > tbody')
+                },
+                repeat: {},
+                loadFirst: {},
+                model: {},
+                fun: {
+                    deleteRegisterFacade: (id, target) => ConfirmCommon.exec({
+                        title: ConfirmCommon.CONSTANT.titleDelete,
+                        confirmCallback: () => objD.fun.deleteRegister(id, target),
+                    }),
+                    deleteRegister: async (id, target) => {
+                        const {code, message, data, ...stateExtra} = await CrudCommon.fetch.delete({
+                            path: `${objElevate.deleteUrl}/${id}`
+                        })
+
+                        if (ErrorResponse.KIND_STATIC === stateExtra.kind)
+                            return
+
+                        location.reload()
+                    }
+                }
+            }
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
+
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+
+            objD.elem.$table.addEventListener('click', async (event) => {
+                const target = event.target.closest('a[rel="rel-action-delete"]');
+
+                if (target) {
+                    event.preventDefault();
+                    const id = target.dataset.id
+
+                    objD.fun.deleteRegisterFacade(id, target)
+                }
+            });
+
+        })
+
+    </script>
+{% endblock %}
