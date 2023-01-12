@@ -103,7 +103,7 @@
                                 <th>Tipo de registro</th>
                                 <th>Representante</th>
                                 <th>Subtotal</th>
-                                <th>Opciones</th>
+{#                                <th>Opciones</th>#}
                             </tr>
                             </thead>
                             <tbody id="id-institutionBody">
@@ -456,26 +456,26 @@
                             <td>${elem.type_registration}</td>
                             <td>${elem.representative ? elem.representative : "-"}</td>
                             <td>${elem.subtotal ? elem.subtotal : '0.00'}</td>
-                            <td class="text-center">
-                                <div class="bd-content">
-                                    <a
-                                            class="btn btn-icon btn-primary"
-                                            rel="action-view-paid"
-                                            data-institutionid="${elem.id}"
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Comisiones pagadas"
-                                    >
-                                        <span class="btn-inner"><i class="fas fa-eye black"></i></span>
-                                    </a>
-                                    <a
-                                            class="btn btn-icon btn-outline-secondary"
-                                            rel="action-view-x-cobrar"
-                                            data-institutionid="${elem.id}"
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Comisiones x cobrar"
-                                    >
-                                        <span class="btn-inner"><i class="fas fa-eye black"></i></span>
-                                    </a>
-                                </div>
-                            </td>
+                            {#<td class="text-center">#}
+                            {#    <div class="bd-content">#}
+                            {#        <a#}
+                            {#                class="btn btn-icon btn-primary"#}
+                            {#                rel="action-view-paid"#}
+                            {#                data-institutionid="${elem.id}"#}
+                            {#                data-bs-toggle="tooltip" data-bs-placement="top" title="Comisiones pagadas"#}
+                            {#        >#}
+                            {#            <span class="btn-inner"><i class="fas fa-eye black"></i></span>#}
+                            {#        </a>#}
+                            {#        <a#}
+                            {#                class="btn btn-icon btn-outline-secondary"#}
+                            {#                rel="action-view-x-cobrar"#}
+                            {#                data-institutionid="${elem.id}"#}
+                            {#                data-bs-toggle="tooltip" data-bs-placement="top" title="Comisiones x cobrar"#}
+                            {#        >#}
+                            {#            <span class="btn-inner"><i class="fas fa-eye black"></i></span>#}
+                            {#        </a>#}
+                            {#    </div>#}
+                            {#</td>#}
                         </tr>
                                 `
                 }).join('')
