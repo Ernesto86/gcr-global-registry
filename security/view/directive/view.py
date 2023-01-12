@@ -99,7 +99,7 @@ class UserCreateView(PermissionMixin, CreateView):
         context = super().get_context_data()
         addUserData(self.request, context)
         context['back_url'] = self.success_url
-        context['title_label'] = "Crear Administrativo"
+        context['title_label'] = "Crear directivo"
         context['action'] = 'add'
         return context
 
@@ -138,7 +138,7 @@ class UserUpdateView(PermissionMixin, UpdateView):
         context = super().get_context_data()
         addUserData(self.request, context)
         context['back_url'] = self.success_url
-        context['title_label'] = 'Actualizar asesor'
+        context['title_label'] = 'Actualizar directivo'
         context['action'] = 'edit'
         return context
 
