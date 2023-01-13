@@ -85,7 +85,11 @@ class QueryGeneralView(View):
                                 "name": ins_type_registries.name,
                                 "detail": ins_type_registries.detail,
                                 "color": ins_type_registries.color,
-                                "student_registers_list": [x for x in student_registers_level_list if x.certificate_is_active()],
+                                "student_registers_list": [
+                                    x
+                                    for x in student_registers_level_list
+                                    if x.certificate_is_active()
+                                ],
                             }
                         )
 

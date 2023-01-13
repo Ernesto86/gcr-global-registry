@@ -2,7 +2,7 @@ import datetime
 
 from django.db import models
 from core.models import ModelBase, ModelBaseAudited
-from core.constants import Gender
+from core.constants import Gender, TYPE_REGISTER_NO_EXPIRE_LIST
 
 
 class Certificates(ModelBase):
@@ -154,10 +154,21 @@ class StudentRegisters(ModelBaseAudited):
         return self.date_expiry.strftime("%Y-%m-%d")
 
     def certificate_is_active(self):
+
+        if self.is_type_register_no_expire():
+            return True
+
         if self.date_expiry is None:
             return False
 
         if self.date_expiry.date() >= datetime.datetime.now().date():
+            return True
+
+        return False
+
+    def is_type_register_no_expire(self):
+
+        if self.type_register.code in TYPE_REGISTER_NO_EXPIRE_LIST:
             return True
 
         return False

@@ -35,16 +35,18 @@
         <tr>
             {% with certificate_is_active=student_registers.certificate_is_active %}
                 <td class="text-center">
-                    <a
-                            class="btn btn-icon btn-outline-danger"
-                            rel="action-renovate-register"
-                            data-studentregisterid="{{ student_registers.id }}"
-                            data-certificateisactive="{{ certificate_is_active }}"
-                            data-studentname="{{ student_registers.student.names }}"
-                            data-bs-toggle="tooltip" data-bs-placement="top" title="Renovar registro"
-                    >
-                        <span class="btn-inner"><i class="fas fa-registered"></i></span>
-                    </a>
+                    {% if not student_registers.is_type_register_no_expire %}
+                        <a
+                                class="btn btn-icon btn-outline-danger"
+                                rel="action-renovate-register"
+                                data-studentregisterid="{{ student_registers.id }}"
+                                data-certificateisactive="{{ certificate_is_active }}"
+                                data-studentname="{{ student_registers.student.names }}"
+                                data-bs-toggle="tooltip" data-bs-placement="top" title="Renovar registro"
+                        >
+                            <span class="btn-inner"><i class="fas fa-registered"></i></span>
+                        </a>
+                    {% endif %}
                 </td>
                 <td>
                     {% include "v2/common/components/badge/badge_presentate.html" with badge_type=1 badge_value_bool=certificate_is_active badge_text_bool=True %}
@@ -55,7 +57,13 @@
                 <td>{{ student_registers.certificate }}</td>
                 <td>{{ student_registers.country }}</td>
                 <td>{{ student_registers.date_issue_display }}</td>
-                <td>{{ student_registers.date_expiry_display }}</td>
+                <td>
+                    {% if student_registers.is_type_register_no_expire %}
+                        -
+                    {% else %}
+                        {{ student_registers.date_expiry_display }}
+                    {% endif %}
+                </td>
                 <td>{{ student_registers.student.email }}</td>
             {% endwith %}
         </tr>
