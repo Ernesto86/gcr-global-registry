@@ -1,7 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-DEFAULT_GRUP_USER = 'Solicitantes'
+REGISTER_DEFAULT_GRUP_USER = 'Solicitantes'
+REGISTER_INSTITUTIONS_GRUP_USER = 'Instituciones'
 SYS_PARAMETER_CODE = 'RIC'
 SYS_PARAMETER_DATE_EXPIRY_OF_REGISTER_CODE = 'FER'
 

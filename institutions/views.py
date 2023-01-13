@@ -13,7 +13,7 @@ from security.functions import addUserData
 from core.util_functions import ListViewFilter
 from security.mixins import *
 from advisers.models import Advisers, Managers
-from core.constants import RegistrationStatus, SYSTEM_NAME
+from core.constants import RegistrationStatus, SYSTEM_NAME, REGISTER_DEFAULT_GRUP_USER, REGISTER_INSTITUTIONS_GRUP_USER
 from core.send_email import render_to_email_send
 from system.models import SysCountries, SysParameters
 import datetime
@@ -114,10 +114,30 @@ class InstitutionconfigurationView(PermissionMixin, TemplateView):
 
         if form.is_valid():
             form.save()
+            user = self.request.user
+
             if institution is None:
-                user = self.request.user
                 user.institution = form.instance
                 user.save()
+
+            try:
+                reseptores = [institution.email, user.email, adviser.manager.email]
+                parameter = SysParameters.objects.filter(status=True, code='EMAIL-ADMIN').first()
+                if parameter is not None:
+                    reseptores.append(parameter.value)
+
+                render_to_email_send(
+                    subject= f"Verificación de información ingresada, {SYSTEM_NAME}",
+                    body={
+                        'institution': institution,
+                        'system_name': SYSTEM_NAME
+                    },
+                    receiver=reseptores,
+                    template='email/template_institution_configuration.html'
+                )
+            except:
+                pass
+
             messages.add_message(request, messages.SUCCESS, "Registro actualizado correctamente..")
             return redirect(self.success_url)
         else:
@@ -217,6 +237,15 @@ class InstitutionViewByPk(PermissionMixin, View):
                 institution.date_approval = datetime.datetime.now()
                 institution.details = observation
                 institution.save()
+
+                try:
+                    institution_user = institution.user_set.get()
+                    institution_user.groups.clear()
+                    user_group = REGISTER_INSTITUTIONS_GRUP_USER if status_id == '2' else REGISTER_DEFAULT_GRUP_USER
+                    institution_user.set_grup_to_user_add(user_group)
+
+                except:
+                    pass
 
                 try:
                     if with_mail:

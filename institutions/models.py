@@ -35,7 +35,13 @@ class Institutions(ModelBaseAudited):
     adviser = models.ForeignKey("advisers.Advisers", verbose_name="Asesor", on_delete=models.CASCADE, blank=True, null=True)
     type_registration = models.ForeignKey(InsTypeRegistries, verbose_name="Tipo de registro", on_delete=models.CASCADE, blank=True, null=True)
     country = models.ForeignKey("system.SysCountries", verbose_name="Pais", on_delete=models.CASCADE, blank=True, null=True)
-    representative_academic_level = models.ForeignKey("system.AcademicLevel", verbose_name="Nivel Académico", on_delete=models.PROTECT, blank=True, null=True)
+    certificate = models.ForeignKey(
+        'students.Certificates',
+        on_delete=models.CASCADE,
+        verbose_name='Nivel Académico de Certificado',
+        blank=True, null=True
+    )
+    #representative_academic_level = models.ForeignKey("system.AcademicLevel", verbose_name="Nivel Académico", on_delete=models.PROTECT, blank=True, null=True)
     code = models.CharField(max_length=3, verbose_name="Código", blank=True, null=True)
     name = models.CharField(max_length=100, verbose_name="Nombre")
     alias = models.CharField(max_length=20, verbose_name="Alias", blank=True, null=True)

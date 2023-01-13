@@ -45,7 +45,7 @@ class SignUpView(CreateView):
             form.save()
             try:
                 user = form.instance
-                user.set_grup_to_user()
+                user.set_grup_to_user_add()
             except:
                 pass
 

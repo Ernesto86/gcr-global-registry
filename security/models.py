@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, Group
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from core.constants import DEFAULT_GRUP_USER, CategoryModule, TypeModule
+from core.constants import REGISTER_DEFAULT_GRUP_USER, CategoryModule, TypeModule
 from core.models import ModelBase
 from .managers import CustomUserManager
 from crum import get_current_request
@@ -85,12 +85,15 @@ class User(AbstractBaseUser, PermissionsMixin):
             pass
         return response
 
-    def set_grup_to_user(self):
-        grup = Group.objects.filter(name=DEFAULT_GRUP_USER).first()
+    def set_grup_to_user_add(self, group_user = REGISTER_DEFAULT_GRUP_USER):
+        grup = Group.objects.filter(name=group_user).first()
         if grup is not None:
             grup.user_set.add(self)
 
-
+    def set_grup_to_user_remove(self, group_user = REGISTER_DEFAULT_GRUP_USER):
+        grup = Group.objects.filter(name=group_user).first()
+        if grup is not None:
+            grup.user_set.remove(self)
 class Module(ModelBase):
     code = models.CharField(max_length=50, verbose_name="Código", blank=True, null=True)
     url = models.CharField(max_length=100, verbose_name="Enlace")
