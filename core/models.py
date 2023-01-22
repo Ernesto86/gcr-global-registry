@@ -1,5 +1,10 @@
 from crum import get_current_user
 from django.db import models
+
+from api.settings import MEDIA_URL
+from core.common.form.ImageCommon import ImageCommon
+
+
 # from django.utils.translation import ugettext_lazy as _
 
 class ModelBase(models.Model):
@@ -102,3 +107,23 @@ class CommissionPorcentage(ModelBaseAudited):
         verbose_name = 'Comiison porcentaje'
         verbose_name_plural = 'Comiisones porcentaje'
         ordering = ['created_at',]
+
+
+class SystemSettings(models.Model):
+    signature = models.ImageField(
+        upload_to='systemsettings/logo/%Y/%m/%d',
+        max_length=1024,
+        null=True,
+        verbose_name="Firma"
+    )
+
+    def get_signature_image(self):
+        return ImageCommon.get_image(self.signature)
+
+    def get_logo_url(self):
+        return self.logo.url
+
+    class Meta:
+        verbose_name = 'Configuracion del sistema'
+        verbose_name_plural = 'Configuraciones del sistema'
+

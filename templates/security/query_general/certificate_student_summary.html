@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{{ title }}</title>
+
+    <style type="text/css">
+
+        .text-justified {
+            text-align: justify;
+        }
+
+        .text-black-m {
+            color: black;
+        }
+
+        .fw-bold {
+            font-weight: bold;
+        }
+
+        .mt-1 {
+            margin-top: 10px;
+        }
+
+        .mt-2 {
+            margin-top: 20px;
+        }
+
+        .mt-3 {
+            margin-top: 30px;
+        }
+
+        .mt-4 {
+            margin-top: 40px;
+        }
+
+        .mt-5 {
+            margin-top: 50px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+<img
+{#        src="http://192.168.88.231:8001{{ signature_url }}"#}
+        src="{{ path_base }}{{ logo }}"
+{#        src="{{ base_url }}static/img/fondo/marco.jpg"#}
+        style="
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 25%;
+            margin-left: auto;
+            margin-right: auto
+        "
+>
+
+<div class="header-title">
+    <h3 style="text-align: center">CERTIFICADO DE REGISTRO DE TÍTULO</h3>
+    <p style="font-size: 15px">{{ date_now }}</p>
+</div>
+
+<div class="mt-5">
+    <p style="text-align: justify; font-size: 14px">
+
+        <b>Global Register</b>, corrobora que <span class="fw-bold">{{ student.names }}</span>, con documento de
+
+        identificación número <span class="fw-bold">{{ student.dni }}</span>, registra en
+
+        en el sistema los siguientes certificados.
+
+    </p>
+</div>
+
+<div class="mt-3">
+    <table style="width: 100%">
+        <tbody>
+        <tr>
+            <td style="width: 50%"><span style="float: left; font-size: 14px">Identificacion:</span></td>
+            <td style="float: left; font-size: 14px">{{ student.dni }}</td>
+        </tr>
+        <tr>
+            <td style="width: 50%"><span style="float: left; font-size: 14px">Nombres:</span></td>
+            <td style="float: left; font-size: 14px">{{ student.names }}</td>
+        </tr>
+        <tr>
+            <td style="width: 50%"><span style="float: left; font-size: 14px">Gènero:</span></td>
+            <td style="float: left; font-size: 14px">{{ student.gender }}</td>
+        </tr>
+        <tr>
+            <td style="width: 50%"><span style="float: left; font-size: 14px">Nacionalidad:</span></td>
+            <td style="float: left; font-size: 14px">{{ country.name }}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-5">
+    <h3 style="text-align: center">CERTIFICADOS</h3>
+</div>
+
+<div class="mt-4">
+    {% for type_registries in type_registries_list %}
+
+        <h4 style="text-transform: uppercase; font-size: 13px; border: 1px solid black; padding: 10px">
+            Registros de {{ type_registries.name }} - {{ type_registries.detail }}
+        </h4>
+
+        <table>
+            <thead>
+            <tr>
+                <th style="font-size: 13px; text-align: center">RIC</th>
+                <th style="font-size: 13px; text-align: center">Titulo o certificado</th>
+                <th style="font-size: 13px; text-align: center">Institucion</th>
+                <th style="font-size: 13px; text-align: center">Pais</th>
+                <th style="font-size: 13px; text-align: center">F. emisión</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for student_registers  in type_registries.student_registers_list %}
+                <tr>
+                    <td style="font-size: 12px; width: 50px">{{ student_registers.get_code_international_register }}</td>
+                    <td style="font-size: 12px; width: 60px">{{ student_registers.certificate }}</td>
+                    <td style="font-size: 12px; width: 270px">{{ student_registers.institution }}</td>
+                    <td style="font-size: 12px; width: 30px">{{ student_registers.country }}</td>
+                    <td style="font-size: 12px; width: 50px">{{ student_registers.date_issue_display }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    {% endfor %}
+</div>
+
+</body>
+</html>

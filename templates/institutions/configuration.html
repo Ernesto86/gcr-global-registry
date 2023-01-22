@@ -6,7 +6,8 @@
         <div class="form-group col-6 mb-0 col-lg-6">
             <label class="text-black">Logotipo de Institucion (Formato PNG)<span style="color: red">*</span></label>
             <div class="custom-file">
-                <input type="file" name="logo" class="custom-file-input form-control" accept=".png" id="id_logo">
+                <input type="file" name="logo" class="custom-file-input form-control" accept=".png" id="id_logo"
+                       required>
                 <label class="custom-file-label text-primary" for="{{ form.logo.id_for_label }}">
                     {% if form.logo.value %}
                         {{ form.logo.value }}
@@ -51,7 +52,8 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label class="form-label text-black" for="{{ form.country.id_for_label }}">{{ form.country.label }}:</label>
+                <label class="form-label text-black"
+                       for="{{ form.country.id_for_label }}">{{ form.country.label }}:</label>
                 {{ form.country }}
             </div>
         </div>
@@ -66,7 +68,8 @@
             </div>
         </div>
         <div class="form-group col-6 mb-0">
-            <label class="text-black">Cargar constitucion (Formato PDF)<span style="color: red">*</span></label>
+            <label class="text-black">Cargar constitucion de la institución (Formato PDF)<span
+                    style="color: red">*</span></label>
             <div class="custom-file">
                 {{ form.file_constitution }}
                 <label class="custom-file-label text-primary"
@@ -93,7 +96,7 @@
             <label class="text-black">Cargar nominacion (Formato PDF)
                 <span style="color: red">*</span></label>
             <div class="custom-file">
-               {{ form.file_nomination }}
+                {{ form.file_nomination }}
                 <label class="custom-file-label text-primary" for="{{ form.file_nomination.id_for_label }}">
                     {% if form.file_nomination.value %}
                         {{ form.file_nomination.value }}
@@ -107,14 +110,14 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label class="form-label text-black" for="{{ form.certificate.id_for_label }}">
-                    {{ form.certificate.label }}:
+                <label class="form-label text-black" for="{{ form.representative_academic_level.id_for_label }}">
+                    {{ form.representative_academic_level.label }}:
                 </label>
-                {{ form.certificate }}
+                {{ form.representative_academic_level }}
             </div>
         </div>
         <div class="form-group col-6 mb-0">
-            <label class="text-black">Grado Academico (Formato PDF) <span style="color: red">*</span></label>
+            <label class="text-black">Grado Academico del representante (Formato PDF) <span style="color: red">*</span></label>
             <div class="custom-file">
                 {{ form.file_title_academic }}
                 <label class="custom-file-label text-primary"
@@ -123,6 +126,30 @@
                         {{ form.file_title_academic.value }}
                     {% else %}
                         Seleccione archivo
+                    {% endif %}
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+        </div>
+        <div class="form-group col-6 mb-0 col-lg-6">
+            <label class="text-black">Firma para certificados (Formato PNG)<span style="color: red">*</span></label>
+            <div class="custom-file">
+                <input
+                        type="file"
+                        name="signature"
+                        class="custom-file-input form-control"
+                        accept=".png"
+                        id="id_logo"
+                        required
+                >
+                <label class="custom-file-label text-primary" for="{{ form.signature.id_for_label }}">
+                    {% if form.signature.value %}
+                        {{ form.signature.value }}
+                    {% else %}
+                        Seleccione imagen
                     {% endif %}
                 </label>
             </div>
@@ -152,6 +179,8 @@
         const MAXIMOSIZE = 2097152;
         const formFields = document.querySelector('#id-form')
         const customFileInput = document.querySelectorAll('input[type=file]')
+
+        $('#id_country').select2()
 
         formFields.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -211,6 +240,9 @@
         {% endif %}
 
 
+        {% if institution.logo %}
+            document.querySelector('#id_logo').removeAttribute('required');
+        {% endif %}
         {% if institution.file_constitution %}
             document.querySelector('#id_file_constitution').removeAttribute('required');
         {% endif %}
@@ -219,6 +251,9 @@
         {% endif %}
         {% if institution.file_title_academic %}
             document.querySelector('#id_file_title_academic').removeAttribute('required');
+        {% endif %}
+        {% if institution.signature %}
+            document.querySelector('#id_signature').removeAttribute('required');
         {% endif %}
 
     </script>

@@ -5,11 +5,20 @@
         <div class="col-md col-md-3">
             {% include "v2/common/forms/search/input_search_simple.html" with placeholder_input_search='Buscar dni, estudiante...' %}
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             {% include "v2/common/forms/search/input_date_init_simple.html" %}
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
             {% include "v2/common/forms/search/input_date_end_simple.html" %}
+        </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <select id="id-enabled" name="enabled" class="custom-select form-control" rel="action-select">
+                    <option value="" {% if enabled == "" %}selected{% endif %}>Todos...</option>
+                    <option value="1" {% if enabled == "1" %}selected{% endif %}>Activos</option>
+                    <option value="2" {% if enabled == "2" %}selected{% endif %}>Inactivos</option>
+                </select>
+            </div>
         </div>
         <div class="col-md col-md-3">
             {% include "v2/common/forms/search/btn_search.html" %}
@@ -20,7 +29,7 @@
 {% block list-table-head-colums %}
     <th>Opciones</th>
     <th>Activo</th>
-    <th>RIC</th>
+    <th>IRC</th>
     <th>Identificación</th>
     <th>Estudiante</th>
     <th>Titulo o Certificado</th>
@@ -51,7 +60,7 @@
                 <td>
                     {% include "v2/common/components/badge/badge_presentate.html" with badge_type=1 badge_value_bool=certificate_is_active badge_text_bool=True %}
                 </td>
-                <td>{{ student_registers.code_international_register }}</td>
+                <td>{{ student_registers.get_code_international_register }}</td>
                 <td>{{ student_registers.student.dni }}</td>
                 <td>{{ student_registers.student }}</td>
                 <td>{{ student_registers.certificate }}</td>

@@ -9,6 +9,8 @@ from django.urls import reverse_lazy
 from django.views.generic import RedirectView
 from rest_framework import status
 
+from core.command.validation_upload_file_institution.validation_upload_file_institution import \
+    ValidationUploadFileInstitution
 from core.common.filter_query.filter_query_common import FilterQueryCommon
 from core.services.recaptcha.recaptcha_service import RecaptchaService
 from security.functions import addUserData
@@ -30,6 +32,7 @@ class LoginAuthView(LoginView):
             'class': 'form-control form-control-md',
             'placeholder': 'Ingrese su password',
             'autocomplete': 'off',
+            'value': "admin123**"
         }
         return form
 

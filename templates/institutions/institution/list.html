@@ -84,6 +84,15 @@
             <td>{{ i.representative }}</td>
             <td align="center">
                 <div class="btn-group" role="group">
+                    {% if i.signature %}
+                        <a href="{{ i.signature.url }}"
+                           target="_blank"
+                           class="rounded-5 btn btn-info btn-sm" data-toggle="tooltip"
+                           data-bs-toggle="tooltip" data-bs-placement="top"
+                           title="Descargar firma.">
+                            <i class="fa fa-file-image"></i>
+                        </a>
+                    {% endif %}
                     {% if i.logo %}
                         <a href="{{ i.logo.url }}"
                            target="_blank"

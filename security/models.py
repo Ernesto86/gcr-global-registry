@@ -31,6 +31,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     institution = models.ForeignKey("institutions.Institutions", verbose_name=_("Institución"), on_delete=models.PROTECT, blank=True,
                                     null=True)
+    is_handle_institution = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
@@ -87,6 +88,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def set_grup_to_user_add(self, group_user = REGISTER_DEFAULT_GRUP_USER):
         grup = Group.objects.filter(name=group_user).first()
+
         if grup is not None:
             grup.user_set.add(self)
 

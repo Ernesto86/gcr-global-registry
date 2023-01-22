@@ -88,7 +88,7 @@ class AdviserCreateView(PermissionMixin, CreateView):
                     last_name=form.instance.last_name,
                     email=form.instance.email,
                     password="admin123**",
-                    is_active=False
+                    is_active=True
                 )
 
                 adviser_group = Group.objects.get(name=GROUP_NAME_ADVISER)

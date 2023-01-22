@@ -6,6 +6,9 @@ from django.views import View
 from django.views.generic.base import TemplateView
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, CreateView, UpdateView
+
+from core.command.validation_upload_file_institution.validation_upload_file_institution import \
+    ValidationUploadFileInstitution
 from core.common.form.form_common import FormCommon
 from institutions.forms import InstitutionDiscountForm, InstitutionForm
 from institutions.models import Institutions
@@ -13,7 +16,8 @@ from security.functions import addUserData
 from core.util_functions import ListViewFilter
 from security.mixins import *
 from advisers.models import Advisers, Managers
-from core.constants import RegistrationStatus, SYSTEM_NAME, REGISTER_DEFAULT_GRUP_USER, REGISTER_INSTITUTIONS_GRUP_USER
+from core.constants import RegistrationStatus, SYSTEM_NAME, REGISTER_DEFAULT_GRUP_USER, REGISTER_INSTITUTIONS_GRUP_USER, \
+    CODE_ADVISER_DEFAULT
 from core.send_email import render_to_email_send
 from system.models import SysCountries, SysParameters
 import datetime
@@ -103,7 +107,7 @@ class InstitutionconfigurationView(PermissionMixin, TemplateView):
         if adviser_code:
             adviser = Advisers.objects.filter(code=adviser_code, deleted=False).first()
         else:
-            adviser = Advisers.objects.filter(code='ADVISER-DEFAULT', deleted=False).first()
+            adviser = Advisers.objects.filter(code=CODE_ADVISER_DEFAULT, deleted=False).first()
 
         if adviser is None:
             messages.add_message(request, messages.ERROR, "No se encontro codigo de Asesor")
@@ -113,6 +117,10 @@ class InstitutionconfigurationView(PermissionMixin, TemplateView):
         form.data['adviser'] = adviser.id
 
         if form.is_valid():
+
+            if Institutions.has_complete_files(form.instance):
+                form.instance.last_data_upload_complete_files = datetime.datetime.now().date()
+
             form.save()
             user = self.request.user
 
@@ -141,6 +149,7 @@ class InstitutionconfigurationView(PermissionMixin, TemplateView):
             messages.add_message(request, messages.SUCCESS, "Registro actualizado correctamente..")
             return redirect(self.success_url)
         else:
+            print(form.errors)
             return render(request, self.template_name, {'form': form })
 
 
@@ -170,6 +179,9 @@ class InstitutionRegisterStatus(PermissionMixin, ListViewFilter, ListView):
             context['country_id'] = int(context['country_id']) if context['country_id'] else ''
         except:
             pass
+
+        ValidationUploadFileInstitution().run()
+
         return context
 
     def get_queryset(self, **kwargs):
@@ -189,7 +201,11 @@ class InstitutionRegisterStatus(PermissionMixin, ListViewFilter, ListView):
                 messages.add_message(request, messages.ERROR, "No tiene permisos para ingresar al modulo.")
                 return redirect('/')
 
-        return Institutions.objects.filter(
+        return Institutions.objects.select_related(
+            'type_registration',
+            'adviser',
+            'adviser__manager'
+        ).filter(
             Q(deleted=False),
             Q(code__icontains=search)|
             Q(name__icontains=search),
@@ -213,7 +229,7 @@ class InstitutionRegisterStatus(PermissionMixin, ListViewFilter, ListView):
 
             if form.is_valid():
                 form.save()
-                
+
                 return JsonResponse(data, status=200)
             else:
                 data['message'] = 'Error de validacion de formulario.'
@@ -302,7 +318,8 @@ class InstitutionViewByPk(PermissionMixin, View):
                     "registration_status": institution.get_registration_status_display().upper(),
                     "status_bg": institution.get_bg_status(),
                     "representative": institution.representative,
-                    "representative_academic_level": institution.representative_academic_level.name if institution.representative_academic_level else '',
+                    # "representative_academic_level": institution.representative_academic_level.name if institution.representative_academic_level else '',
+                    "representative_academic_level": "-",
                     "email": institution.email,
                     "observation": institution.detail if institution.detail else '',
                 }

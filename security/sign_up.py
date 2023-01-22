@@ -20,8 +20,6 @@ class SignUpView(CreateView):
     success_url = reverse_lazy('login')
     template_name = 'security/sign_up.html'
 
-    # template_name = 'security/sign_up_original.html'
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Registrarse'
@@ -42,6 +40,7 @@ class SignUpView(CreateView):
 
 
         if form.is_valid():
+            form.instance.is_handle_institution = True
             form.save()
             try:
                 user = form.instance

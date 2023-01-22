@@ -1,3 +1,5 @@
+import datetime
+
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -7,8 +9,8 @@ from weasyprint import HTML
 
 from api import settings
 from core.common.filter_query.filter_query_common import FilterQueryCommon
+from core.models import SystemSettings
 from core.services.recaptcha.recaptcha_service import RecaptchaService
-from institutions.models import InsTypeRegistries
 from security.functions import addUserData
 from students.models import StudentRegisters, Students
 from system.models import SysCountries
@@ -59,39 +61,7 @@ class QueryGeneralView(View):
 
             if student:
                 context['student'] = student
-
-                student_registers_list = StudentRegisters.objects.select_related(
-                    "institution",
-                    "type_register",
-                    "certificate",
-                    "country"
-                ).filter(
-                    student_id=student.id
-                ).order_by(
-                    "-date_issue"
-                )
-
-                context[f'type_registries_list'] = []
-
-                for ins_type_registries in InsTypeRegistries.objects.all():
-
-                    student_registers_level_list = student_registers_list.filter(
-                        type_register_id=ins_type_registries.id
-                    )
-
-                    if student_registers_level_list.count():
-                        context['type_registries_list'].append(
-                            {
-                                "name": ins_type_registries.name,
-                                "detail": ins_type_registries.detail,
-                                "color": ins_type_registries.color,
-                                "student_registers_list": [
-                                    x
-                                    for x in student_registers_level_list
-                                    if x.certificate_is_active()
-                                ],
-                            }
-                        )
+                context['type_registries_list'] = student.get_student_register_dict_list()
 
         return render(request, self.template_name, context)
 
@@ -103,7 +73,6 @@ class CertificateStudentRegisterView(View):
         try:
             student_registers = StudentRegisters.objects.select_related(
                 "student",
-                "certificate",
                 "institution",
                 "country",
             ).get(
@@ -114,29 +83,34 @@ class CertificateStudentRegisterView(View):
             institution = student_registers.institution
             country = student_registers.country
             type_register = student_registers.type_register
+            system_setting = SystemSettings.objects.all().last()
 
             context = {
+                'base_url': request.build_absolute_uri("/"),
                 'title': "Certificados",
-                'number': student_registers.code_international_register,
+                'number': student_registers.get_code_international_register,
                 'student': {
                     "names": student.names,
                     'dni': student.dni,
                 },
                 'institution': {
-                    'name': institution.name
+                    'name': institution.name,
+                    'signature_url': institution.get_signature_image()
                 },
                 'type_register': {
                     "name": type_register.name
                 },
                 'certificate': {
-                    "name": certificate.name
+                    "name": certificate
                 },
                 'country': {
                     "name": country.name
                 },
                 'date_issue': student_registers.date_issue_display(),
                 'name_specific': "título" if student_registers.is_degree() else "curso",
-                'logo': "{}{}".format(settings.MEDIA_URL, 'img/logo/logo-acta100.png'),
+                'logo': '/static/img/logo/logo-global-2.jpeg',
+                "path_base": "http://192.168.88.231:8001",
+                'signature_url': system_setting.get_signature_image(),
             }
 
             # html_string = render_to_string(self.template_name, context)
@@ -164,7 +138,51 @@ class CertificateStudentRegisterView(View):
 
             return HttpResponse(pdf, content_type='application/pdf')
         except Exception as ex:
-            print(ex)
-            print(settings.BASE_DIR)
+            pass
+        return redirect('home')
+
+
+class CertificateStudentSummaryView(View):
+    template_name = 'security/query_general/certificate_student_summary.html'
+
+    def get(self, request):
+        try:
+            student = Students.objects.get(id=request.GET.get('student_id'))
+            country = student.country
+            date_now = datetime.datetime.now().date()
+            system_setting = SystemSettings.objects.all().last()
+
+            context = {
+                'title': "Resumen de certificados",
+                'student': {
+                    "names": student.names,
+                    'dni': student.dni,
+                    'gender': student.get_gender_display(),
+                },
+                'country': {
+                    "name": country.name
+                },
+                'logo': '/static/img/logo/logo-global-2.jpeg',
+                'type_registries_list': student.get_student_register_dict_list(),
+                "date_now": date_now,
+                'signature_url': system_setting.get_signature_image(),
+                # 'base_url': request.build_absolute_uri("/"),
+                "base_url" : ".",
+                "path_base" : "http://192.168.88.231:8001",
+            }
+
+            template = get_template(self.template_name)
+            html_template = template.render(context).encode(encoding="UTF-8")
+
+            html = HTML(
+                string=html_template,
+                base_url=request.build_absolute_uri(),
+            )
+            pdf = html.write_pdf(
+                stylesheets=[]
+            )
+
+            return HttpResponse(pdf, content_type='application/pdf')
+        except Exception as ex:
             pass
         return redirect('home')

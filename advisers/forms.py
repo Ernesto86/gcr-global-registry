@@ -1,6 +1,5 @@
 from django import forms
 
-from advisers.choices import TL_YEAR, TL_MONTH
 from advisers.models import AdvisersCommissions, PeriodCommissions, Advisers, PaymentAdviserCommissions, \
     ManagersCommissions, \
     Managers, PaymentMethod

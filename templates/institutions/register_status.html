@@ -18,10 +18,12 @@
             </div>
             <div class="col-md-3 col-lg-3">
                 <div class="input-group">
-                    <select id="id-select-country" name="country_id" class="custom-select form-control" rel="action-select">
+                    <select id="id-select-country" name="country_id" class="custom-select form-control"
+                            rel="action-select">
                         <option value="">Seleccione pais</option>
                         {% for c in countries %}
-                            <option value="{{ c.id }}" {% if c.id == country_id %}selected{% endif %}>{{ c.name }}</option>
+                            <option value="{{ c.id }}"
+                                    {% if c.id == country_id %}selected{% endif %}>{{ c.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -58,14 +60,17 @@
 
 {% block list-table-head-colums %}
     <th>Codigo</th>
+    <th>semaforo</th>
     <th>Nombre</th>
     <th>Asesor</th>
     <th>Pais</th>
     <th>Tipo Registro</th>
     <th>Representante</th>
     <th>Documentos</th>
-    <th>Creado</th>
     <th>Estado</th>
+    <th>Creado</th>
+    <th>Email</th>
+    <th>Gerente responsable</th>
     <th class="text-center">Opciones</th>
 {% endblock %}
 
@@ -74,6 +79,21 @@
     {% for i in institutions %}
         <tr>
             <td class="text-center">{{ i.code }}</td>
+            <td>
+                {% with color_traffic_lights=i.get_color_traffic_lights %}
+                    {% if color_traffic_lights %}
+                        <a
+                                class="rounded-5 btn btn-{{ color_traffic_lights.color }} btn-sm"
+                                data-toggle="tooltip"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                title="{{ color_traffic_lights.message }}"
+                        >
+                            <i class="far fa-circle"></i>
+                        </a>
+                    {% endif %}
+                {% endwith %}
+            </td>
             <td>{{ i.name }}</td>
             <td>{{ i.adviser.names }}</td>
             <td>{{ i.country.name }}</td>
@@ -81,6 +101,18 @@
             <td>{{ i.representative }}</td>
             <td align="center">
                 <div class="btn-group" role="group">
+                    {% if i.signature %}
+                        <a href="{{ i.signature.url }}"
+                           target="_blank"
+                           class="rounded-5 btn btn-info btn-sm"
+                           data-toggle="tooltip"
+                           data-bs-toggle="tooltip"
+                           data-bs-placement="top"
+                           title="Descargar firma."
+                        >
+                            <i class="fa fa-file-image"></i>
+                        </a>
+                    {% endif %}
                     {% if i.logo %}
                         <a href="{{ i.logo.url }}"
                            target="_blank"
@@ -128,25 +160,28 @@
             <td class="text-center">
                 {{ i.created_at }}
             </td>
+            <td>{{ i.email }}</td>
+            <td>{{ i.adviser.manager }}</td>
             <td class="text-center">
                 <div class="btn-group" role="group">
-                    <a href="#" rel="action-view" class="rounded-5 btn btn-info btn-sm" data-id="{{ i.id }}" data-toggle="tooltip"
+                    <a href="#" rel="action-view" class="rounded-5 btn btn-info btn-sm" data-id="{{ i.id }}"
+                       data-toggle="tooltip"
                        data-bs-toggle="tooltip" data-bs-placement="top" title="Ver datos">
                         <i class="fa fa-eye"></i>
                     </a>
-                    <a 
-                        href="#" 
-                        rel="action-change-discount" 
-                        class="rounded-5 btn btn-info btn-sm" 
-                        data-id="{{ i.id }}" 
-                        data-name="{{ i.name }}" 
-                        data-discount="{{ i.discount }}" 
-                        data-toggle="tooltip"
-                        data-bs-toggle="tooltip" 
-                        data-bs-placement="top" 
-                        title="Aplicar descuentos"
+                    <a
+                            href="#"
+                            rel="action-change-discount"
+                            class="rounded-5 btn btn-info btn-sm"
+                            data-id="{{ i.id }}"
+                            data-name="{{ i.name }}"
+                            data-discount="{{ i.discount }}"
+                            data-toggle="tooltip"
+                            data-bs-toggle="tooltip"
+                            data-bs-placement="top"
+                            title="Aplicar descuentos"
                     >
-                       <i class="fas fa-percentage"></i>
+                        <i class="fas fa-percentage"></i>
                     </a>
                 </div>
             </td>
@@ -174,18 +209,24 @@
                 <div class="modal-body">
                     <nav class="tab-bottom-bordered mb-3">
                         <div class="mb-0 nav nav-tabs" id="nav-tab1" role="tablist">
-                            <button class="nav-link active" id="nav-home-11-tab" data-bs-toggle="tab" data-bs-target="#nav-home-11"
-                                    type="button" role="tab" aria-controls="nav-home-11" aria-selected="true">Datos personales del
+                            <button class="nav-link active" id="nav-home-11-tab" data-bs-toggle="tab"
+                                    data-bs-target="#nav-home-11"
+                                    type="button" role="tab" aria-controls="nav-home-11" aria-selected="true">Datos
+                                personales del
                                 estudiante
                             </button>
-                            <button class="nav-link" id="nav-profile-11-tab" data-bs-toggle="tab" data-bs-target="#nav-profile-11"
-                                    type="button" role="tab" aria-controls="nav-profile-11" aria-selected="false">Aprobación de estado
+                            <button class="nav-link" id="nav-profile-11-tab" data-bs-toggle="tab"
+                                    data-bs-target="#nav-profile-11"
+                                    type="button" role="tab" aria-controls="nav-profile-11" aria-selected="false">
+                                Aprobación de estado
                             </button>
                         </div>
                     </nav>
                     <div class="tab-content iq-tab-fade-up" id="nav-tabContent">
-                        <div class="tab-pane fade show active" id="nav-home-11" role="tabpanel" aria-labelledby="nav-home-11-tab">
-                            <table id="id-table-data-institution" class="table table-bordered table-sm sm-0" cellpadding="0"
+                        <div class="tab-pane fade show active" id="nav-home-11" role="tabpanel"
+                             aria-labelledby="nav-home-11-tab">
+                            <table id="id-table-data-institution" class="table table-bordered table-sm sm-0"
+                                   cellpadding="0"
                                    cellspacing="0">
                                 <thead class="table-primary">
                                 <tr>
@@ -196,7 +237,8 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="tab-pane fade" id="nav-profile-11" role="tabpanel" aria-labelledby="nav-profile-11-tab">
+                        <div class="tab-pane fade" id="nav-profile-11" role="tabpanel"
+                             aria-labelledby="nav-profile-11-tab">
                             <form id="id-form-aprobacion-modal">
                                 <input type="hidden" name="institution_id" value="">
                                 <div class="form-row">
@@ -228,7 +270,8 @@
                                             </button>
                                         </div>
                                         <div class="col-md-2">
-                                            <button rel="md-btn-accion" class="btn btn-danger form-control mb-1" value="3"
+                                            <button rel="md-btn-accion" class="btn btn-danger form-control mb-1"
+                                                    value="3"
                                                     data-toggle="tooltip"
                                                     data-bs-toggle="tooltip" data-bs-placement="top"
                                                     data-original-title="Denegar documentación">
@@ -236,7 +279,8 @@
                                             </button>
                                         </div>
                                         <div class="col-md-2">
-                                            <button rel="md-btn-accion" class="btn btn-warning form-control mb-1" value="1"
+                                            <button rel="md-btn-accion" class="btn btn-warning form-control mb-1"
+                                                    value="1"
                                                     data-toggle="tooltip"
                                                     data-bs-toggle="tooltip" data-bs-placement="top"
                                                     data-original-title="Dejar en pendiente documentación">
@@ -244,7 +288,8 @@
                                             </button>
                                         </div>
                                         <div class="col-md-2">
-                                            <button rel="md-btn-accion" class="btn btn-secondary form-control mb-1" value="1"
+                                            <button rel="md-btn-accion" class="btn btn-secondary form-control mb-1"
+                                                    value="1"
                                                     data-toggle="tooltip"
                                                     data-bs-toggle="tooltip" data-bs-placement="top"
                                                     data-original-title="Dejar en pendiente documentación">
@@ -263,12 +308,13 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="exampleModalChangeDiscount" tabindex="-1" aria-labelledby="exampleModalLabelChangeDiscount" aria-hidden="true">
+    <div class="modal fade" id="exampleModalChangeDiscount" tabindex="-1"
+         aria-labelledby="exampleModalLabelChangeDiscount" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-fullscreen-xl-down">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
-                        Institucion: 
+                        Institucion:
                         <span class="badge bg-primary" id="id-modalTitleChangeDiscount"></span>
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -297,10 +343,10 @@
         const frmModalTbody = document.querySelector('#id-table-data-institution > tbody');
         const frmModalActions = document.querySelector('#id-form-aprobacion-modal');
         const instanceModal = new bootstrap.Modal(frmModal);
-        
+
         const objD = {
             CONSTANT: {},
-            attr:{
+            attr: {
                 institution: {
                     id: null
                 }
@@ -344,7 +390,7 @@
         tbody.addEventListener('click', async (event) => {
             let target = event.target.closest('a[rel="action-view"]');
             let targetchangeDiscount = event.target.closest('a[rel="action-change-discount"]');
-            
+
             if (target) {
                 event.preventDefault();
                 const pk = target.dataset.id;
@@ -353,7 +399,12 @@
 
                 AppSystem.fun.showLoadingUi()
 
-                const {code, message, data, ...stateExtra} = await ClientHttpFetch.exec(`{{ request.path }}/${pk}`, {}, {
+                const {
+                    code,
+                    message,
+                    data,
+                    ...stateExtra
+                } = await ClientHttpFetch.exec(`{{ request.path }}/${pk}`, {}, {
                     method: ClientHttpFetch.CONSTANT.verboseMethod.GET.description
                 })
 
@@ -384,14 +435,14 @@
 
                 instanceModal.show();
             }
-            
+
             if (targetchangeDiscount) {
                 event.preventDefault()
                 const id = targetchangeDiscount.dataset.id
                 objD.attr.institution.id = parseInt(id)
                 objD.elem.$modalTitleChangeDiscount.innerText = targetchangeDiscount.dataset.name
                 c(targetchangeDiscount.dataset.discount)
-                objD.elem.$discountChangeDiscount.value = targetchangeDiscount.dataset.discount.replace(",",'.')
+                objD.elem.$discountChangeDiscount.value = targetchangeDiscount.dataset.discount.replace(",", '.')
 
                 $('#exampleModalChangeDiscount').modal('show')
             }
@@ -403,7 +454,7 @@
                 form.submit();
             }
         });
-        
+
         frmModalActions.addEventListener('click', async (event) => {
             event.preventDefault();
             const target = event.target.closest('button[rel="md-btn-accion"]');
@@ -424,7 +475,10 @@
                 AppSystem.fun.hiddenLoadingUi()
 
                 if (ErrorResponse.KIND_STATIC === stateExtra.kind) {
-                    AppSystem.handleComp.alert.alert.show({title: message, typeFeature: AppSystem.CONSTANT.typeFeature.danger})
+                    AppSystem.handleComp.alert.alert.show({
+                        title: message,
+                        typeFeature: AppSystem.CONSTANT.typeFeature.danger
+                    })
                     return
                 }
 
@@ -432,8 +486,8 @@
                 window.location.reload();
             }
         });
-        
-        objD.elem.$form.addEventListener('submit', (e)=>{
+
+        objD.elem.$form.addEventListener('submit', (e) => {
             e.preventDefault()
 
             objD.fun.submitDiscountFacade()

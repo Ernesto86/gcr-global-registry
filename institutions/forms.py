@@ -13,7 +13,15 @@ class InstitutionForm(forms.ModelForm):
 
     class Meta:
         model = Institutions
-        exclude = ('detail','created_at', 'created_by', 'deleted', 'deleted_at', 'deleted_by', 'deleted_reason')
+        exclude = (
+            'detail',
+            'created_at',
+            'created_by',
+            'deleted',
+            'deleted_at',
+            'deleted_by',
+            'deleted_reason',
+        )
         widgets = {
             'adviser': forms.TextInput(attrs={
                 'class': 'form-control',

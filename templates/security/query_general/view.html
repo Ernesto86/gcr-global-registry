@@ -116,6 +116,19 @@
                                             <td class="pr-3 text-black" style="width: 50%">Nacionalidad:</td>
                                             <td class="text-left">{{ student.country }}</td>
                                         </tr>
+                                        <tr>
+                                            <td class="pr-3 text-black" style="width: 50%">Resumen de certificados:</td>
+                                            <td class="text-left">
+                                                <a
+                                                        href="{% url "certificate_student_summary" %}?student_id={{ student.id }}"
+                                                        target="_blank"
+                                                        class="btn btn-primary btn-sm rounded-5"
+                                                        data-toggle="tooltip"
+                                                >
+                                                    <i class="fa fa-file-pdf"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -144,22 +157,23 @@
                                                       d="M13,2.05C18.05,2.55 22,6.82 22,12C22,13.45 21.68,14.83 21.12,16.07L18.5,14.54C18.82,13.75 19,12.9 19,12C19,8.47 16.39,5.57 13,5.08V2.05M12,19C14.21,19 16.17,18 17.45,16.38L20.05,17.91C18.23,20.39 15.3,22 12,22C6.47,22 2,17.5 2,12C2,6.81 5.94,2.55 11,2.05V5.08C7.61,5.57 5,8.47 5,12A7,7 0 0,0 12,19M12,6A6,6 0 0,1 18,12C18,14.97 15.84,17.44 13,17.92V14.83C14.17,14.42 15,13.31 15,12A3,3 0 0,0 12,9L11.45,9.05L9.91,6.38C10.56,6.13 11.26,6 12,6M6,12C6,10.14 6.85,8.5 8.18,7.38L9.72,10.05C9.27,10.57 9,11.26 9,12C9,13.31 9.83,14.42 11,14.83V17.92C8.16,17.44 6,14.97 6,12Z">
                                                 </path>
                                             </svg>
-                                            <h5 class="font-weight-bold ms-4">Registros
-                                                de {{ type_registries.name|title }}
-                                                - {{ type_registries.detail|title }}</h5>
+                                            <h5 class="font-weight-bold ms-4">
+                                                Registros de {{ type_registries.name|title }} -
+                                                {{ type_registries.detail|title }}
+                                            </h5>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table class="table table-striped table-hover table-bordered table-sm mb-0 text-black">
+                                        <table class="table table-hover table-left-bordered table-sm mb-0 text-black rounded-5">
                                             <thead class="table-primary">
                                             <tr>
                                                 <th scope="col">Titulo o Certificado</th>
                                                 <th scope="col">Institucion</th>
                                                 <th scope="col">Pais</th>
                                                 <th scope="col">Fecha de Emisión</th>
-                                                <th scope="col">RIC</th>
+                                                <th scope="col">IRC</th>
                                                 <th scope="col">Certificado</th>
                                             </tr>
                                             </thead>
@@ -170,10 +184,10 @@
                                                     <td>{{ student_registers.institution }}</td>
                                                     <td>{{ student_registers.country }}</td>
                                                     <td>{{ student_registers.date_issue_display }}</td>
-                                                    <td>{{ student_registers.code_international_register }}</td>
+                                                    <td>{{ student_registers.get_code_international_register }}</td>
                                                     <td>
                                                         <a
-                                                                    href="{% url "certificate_student_register" %}?student_register_id={{ student_registers.id }}"
+                                                                href="{% url "certificate_student_register" %}?student_register_id={{ student_registers.id }}"
                                                                 target="_blank"
                                                                 class="btn btn-primary btn-sm rounded-5"
                                                                 data-toggle="tooltip"

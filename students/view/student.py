@@ -31,11 +31,11 @@ class StudentsCreateView(CreateView):
         if action == 'add':
             form = self.get_form()
 
-            if Students.objects.filter(dni=self.request.POST.get('dni')).exists():
-                status = 400
-                data['message'] = 'Validacion'
-                data['errors'] = ['Ya existe un dni registrado.']
-                return JsonResponse(data, status=status)
+            # if Students.objects.filter(dni=self.request.POST.get('dni')).exists():
+            #     status = 400
+            #     data['message'] = 'Validacion'
+            #     data['errors'] = ['Ya existe un dni registrado.']
+            #     return JsonResponse(data, status=status)
 
             if form.is_valid():
                 status = 200
@@ -44,6 +44,7 @@ class StudentsCreateView(CreateView):
 
             data['message'] = 'Error de validacion de formulario.'
             data['errors'] = [FormCommon.get_errors_dict(form)]
+            print("que me esta botando", )
             return JsonResponse(data, status=status)
 
         data['code'] = 'failed'

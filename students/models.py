@@ -2,7 +2,7 @@ import datetime
 
 from django.db import models
 from core.models import ModelBase, ModelBaseAudited
-from core.constants import Gender, TYPE_REGISTER_NO_EXPIRE_LIST
+from core.constants import Gender, TYPE_REGISTER_NO_EXPIRE_LIST, SYS_PARAMETER_CODE
 
 
 class Certificates(ModelBase):
@@ -53,7 +53,7 @@ class Students(ModelBaseAudited):
         default=Gender.OTHER,
         max_length=10,
     )
-    dni = models.CharField(max_length=20, blank=True, null=True, unique=True)
+    dni = models.CharField(max_length=20, blank=True, null=True)
     address = models.CharField(max_length=191, verbose_name="Dirección", blank=True, null=True)
     code_postal = models.CharField(max_length=10, verbose_name="Cod. postal", blank=True, null=True)
     telephone = models.CharField(max_length=20, verbose_name="Teléfono", blank=True, null=True)
@@ -68,6 +68,46 @@ class Students(ModelBaseAudited):
         verbose_name = 'Estudiante'
         verbose_name_plural = 'Estudiantes'
         ordering = ('names',)
+        constraints = [
+            models.UniqueConstraint(fields=['dni', 'country_id'], name='unique dni of student')
+        ]
+        # unique_together = (('dni', 'country',),)
+
+    def get_student_register_dict_list(self):
+        from institutions.models import InsTypeRegistries
+
+        student_registers_end_list = []
+
+        student_registers_list = StudentRegisters.objects.select_related(
+            "institution",
+            "type_register",
+            "country"
+        ).filter(
+            student_id=self.id
+        ).order_by(
+            "-date_issue"
+        )
+
+        for ins_type_registries in InsTypeRegistries.objects.all():
+
+            student_registers_level_list = student_registers_list.filter(
+                type_register_id=ins_type_registries.id
+            )
+
+            if student_registers_level_list.count():
+                student_registers_end_list.append(
+                    {
+                        "name": ins_type_registries.name,
+                        "detail": ins_type_registries.detail,
+                        "color": ins_type_registries.color,
+                        "student_registers_list": [
+                            x
+                            for x in student_registers_level_list
+                            if x.certificate_is_active()
+                        ],
+                    }
+                )
+        return student_registers_end_list
 
     def save(self, *args, **kwargs):
 
@@ -113,26 +153,22 @@ class StudentRegisters(ModelBaseAudited):
         verbose_name="Tipo de registro",
         blank=True, null=True
     )
-    certificate = models.ForeignKey(
-        Certificates,
-        on_delete=models.CASCADE,
-        verbose_name='Certificado',
-        blank=True, null=True
-    )
+    # certificate = models.ForeignKey(
+    #     Certificates,
+    #     on_delete=models.CASCADE,
+    #     verbose_name='Certificado',
+    #     blank=True, null=True
+    # )
+    certificate = models.TextField(null=True, blank=True, default="", verbose_name="Certificado")
     country = models.ForeignKey(
         "system.SysCountries",
         on_delete=models.CASCADE,
-        verbose_name='Pais',
+        verbose_name='Pais del certificado',
         blank=True, null=True
     )
     number = models.CharField(max_length=10, blank=True, null=True, editable=False)
-    date_issue = models.DateTimeField(blank=True, null=True)
+    date_issue = models.DateTimeField(blank=True, null=True, verbose_name='Fecha de aprobacion',)
     date_expiry = models.DateTimeField(blank=True, null=True)
-    code_international_register = models.CharField(
-        max_length=100,
-        verbose_name='Código Internacional de Registro',
-        blank=True, null=True
-    )
 
     class Meta:
         verbose_name = "Estudiante Registro"
@@ -141,6 +177,9 @@ class StudentRegisters(ModelBaseAudited):
 
     def __str__(self):
         return '{}'.format(self.detail)
+
+    def get_code_international_register(self):
+        return f"{SYS_PARAMETER_CODE}-{self.id}"
 
     def is_degree(self):
         return self.type_register.code == '001'
@@ -191,4 +230,3 @@ class StudentRegistersRenovationHistory(ModelBase):
         verbose_name = "Estudiante Registro historial"
         verbose_name_plural = "Estudiante Registros historial"
         ordering = ('created_at',)
-

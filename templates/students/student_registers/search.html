@@ -7,9 +7,9 @@
     <hr>
     <p class="font-weight-bold">
         <b>
-            Bienvenidos al portal de ingreso internacional de registros de títulos y certificaciones de su institución. Aquí podrá ingresar los
-            certificados que ha emitido a sus estudiantes. Le recordamos que la información ingresada se encuentra bajo estricta responsabilidad de
-            su institución.
+            Bienvenidos al portal de ingreso internacional de registros de títulos y certificaciones de su institución.
+            Aquí podrá ingresar los certificados que ha emitido a sus estudiantes. Le recordamos que la información
+            ingresada se encuentra bajo estricta responsabilidad de su institución.
         </b>
     </p>
     <div class="row mt-5">
@@ -34,7 +34,12 @@
                             </div>
                         </div>
                         <div class="form-group row mt-3">
-                            <label class="control-label col-sm-3 align-self-center mb-0 text-black" for="{{ form.identification.id_for_label }}">{{ form.identification.label }}:</label>
+                            <label
+                                    class="control-label col-sm-3 align-self-center mb-0 text-black"
+                                    for="{{ form.identification.id_for_label }}"
+                            >
+                                {{ form.identification.label }}:
+                            </label>
                             <div class="col-sm-6">
                                 {{ form.identification }}
                             </div>
@@ -44,8 +49,23 @@
                                 </button>
                             </div>
                         </div>
+                        <div class="form-group row mt-3">
+                            <label
+                                    class="control-label col-sm-3 align-self-center mb-0 text-black"
+                                    for="{{ form.country.id_for_label }}"
+                            >
+                                {{ form.country.label }}:
+                            </label>
+                            <div class="col-sm-6">
+                                {{ form.country }}
+                            </div>
+                        </div>
                         <div class="form-group row">
-                            <label class="control-label col-sm-3 align-self-center mb-0 text-black" for="{{ form.name.id_for_label }}">{{ form.name.label }}:</label>
+                            <label
+                                    class="control-label col-sm-3 align-self-center mb-0 text-black"
+                                    for="{{ form.name.id_for_label }}">
+                                {{ form.name.label }}:
+                            </label>
                             <div class="col-sm-9">
                                 {{ form.name }}
                             </div>
@@ -111,11 +131,11 @@
                 }
             }
 
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
-
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  CARGA DEFECTO  ////////////////////////////////////////////
+            $('#id_country').select2()
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////  EVENTOS  //////////////////////////////////////////////////
             objD.elem.$form.addEventListener('submit', (e) => {
                 e.preventDefault()
 

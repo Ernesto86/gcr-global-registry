@@ -11,8 +11,8 @@ from security.functions import addUserData
 from security.manager.organizador_registros_manager import OrganizadorRegistrosManager
 from security.mixins import PermissionMixin
 from students.forms import StudentRegistersSearchForm, StudentRegistersForm
-from students.models import Students, StudentRegisters, Certificates
-from system.models import SysParameters, SysCountries
+from students.models import Students, StudentRegisters
+from system.models import SysParameters
 from transactions.manager.shopping_cart_manager import ShoppingCartManager
 from transactions.models import InstitutionQuotesTypeRegister
 
@@ -74,9 +74,10 @@ class StudentRegistersSearchView(PermissionMixin, TemplateView):
 
         if action == 'search':
             identification = request.POST.get('identification')
+            country = request.POST.get('country')
 
             try:
-                student = Students.objects.get(dni=identification)
+                student = Students.objects.get(dni=identification, country=country)
                 data['student'] = model_to_dict(student)
                 return JsonResponse(data, status=200)
 
@@ -112,7 +113,7 @@ class StudentRegistersCreateView(PermissionMixin, CreateView):
 
         self.initial = {
             'student': student_id,
-            'code_international_register': SysParameters.get_value_formate_next()['format']
+            'certificate': self.request.session.get('name_certificate_register_copy', ''),
         }
         return self.initial
 
@@ -123,6 +124,7 @@ class StudentRegistersCreateView(PermissionMixin, CreateView):
             'student_id')
         institution = self.request.user.institution
 
+        form.fields['student'].empty_label = None
         form.fields['student'].queryset = Students.objects.filter(id=student_id, deleted=False)
         form.fields['type_register'].queryset = institution.get_type_register_enabled_list()
         return form
@@ -149,9 +151,7 @@ class StudentRegistersCreateView(PermissionMixin, CreateView):
                     data['message'] = 'No tiene cupos disponibles, obtenga mas en el modulo OBTEN MAS REGISTRO.'
                     return JsonResponse(data, status=status)
 
-                value_new = SysParameters.get_value_formate_next()
                 form.instance.institution_id = self.request.user.institution_id
-                form.instance.code_international_register = value_new['format']
                 form.instance.date_expiry = form.instance.date_issue + datetime.timedelta(days=SysParameters.get_parameter_fer_value())
                 form.save()
 
@@ -163,22 +163,12 @@ class StudentRegistersCreateView(PermissionMixin, CreateView):
                 institution_quotes_type_register.quotas_balance -= 1
                 institution_quotes_type_register.save()
 
-                SysParameters.update_value()
+                request.session['name_certificate_register_copy'] = form.cleaned_data['certificate']
 
                 return JsonResponse(data, status=status)
 
             data['message'] = 'Error de validacion de formulario.'
             data['errors'] = [FormCommon.get_errors_dict(form)]
-            return JsonResponse(data, status=status)
-
-        elif action == 'certificates':
-            status = 200
-            type_registry_id = request.POST.get('type_registry_id')
-
-            data['certificates'] = [
-                model_to_dict(x) for x in Certificates.objects.filter(type_registry_id=type_registry_id)
-            ]
-
             return JsonResponse(data, status=status)
 
         return JsonResponse(data, status=status)

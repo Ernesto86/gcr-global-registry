@@ -3,9 +3,12 @@
 {% block base-body-js %}
 
     <script>
+
         const objElevate = {
-            successUrl: '{{ success_url }}'
+            action: '{{ action }}',
+            back_url: '{{ back_url | safe }}'
         }
+
     </script>
 
     <script>
@@ -13,8 +16,7 @@
             const objD = {
                 CONSTANT: {},
                 elem: {
-                    $form: document.getElementById('id-form'),
-                    $dni: document.getElementById('id_dni'),
+                    $form: document.getElementById('id-form')
                 },
                 repeat: {},
                 loadFirst: {},
@@ -25,19 +27,14 @@
                     }),
                     submit: async () => {
                         const formData = new FormData(objD.elem.$form)
-                        formData.append("action", 'add')
-                        formData.append("student_id", objElevate.studentId)
-
-                        if (objD.elem.$dni.length < 1)
-                            return AppSystem.handleComp.alert.alert.show({title: "Dni debe tener mas de un digito.", typeFeature: AppSystem.CONSTANT.typeFeature.danger})
-
+                        formData.append("action", objElevate.action)
 
                         const {code, message, data, ...stateExtra} = await CrudCommon.fetch.submitForm({formData})
 
                         if (ErrorResponse.KIND_STATIC === stateExtra.kind)
                             return
 
-                        window.location = objElevate.successUrl
+                        window.location = objElevate.back_url
                     }
                 }
             }
@@ -45,16 +42,18 @@
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////  CARGA DEFECTO  ///////////////////////////////////////////////////
 
-            $('#id_country').select2()
+            $('#id_country_origin, #id_country_residence').select2()
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             ///////////////////////////////////////////////  EVENTOS  /////////////////////////////////////////////////////////
+
+
             objD.elem.$form.addEventListener('submit', (e) => {
                 e.preventDefault()
 
                 objD.fun.submitFacade()
             })
+        })
 
-        });
     </script>
 {% endblock %}

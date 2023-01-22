@@ -36,7 +36,6 @@ class StudentRegistersAdmin(admin.ModelAdmin):
         'type_register',
         'country',
         'date_issue',
-        'code_international_register',
         'created_at',
         'status'
     )

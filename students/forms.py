@@ -4,6 +4,7 @@ from django import forms
 
 from core.common.form.form_common import FormCommon
 from students.models import StudentRegisters, Students
+from system.models import SysCountries
 
 
 class StudentRegistersForm(forms.ModelForm):
@@ -20,7 +21,6 @@ class StudentRegistersForm(forms.ModelForm):
             'certificate',
             'country',
             'date_issue',
-            'code_international_register'
         )
         widgets = {
             'student': forms.Select(attrs={
@@ -32,7 +32,7 @@ class StudentRegistersForm(forms.ModelForm):
                     'required': True
                 },
             ),
-            'certificate': forms.Select(
+            'certificate': forms.TextInput(
                 attrs={
                     'required': True
                 }
@@ -50,10 +50,6 @@ class StudentRegistersForm(forms.ModelForm):
                     'value': datetime.datetime.now().date()
                 }
             ),
-            'code_international_register': forms.TextInput(attrs={
-                'readonly': True,
-                'class': FormCommon.CLS_BACKGROUND_READONLY
-            }),
         }
 
 
@@ -64,6 +60,12 @@ class StudentRegistersSearchForm(forms.Form):
         FormCommon.update_all_field(self.fields)
 
     identification = forms.CharField(widget=forms.TextInput(), label='Identificación del estudiante', required=True)
+    country = forms.ModelChoiceField(
+        widget=forms.Select(attrs={'class': "select2", 'placeholder': 'Todos...'}),
+        queryset=SysCountries.objects.all(),
+        label='Pais',
+        required=True,
+    )
     name = forms.CharField(
         widget=forms.TextInput(
             attrs={

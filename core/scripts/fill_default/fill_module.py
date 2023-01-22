@@ -1,18 +1,22 @@
 from django.contrib.auth.models import Group, Permission
 
-from advisers.models import PaymentMethod, AdvisersCommissions, PeriodCommissions
-from core.command.fill_country import load_countries
+from advisers.models import PaymentMethod, AdvisersCommissions, PeriodCommissions, Managers, Advisers
+
 from core.constants import CategoryModule, TypeModule, GROUP_NAME_SOLICITANTES, GROUP_NAME_INSTITUTION, \
-    GROUP_NAME_MANAGER, GROUP_NAME_DIRECTIVO, GROUP_NAME_ADVISER, GROUP_NAME_ACCIONISTA
-from security.models import Module, ModuleGrupPermissions, ModuleGrupCategory
-from system.models import SysParameters
+    GROUP_NAME_MANAGER, GROUP_NAME_DIRECTIVO, GROUP_NAME_ADVISER, GROUP_NAME_ACCIONISTA, SYS_PARAMETER_CODE, \
+    SYS_PARAMETER_DATE_EXPIRY_OF_REGISTER_CODE, SYS_PARAMETER_DATE_LIMIT_OF_APPROVE, CODE_MANAGER_DEFAULT, \
+    CODE_ADVISER_DEFAULT
+from core.models import SystemSettings
+from core.scripts.fill_default.fill_country import FillCountry
+from security.models import Module, ModuleGrupPermissions, ModuleGrupCategory, User
+from system.models import SysParameters, AcademicLevel, SysCountries
 from transactions.models import OrderInstitutionQuotas
 
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # /////////////////////////////////////// LOAD COUNTRY /////////////////////////////////////////////////////////////////
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-load_countries()
+FillCountry().run()
 
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # //////////////////////////////////// COMMISSIONS /////////////////////////////////////////////////////////////////////
@@ -24,16 +28,17 @@ PeriodCommissions.objects.create()
 # /////////////////////////////////////// LOAD DATA DEFAULT ////////////////////////////////////////////////////////////
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+SystemSettings.objects.create()
 
 # TODO: los gerentes y asesores dependen de load country
-from core.command.fill_data_institution import *
+from core.scripts.fill_default.fill_data_institution import *
 
 print(fill_data_institution_py)
 
 # TODO: los gerentes y asesores dependen de load country
-from core.command.fill_adviser_manager_default import *
-
-print(fill_adviser_manager_default)
+# from core.scripts.fill_default.fill_adviser_manager_default import *
+#
+# print(fill_adviser_manager_default)
 
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # /////////////////////////////////////// CATEGORIA PRINCIPAL //////////////////////////////////////////////////////////
@@ -121,6 +126,28 @@ for p in Permission.objects.filter(content_type__model=User._meta.label.split('.
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module = Module.objects.create(
+    url='/security/academic-levels',
+    name='Niveles academicos',
+    **module_common
+)
+module_group_permissions = ModuleGrupPermissions.objects.create(
+    main_category_id=registry_mdc.id,
+    group_id=gerentes.id,
+    module_id=module.id
+)
+for p in Permission.objects.filter(content_type__model=AcademicLevel._meta.label.split('.')[1].lower()):
+    module_group_permissions.permissions.add(p)
+module_group_permissions = ModuleGrupPermissions.objects.create(
+    main_category_id=registry_mdc.id,
+    group_id=asesores.id,
+    module_id=module.id
+)
+for p in Permission.objects.filter(content_type__model=AcademicLevel._meta.label.split('.')[1].lower()):
+    module_group_permissions.permissions.add(p)
+
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+module = Module.objects.create(
     url='/advisers/advisers-commissions',
     name='Comisiones asesores',
     **module_common
@@ -165,13 +192,6 @@ module = Module.objects.create(
 module_group_permissions = ModuleGrupPermissions.objects.create(
     main_category_id=registry_mdc.id,
     group_id=solicitantes.id,
-    module_id=module.id,
-)
-for p in Permission.objects.filter(codename__in=("view_institutions", "add_institutions", "change_institutions",)):
-    module_group_permissions.permissions.add(p)
-module_group_permissions = ModuleGrupPermissions.objects.create(
-    main_category_id=registry_mdc.id,
-    group_id=instituciones.id,
     module_id=module.id,
 )
 for p in Permission.objects.filter(codename__in=("view_institutions", "add_institutions", "change_institutions",)):
@@ -309,7 +329,7 @@ for p in Permission.objects.filter(content_type__model=OrderInstitutionQuotas._m
 
 module = Module.objects.create(
     url='/security/organizador-registros',
-    name='Organizador de registros',
+    name='Organ. de registros',
     **module_common
 )
 module_group_permissions = ModuleGrupPermissions.objects.create(
@@ -434,16 +454,23 @@ for p in Permission.objects.filter(content_type__model=PaymentMethod._meta.label
 
 
 SysParameters.objects.create(
-    code="RIC",
+    code=SYS_PARAMETER_CODE,
     name="CODIGO INTERNACIONAL DE CERTIFICADO",
     value="2060",
     status=True,
 )
 
 SysParameters.objects.create(
-    code="FER",
+    code=SYS_PARAMETER_DATE_EXPIRY_OF_REGISTER_CODE,
     name="FECHA DE EXPIRACION DE REGISTRO",
     value="760",
+    status=True,
+)
+
+SysParameters.objects.create(
+    code=SYS_PARAMETER_DATE_LIMIT_OF_APPROVE,
+    name="FCHA LIMITE PARA FECHA DE PROVACION",
+    value="20",
     status=True,
 )
 
@@ -468,3 +495,68 @@ user.groups.add(directivos)
 user.groups.add(gerentes)
 user.groups.add(instituciones)
 user.groups.add(solicitantes)
+
+ecuador_country = SysCountries.objects.get(code="EC")
+
+password_default = "admin123**"
+
+user_manager = User.objects.create_user(
+    username="managerdefault@gmail.com",
+    first_name="Gerente Defecto",
+    last_name="Gerente Defecto",
+    email="managerdefault@gmail.com",
+    password=password_default,
+    is_active=True
+)
+
+user_manager.groups.add(gerentes)
+
+manager_default = Managers.objects.create(
+    country_origin_id=ecuador_country.id,
+    country_residence_id=ecuador_country.id,
+    user_id=user_manager.pkid,
+    code=CODE_MANAGER_DEFAULT,
+    names="Gerente Defecto Gerente Defecto",
+    last_name="Gerente Defecto",
+    first_name="Gerente Defecto",
+    dni="1234567890",
+    address="Ciudad Ecuador",
+    code_postal="1234",
+    telephone="1234567890",
+    cell_phone="1234567890",
+    email="managerdefault@gmail.com",
+    email_alternate="managerdefault@gmail.com",
+)
+
+user_adviser = User.objects.create_user(
+    username="adviserdefault@gmail.com",
+    first_name="Asesor defecto",
+    last_name="Asesor defecto",
+    email="adviserdefault@gmail.com",
+    password=password_default,
+    is_active=True
+)
+
+user_adviser.groups.add(asesores)
+
+adviser = Advisers.objects.create(
+    country_origin_id=ecuador_country.id,
+    country_residence_id=ecuador_country.id,
+    manager_id=manager_default.id,
+    user_id=user_adviser.pkid,
+    code=CODE_ADVISER_DEFAULT,
+    names="Asesor Defector Asesor Defector",
+    last_name="Asesor Defector",
+    first_name="Asesor Defector",
+    dni="1234567890",
+    address="1234567890",
+    code_postal="1234",
+    telephone="1234567890",
+    cell_phone="1234567890",
+    email="adviserdefault@gmail.com",
+    email_alternate="adviserdefault@gmail.com",
+)
+
+adviser.create_commission()
+
+fill_adviser_manager_default = 1

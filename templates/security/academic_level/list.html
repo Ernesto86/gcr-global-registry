@@ -3,7 +3,7 @@
 {% block list-search %}
     <div class="row">
         <div class="col-md col-md-9">
-            {% include "v2/common/forms/search/input_search_simple.html" with placeholder_input_search='Buscar asesor por codigo, dni, nombre..' %}
+            {% include "v2/common/forms/search/input_search_simple.html" with placeholder_input_search='Buscar por nombre' %}
         </div>
         <div class="col-md col-md-3">
             {% include "v2/common/forms/search/btn_search.html" %}
@@ -13,21 +13,21 @@
 
 {% block list-table-head-colums %}
     <th>Codigo</th>
-    <th>DNI</th>
-    <th>Nombre</th>
+    <th>Descripcion</th>
+    <th>Descripcion corto</th>
     <th class="text-center">Opciones</th>
 {% endblock %}
 
 {% block list-table-body-rows %}
-    {% for object in advisers %}
+    {% for object in object_list %}
         <tr>
             <td>{{ object.code }}</td>
-            <td>{{ object.dni }}</td>
-            <td>{{ object.names }}</td>
+            <td>{{ object.name }}</td>
+            <td>{{ object.name_short }}</td>
             <td class="text-center">
                 <div class="btn-group" role="group">
                     <a
-                            href="{% url 'advisers:adviser_update' object.id %}"
+                            href="{% url 'academic_level_update' object.id %}"
                             class="btn btn-primary btn-sm"
                             data-toggle="tooltip"
                     >

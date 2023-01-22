@@ -12,10 +12,18 @@ class FormCommon:
 
             for key, value in form.errors.items():
                 try:
-                    field = form.fields[key]
-                    errors[str(field.label)] = [str(x) for x in value]
-                except:
-                    pass
+
+                    if key == '__all__':
+
+                        errors["Validacion"] = [str(x) for x in value]
+
+                    else:
+
+                        field = form.fields[key]
+                        errors[str(field.label)] = [str(x) for x in value]
+
+                except Exception as ex:
+                    print("Error en formualio, revisar y validar", str(ex))
 
         except Exception as ex:
             return [str(ex)]

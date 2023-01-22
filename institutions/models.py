@@ -1,8 +1,13 @@
+import datetime
+
 from django.db import models
 from django.forms import model_to_dict
+
+from core.common.form.ImageCommon import ImageCommon
+from core.constants import RegistrationStatus
 from core.models import ModelBase, ModelBaseAudited
 from core.util_functions import util_null_to_decimal
-from core.constants import RegistrationStatus
+
 
 class InsTypeRegistries(ModelBase):
     code = models.CharField(max_length=20, verbose_name="Código", blank=True, null=True)
@@ -31,17 +36,42 @@ class InsTypeRegistries(ModelBase):
 
         ModelBase.save(self)
 
+
 class Institutions(ModelBaseAudited):
-    adviser = models.ForeignKey("advisers.Advisers", verbose_name="Asesor", on_delete=models.CASCADE, blank=True, null=True)
-    type_registration = models.ForeignKey(InsTypeRegistries, verbose_name="Tipo de registro", on_delete=models.CASCADE, blank=True, null=True)
-    country = models.ForeignKey("system.SysCountries", verbose_name="Pais", on_delete=models.CASCADE, blank=True, null=True)
-    certificate = models.ForeignKey(
-        'students.Certificates',
+    adviser = models.ForeignKey(
+        "advisers.Advisers",
+        verbose_name="Asesor",
         on_delete=models.CASCADE,
-        verbose_name='Nivel Académico de Certificado',
-        blank=True, null=True
+        blank=True,
+        null=True
     )
-    #representative_academic_level = models.ForeignKey("system.AcademicLevel", verbose_name="Nivel Académico", on_delete=models.PROTECT, blank=True, null=True)
+    type_registration = models.ForeignKey(
+        InsTypeRegistries,
+        verbose_name="Tipo de registro",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+    country = models.ForeignKey(
+        "system.SysCountries",
+        verbose_name="Pais",
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+    # certificate = models.ForeignKey(
+    #     'students.Certificates',
+    #     on_delete=models.CASCADE,
+    #     verbose_name='Nivel Académico de Certificado',
+    #     blank=True, null=True
+    # )
+    representative_academic_level = models.ForeignKey(
+        "system.AcademicLevel",
+        verbose_name="Nivel Académico de Certificado",
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True
+    )
     code = models.CharField(max_length=3, verbose_name="Código", blank=True, null=True)
     name = models.CharField(max_length=100, verbose_name="Nombre")
     alias = models.CharField(max_length=20, verbose_name="Alias", blank=True, null=True)
@@ -53,11 +83,36 @@ class Institutions(ModelBaseAudited):
     email = models.CharField(max_length=150, verbose_name="Email", blank=True, null=True)
     email_alternate = models.CharField(max_length=150, verbose_name="Email alterno", blank=True, null=True)
     web = models.CharField(max_length=200, verbose_name="Web", blank=True, null=True)
-    file_constitution = models.FileField(upload_to='institutions/constitution/%Y/%m/%d', verbose_name="Archivo constitución", max_length=1024, blank=True, null=True)
-    file_nomination = models.FileField(upload_to='institutions/nomination/%Y/%m/%d', verbose_name="Archivo Nominación", max_length=1024, blank=True, null=True)
-    file_title_academic = models.FileField(upload_to='institutions/title_academic/%Y/%m/%d', verbose_name="Titulo académico", max_length=1024, blank=True, null=True)
+    file_constitution = models.FileField(
+        upload_to='institutions/constitution/%Y/%m/%d',
+        verbose_name="Archivo constitución",
+        max_length=1024,
+        blank=True,
+        null=True
+    )
+    file_nomination = models.FileField(
+        upload_to='institutions/nomination/%Y/%m/%d',
+        verbose_name="Archivo Nominación",
+        max_length=1024,
+        blank=True,
+        null=True
+    )
+    file_title_academic = models.FileField(
+        upload_to='institutions/title_academic/%Y/%m/%d',
+        verbose_name="Titulo académico",
+        max_length=1024,
+        blank=True,
+        null=True
+    )
     logo = models.ImageField(upload_to='institutions/logo/%Y/%m/%d', max_length=1024, blank=True, null=True)
-    discount = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Descuento %", blank=True, null=True)
+    discount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=0,
+        verbose_name="Descuento %",
+        blank=True,
+        null=True
+    )
     date_approval = models.DateField(blank=True, null=True, verbose_name="Fecha de aprobacion")
     status = models.BooleanField(default=False)
     registration_status = models.IntegerField(
@@ -66,13 +121,69 @@ class Institutions(ModelBaseAudited):
         default=RegistrationStatus.PENDIENTE,
         blank=True, null=True
     )
+    signature = models.ImageField(
+        upload_to='systemsettings/logo/%Y/%m/%d',
+        max_length=1024,
+        null=True,
+        verbose_name="Firma"
+    )
+    last_data_upload_complete_files = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return '{}'.format(self.name)
 
+    @staticmethod
+    def has_complete_files(institution):
+
+        if institution.file_constitution in [None, ''] or \
+                institution.file_nomination in [None, ''] or \
+                institution.file_title_academic in [None, ''] or \
+                institution.signature in [None, '']:
+            return False
+
+        return True
+
+    def get_color_traffic_lights(self):
+
+
+        if self.last_data_upload_complete_files is None:
+            return None
+
+
+
+        if not Institutions.has_complete_files(self):
+            return None
+
+
+
+        if self.registration_status != RegistrationStatus.PENDIENTE:
+            return None
+
+
+        date_today = datetime.datetime.now().date()
+
+
+
+        days_without_review = (date_today - self.last_data_upload_complete_files).days
+
+        print("passs11111122222", date_today, days_without_review)
+
+        if days_without_review > 30:
+            return {"color": "danger", 'message': f"Han pasado {days_without_review} dias sin revision"}
+
+        if days_without_review > 15:
+            return {"color": "warning", 'message': f"Han pasado {days_without_review} dias sin revision"}
+
+        if days_without_review > 5:
+            return {"color": "success", 'message': f"Han pasado {days_without_review} dias sin revision"}
+
+        return None
+
+    def get_signature_image(self):
+        return ImageCommon.get_image(self.signature)
+
     def to_json_pure(self):
         data = model_to_dict(self)
-
 
     def get_discount_decimal(self):
         return self.discount / 100
@@ -84,7 +195,6 @@ class Institutions(ModelBaseAudited):
     def get_bg_status(self):
         status = ('', 'warning', 'success', 'danger', 'secondary', 'info')
         return status[self.registration_status]
-
 
     class Meta:
         verbose_name = 'Institución'

@@ -1,6 +1,7 @@
 from django.db import models
 
-from core.constants import SYS_PARAMETER_CODE, SYS_PARAMETER_DATE_EXPIRY_OF_REGISTER_CODE
+from core.constants import SYS_PARAMETER_CODE, SYS_PARAMETER_DATE_EXPIRY_OF_REGISTER_CODE, \
+    SYS_PARAMETER_DATE_LIMIT_OF_APPROVE
 from core.models import ModelBase
 
 
@@ -36,8 +37,8 @@ class SysCountries(ModelBase):
 
 class AcademicLevel(ModelBase):
     code = models.CharField(max_length=10, verbose_name="Código", blank=True, null=True)
-    name = models.CharField(max_length=191, verbose_name="Nombre")
-    name_short = models.CharField(max_length=50, verbose_name="Nombre corto", blank=True, null=True)
+    name = models.CharField(max_length=191, verbose_name="Descripcion")
+    name_short = models.CharField(max_length=50, verbose_name="Descripcion corto", blank=True, null=True)
 
     def __str__(self):
         return "{}".format(self.name)
@@ -71,28 +72,13 @@ class SysParameters(ModelBase):
         return "{}".format(self.name)
 
     @staticmethod
+    def get_sys_parameter_date_limit_of_approve_code():
+        return SysParameters.objects.get(code=SYS_PARAMETER_DATE_LIMIT_OF_APPROVE, status=True)
+
+    @staticmethod
     def get_parameter_fer_value():
         return int(SysParameters.objects.get(code=SYS_PARAMETER_DATE_EXPIRY_OF_REGISTER_CODE).value)
 
-    @staticmethod
-    def get_parameter_next():
-        return int(SysParameters.objects.get(code=SYS_PARAMETER_CODE).value) + 1
-
-    @staticmethod
-    def get_value_formate_next():
-        sys_parameters = SysParameters.objects.get(code=SYS_PARAMETER_CODE)
-        return {
-            'code': sys_parameters.code,
-            'value': sys_parameters.value,
-            'next_value': int(sys_parameters.value) + 1,
-            'format': f"{sys_parameters.code}-{int(sys_parameters.value) + 1}"
-        }
-
-    @staticmethod
-    def update_value():
-        sys_parameters = SysParameters.objects.get(code=SYS_PARAMETER_CODE)
-        sys_parameters.value = int(sys_parameters.value) + 1
-        sys_parameters.save()
 
     class Meta:
         verbose_name = 'Parametro'

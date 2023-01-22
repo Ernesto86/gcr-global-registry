@@ -30,13 +30,43 @@
             font-weight: bold;
         }
 
+        .flex-container {
+            display: flex;
+        }
+
+        .flex-item {
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mt-1 {
+            margin-top: 10px;
+        }
+
+        .mt-2 {
+            margin-top: 20px;
+        }
+
+        .mt-3 {
+            margin-top: 30px;
+        }
+
+        .mt-4 {
+            margin-top: 40px;
+        }
+
+        .mt-5 {
+            margin-top: 50px;
+        }
+
     </style>
 
 </head>
 <body>
 
 <img
-        src="http://192.168.88.231:8001/static/img/fondo/marco.jpg"
+        src="{{ path_base }}/static/img/fondo/marco.jpg"
+        {#        src="{{ base_url }}static/img/fondo/marco.jpg"#}
         style="
             display: flex;
             justify-content: center;
@@ -47,11 +77,12 @@
         "
 >
 
+
 <div
         style="
             width: 70%;
             text-align: center;
-            margin-top: 180px;
+            margin-top: 130px;
             margin-left: 135px;
             border-radius: 10px;
             top: 10px;
@@ -59,16 +90,21 @@
         "
 >
 
-    <div class="row">
-        <div class="col-lg-12 text-center text-black-m">
-            <h2 class="fw-bold">CERTIFICADO DE REGISTRO #{{ number }}</h2>
-        </div>
+    <img
+            src="{{ path_base }}{{ logo }}"
+            style="width: 20%;"
+    >
+
+
+    <div class="col-lg-12 text-center text-black-m mt-5">
+        <h3 class="fw-bold">CERTIFICADO DE REGISTRO INGRESADO #{{ number }}</h3>
     </div>
 
-    <div class="row">
-        <p class="text-justified text-black-m mt-5">
 
-            Global Register, certifíca que <span class="fw-bold">{{ student.names }}</span>, con documento de
+    <div class="row ">
+        <p class="text-justified text-black-m">
+
+            <b>Global Register</b>, corrobora que <span class="fw-bold">{{ student.names }}</span>, con documento de
 
             identificación número <span class="fw-bold">{{ student.dni }}</span>, registra en
 
@@ -83,16 +119,20 @@
         </p>
     </div>
 
-    <div class="row" style="margin-top: 100px">
-        <div class="col-lg-12">
-            <div class="d-flex justify-content-center align-items-center">
-                <img
-                        src="http://192.168.88.231:8001/static/img/logo/logo-global-2.jpeg"
-                        width="150px"
-                        class="border rounded-5"
-                        style="width: 190px"
-                >
-            </div>
+    <div class="flex-container" style="margin-top: 50px; margin-left: 80px">
+        <div class="flex-item">
+            <img
+                    src="{{ path_base }}{{ signature_url }}"
+                    class="border rounded-5 "
+                    style="width: 190px"
+            >
+        </div>
+        <div class="flex-item" style="margin-left: 170px">
+            <img
+                    src="{{ path_base }}{{ institution.signature_url }}"
+                    class="border rounded-5 "
+                    style="width: 190px"
+            >
         </div>
     </div>
 </div>

@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView
 
 from core.common.filter_orm.filter_orm_common import FilterOrmCommon
+from core.common.filter_query.filter_query_common import FilterQueryCommon
 from core.util_functions import ListViewFilter
 from institutions.models import InsTypeRegistries
 from security.functions import addUserData
@@ -38,6 +39,9 @@ class OrganizadorRegistroListView(ListViewFilter, LoginRequiredMixin, ListView):
         self.query_AND_1, self.query_OR_1 = FilterOrmCommon.get_query_connector_tuple()
         search = self.request.GET.get('search', '')
         type_register_id = self.kwargs.get("typeregisterid")
+        enabled = FilterQueryCommon.get_param_validate(self.request.GET.get('enabled', None))
+
+        date_now_date = datetime.datetime.now().date()
 
         self.query_AND_1.children.append(("type_register_id", type_register_id))
         self.query_AND_1.children.append(("institution_id", self.request.user.institution_id))
@@ -48,13 +52,17 @@ class OrganizadorRegistroListView(ListViewFilter, LoginRequiredMixin, ListView):
             self.query_OR_1.children.append(("student__email__icontains", search))
             self.query_OR_1.children.append(("student__dni__icontains", search))
 
+        if enabled:
+            date_expiry_query = "date_expiry__gte" if enabled == "1" else "date_expiry__lte"
+
+            self.query_OR_1.children.append((date_expiry_query, date_now_date))
+
         FilterOrmCommon.get_filter_date_range(self.request.GET, 'date_issue', self.query_AND_1)
 
         return StudentRegisters.objects.select_related(
             "institution",
             "student",
             "type_register",
-            "certificate",
             "country"
         ).filter(
             self.query_AND_1,
