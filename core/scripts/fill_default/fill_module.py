@@ -417,6 +417,20 @@ module_group_permissions = ModuleGrupPermissions.objects.create(
 )
 for p in Permission.objects.filter(content_type__model=SysParameters._meta.label.split('.')[1].lower()):
     module_group_permissions.permissions.add(p)
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+module = Module.objects.create(
+    url='/system/system-settings',
+    name='Conf. sistema',
+    **module_common
+)
+module_group_permissions = ModuleGrupPermissions.objects.create(
+    main_category_id=registry_mdc.id,
+    group_id=accionistas.id,
+    module_id=module.id,
+)
+for p in Permission.objects.filter(content_type__model=SystemSettings._meta.label.split('.')[1].lower()):
+    module_group_permissions.permissions.add(p)
 
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
