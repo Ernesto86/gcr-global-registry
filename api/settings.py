@@ -104,11 +104,11 @@ WSGI_APPLICATION = "api.wsgi.application"
 DATABASES = {
     "default": {
         'ENGINE': os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
-        'NAME': os.environ.get("SQL_DATABASE", "central-global-registry-local"),
-        'USER': os.environ.get("SQL_USER", "local_db_usr"),
-        'PASSWORD': os.environ.get("SQL_PASSWORD", "local_db_pass"),
-        'HOST': os.environ.get("SQL_HOST", "localhost"),
-        'PORT': os.environ.get("SQL_PORT", "5432"),
+        'NAME': os.environ.get("SQL_DATABASE", "central-global-registry"),
+        'USER': os.environ.get("SQL_USER", "postgres"),
+        'PASSWORD': os.environ.get("SQL_PASSWORD", "_H;.;:Jv8vM?Nn8c"),
+        'HOST': os.environ.get("SQL_HOST", "/cloudsql/primeval-aspect-342120:us-central1:central-devs-psql"),
+        #'PORT': os.environ.get("SQL_PORT", "5432"),
         'ATOMIC_REQUESTS': True
     }
 }
@@ -238,13 +238,13 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 JAZZMIN_SETTINGS = JAZZMIN_SETTINGS
 
-EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', '')
-EMAIL_HOST = os.environ.get('EMAIL_HOST', '')
-EMAIL_USE_TLS = bool(int(os.environ.get('EMAIL_USE_TLS', 0)))
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend"')
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_USE_TLS = bool(int(os.environ.get('EMAIL_USE_TLS', 1)))
 EMAIL_USE_SSL = bool(int(os.environ.get('EMAIL_USE_SSL', 0)))
-EMAIL_PORT = os.environ.get('EMAIL_PORT', '')
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_PORT = os.environ.get('EMAIL_PORT', '587')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'test.developer.ec@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'egplfkivbrrkxcvb')
 
 import re
 from django.template import base
