@@ -11,6 +11,7 @@ from security.view.organizador_detalle import OrganizadorRegistroListView
 from security.view.organizador_registros import OrganizadorRegistrosView
 from security.view.query_general import QueryGeneralView, CertificateStudentRegisterView, CertificateStudentSummaryView
 from security.view.user import UserUpdatePasswordView
+from security.forget_password import ResetPasswordView
 
 urlpatterns = [
     path(
@@ -45,4 +46,9 @@ urlpatterns = [
     path('academic-levels/create', AcademicLevelCreateView.as_view(), name='academic_level_create'),
     path('academic-levels/update/<int:pk>', AcademicLevelUpdateView.as_view(), name='academic_level_update'),
     path('academic-levels/delete/<int:pk>', AcademicLevelDeleteView.as_view(), name='academic_level_delete'),
+
+
+    path('password-reset',ResetPasswordView.as_view(),name='password_reset'),
+    #path('password-reset-confirm/<int:id>/<str:ced>/<str:token>/',solicitar_cambio_clave_form,name='solicitud_cambio_clave_form'),
+
 ]

@@ -40,3 +40,16 @@ class AcademicLevelForm(forms.ModelForm):
         model = AcademicLevel
         fields = '__all__'
         exclude = ('deleted',)
+
+
+class ResetPasswordForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        FormCommon.update_all_field(self.fields, with_place_holder_cover=False)
+        FormCommon.update_required_field(self.fields, True)
+
+    class Meta:
+        model = User
+        fields = ["email"]
+        error_class = "error"

@@ -29,6 +29,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         max_length=1024,
         blank=True, null=True
     )
+    reset_token = models.CharField(verbose_name=_("Reset token"), max_length=191, blank=True, null=True)
     institution = models.ForeignKey("institutions.Institutions", verbose_name=_("Institución"), on_delete=models.PROTECT, blank=True,
                                     null=True)
     is_handle_institution = models.BooleanField(default=False)
