@@ -66,6 +66,7 @@ class PaymentAdviserCommissionsManager:
         ):
             order_adviser_list = order_list.filter(adviser_id=adviser.id)
 
+
             value_commission = Decimal(0)
 
             for order_adviser in order_adviser_list:

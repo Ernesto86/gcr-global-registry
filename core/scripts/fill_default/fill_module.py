@@ -1,4 +1,5 @@
 from django.contrib.auth.models import Group, Permission
+from decimal import Decimal
 
 from advisers.models import PaymentMethod, AdvisersCommissions, PeriodCommissions, Managers, Advisers
 
@@ -22,7 +23,19 @@ FillCountry().run()
 # //////////////////////////////////// COMMISSIONS /////////////////////////////////////////////////////////////////////
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-PeriodCommissions.objects.create()
+PeriodCommissions.objects.create(
+    manager_percentage=Decimal("30.00"),
+    advisers_percentage_period_1=Decimal("50.00"),
+    days_commissions_period_1=735,
+    advisers_percentage_max_period_1=Decimal("50.00"),
+    advisers_percentage_period_2=Decimal("30.00"),
+    days_commissions_period_2=365,
+    advisers_percentage_max_period_2=Decimal("30.00"),
+    advisers_percentage_period_3=Decimal("00.00"),
+    days_commissions_period_3=0,
+    advisers_percentage_max_period_3=Decimal("00.00"),
+    manager_percentage_max=Decimal("30.00"),
+)
 
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # /////////////////////////////////////// LOAD DATA DEFAULT ////////////////////////////////////////////////////////////
@@ -405,18 +418,18 @@ for p in Permission.objects.filter(codename__in=("view_institutions",)):
 
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-module = Module.objects.create(
-    url='/system/sys-parameters',
-    name='Parametros',
-    **module_common
-)
-module_group_permissions = ModuleGrupPermissions.objects.create(
-    main_category_id=registry_mdc.id,
-    group_id=accionistas.id,
-    module_id=module.id,
-)
-for p in Permission.objects.filter(content_type__model=SysParameters._meta.label.split('.')[1].lower()):
-    module_group_permissions.permissions.add(p)
+# module = Module.objects.create(
+#     url='/system/sys-parameters',
+#     name='Parametros',
+#     **module_common
+# )
+# module_group_permissions = ModuleGrupPermissions.objects.create(
+#     main_category_id=registry_mdc.id,
+#     group_id=accionistas.id,
+#     module_id=module.id,
+# )
+# for p in Permission.objects.filter(content_type__model=SysParameters._meta.label.split('.')[1].lower()):
+#     module_group_permissions.permissions.add(p)
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 module = Module.objects.create(

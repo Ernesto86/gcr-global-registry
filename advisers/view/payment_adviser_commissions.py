@@ -119,17 +119,17 @@ class PaymentAdviserCommissionsCreateView(CreateView):
                         year=year,
                         month=month,
                         # TODO: INCLUIR PROCESO DE PAYPAL PARA PAY_PERYOD TRUE
-                        pay_period=False
+                        pay_period=True
                     )
 
                     update_common = {}
 
                     if int(type_functionary) == PaymentAdviserCommissions.TYPE_FUNCTIONARY[1][0]:
                         # TODO: INCLUIR PROCESO DE PAYPAL PARA pay_adviser TRUE
-                        update_common["pay_adviser"] = False
+                        update_common["pay_adviser"] = True
                     else:
                         # TODO: INCLUIR PROCESO DE PAYPAL PARA pay_adviser TRUE
-                        update_common["pay_manager"] = False
+                        update_common["pay_manager"] = True
 
                     OrderInstitutionQuotas.objects.filter(
                         deleted=False,
