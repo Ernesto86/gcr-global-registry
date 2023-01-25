@@ -16,14 +16,14 @@ class InvalidRecaptchaError(Exception):
 
 
 class RecaptchaService:
-    recaptcha_secret_key = os.environ.get('RECAPTCHA_SECRET_KEY', '')
+    recaptcha_secret_key = os.environ.get('RECAPTCHA_SECRET_KEY', '6LfMRDcjAAAAALKTL-qprvIIct32DoIQn1wOzVDA')
 
     def __init__(self, response):
         self.response = response
 
     @staticmethod
     def get_recaptcha_site_key():
-        return os.environ.get('RECAPTCHA_SITE_KEY', '')
+        return os.environ.get('RECAPTCHA_SITE_KEY', '6LfMRDcjAAAAAA4shGPgRJ8Wdw6dAKjvFA0CA2uv')
 
     def validate_facade(self):
         try:
