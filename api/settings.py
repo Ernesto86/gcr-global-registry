@@ -108,7 +108,7 @@ DATABASES = {
         'USER': os.environ.get("SQL_USER", "postgres"),
         'PASSWORD': os.environ.get("SQL_PASSWORD", "_H;.;:Jv8vM?Nn8c"),
         'HOST': os.environ.get("SQL_HOST", "/cloudsql/primeval-aspect-342120:us-central1:central-devs-psql"),
-        #'PORT': os.environ.get("SQL_PORT", "5432"),
+        # 'PORT': os.environ.get("SQL_PORT", "5432"),
         'ATOMIC_REQUESTS': True
     }
 }
@@ -238,7 +238,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 JAZZMIN_SETTINGS = JAZZMIN_SETTINGS
 
-EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend"')
+EMAIL_BACKEND = os.environ.get('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.gmail.com')
 EMAIL_USE_TLS = bool(int(os.environ.get('EMAIL_USE_TLS', 1)))
 EMAIL_USE_SSL = bool(int(os.environ.get('EMAIL_USE_SSL', 0)))
