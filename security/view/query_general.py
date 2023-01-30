@@ -1,4 +1,5 @@
 import datetime
+import os
 
 from django.http import HttpResponse
 from django.shortcuts import redirect
@@ -108,8 +109,9 @@ class CertificateStudentRegisterView(View):
                 },
                 'date_issue': student_registers.date_issue_display(),
                 'name_specific': "título" if student_registers.is_degree() else "curso",
-                'logo': '/static/img/logo/logo-global-2.jpeg',
-                "path_base": "http://192.168.88.231:8001",
+                'logo': 'static/img/logo/logo-global-2.jpeg',
+                # "path_base": "http://192.168.88.231:8001",
+                "path_base": request.build_absolute_uri("/"),
                 'signature_url': system_setting.get_signature_image(),
             }
 
@@ -120,6 +122,13 @@ class CertificateStudentRegisterView(View):
             template = get_template(self.template_name)
             html_template = template.render(context).encode(encoding="UTF-8")
             # base_url = os.path.dirname(os.path.realpath(__file__))
+
+            print(
+                request.build_absolute_uri(),
+                request.build_absolute_uri("/"),
+                settings.BASE_DIR,
+                os.path.dirname(os.path.realpath(__file__)),
+            )
 
             html = HTML(
                 string=html_template,
@@ -162,13 +171,14 @@ class CertificateStudentSummaryView(View):
                 'country': {
                     "name": country.name
                 },
-                'logo': '/static/img/logo/logo-global-2.jpeg',
+                'logo': 'static/img/logo/logo-global-2.jpeg',
                 'type_registries_list': student.get_student_register_dict_list(),
                 "date_now": date_now,
                 'signature_url': system_setting.get_signature_image(),
                 # 'base_url': request.build_absolute_uri("/"),
                 "base_url" : ".",
-                "path_base" : "http://192.168.88.231:8001",
+                # "path_base" : "http://192.168.88.231:8001",
+                "path_base" : request.build_absolute_uri("/"),
             }
 
             template = get_template(self.template_name)
