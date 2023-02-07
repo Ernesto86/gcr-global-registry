@@ -5,6 +5,8 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, Group
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+
+from core.common.image.file_name import custom_file_storage
 from core.constants import REGISTER_DEFAULT_GRUP_USER, CategoryModule, TypeModule
 from core.models import ModelBase
 from .managers import CustomUserManager
@@ -25,11 +27,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     update_at = models.DateTimeField(auto_now=True)
     foto = models.ImageField(
         upload_to='users/%Y/%m/%d/',
+        storage=custom_file_storage,
         verbose_name='Archive Photo',
         max_length=1024,
         blank=True, null=True
     )
-    institution = models.ForeignKey("institutions.Institutions", verbose_name=_("Institución"), on_delete=models.PROTECT, blank=True,
+    institution = models.ForeignKey("institutions.Institutions", verbose_name=_("Institución"),
+                                    on_delete=models.PROTECT, blank=True,
                                     null=True)
     is_handle_institution = models.BooleanField(default=False)
 
@@ -48,6 +52,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
+
+    @staticmethod
+    def get_uuid_files_user(_, filename):
+        ext = filename.split('.')[-1]
+        filename = "%s.%s" % (uuid.uuid4(), ext)
+        return os.path.join('discount-icons', filename)
 
     def get_short_name(self):
         return self.username
@@ -86,23 +96,26 @@ class User(AbstractBaseUser, PermissionsMixin):
             pass
         return response
 
-    def set_grup_to_user_add(self, group_user = REGISTER_DEFAULT_GRUP_USER):
+    def set_grup_to_user_add(self, group_user=REGISTER_DEFAULT_GRUP_USER):
         grup = Group.objects.filter(name=group_user).first()
 
         if grup is not None:
             grup.user_set.add(self)
 
-    def set_grup_to_user_remove(self, group_user = REGISTER_DEFAULT_GRUP_USER):
+    def set_grup_to_user_remove(self, group_user=REGISTER_DEFAULT_GRUP_USER):
         grup = Group.objects.filter(name=group_user).first()
         if grup is not None:
             grup.user_set.remove(self)
+
+
 class Module(ModelBase):
     code = models.CharField(max_length=50, verbose_name="Código", blank=True, null=True)
     url = models.CharField(max_length=100, verbose_name="Enlace")
     name = models.CharField(max_length=100, verbose_name="Nombre")
     category_module = models.CharField(max_length=20, verbose_name="Categoría módulo", blank=True, null=True,
                                        choices=CategoryModule.choices)
-    type_module = models.CharField(max_length=20, verbose_name="Tipo módulo", blank=True, null=True, choices=TypeModule.choices)
+    type_module = models.CharField(max_length=20, verbose_name="Tipo módulo", blank=True, null=True,
+                                   choices=TypeModule.choices)
     icon = models.CharField(max_length=100, verbose_name="Icono", blank=True, null=True)
     image = models.ImageField(upload_to='module/%Y/%m/%d', verbose_name='Imagen', null=True, blank=True)
     description = models.CharField(max_length=100, verbose_name="Descripción", blank=True, null=True)
@@ -152,7 +165,8 @@ class ModuleGrupCategory(ModelBase):
 
 class ModuleGrupPermissions(ModelBase):
     description = models.CharField(max_length=100, verbose_name="Descripción", blank=True, null=True)
-    main_category = models.ForeignKey(ModuleGrupCategory, on_delete=models.CASCADE, verbose_name='Categoria principal', blank=True,
+    main_category = models.ForeignKey(ModuleGrupCategory, on_delete=models.CASCADE, verbose_name='Categoria principal',
+                                      blank=True,
                                       null=True)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, verbose_name="Grupo", blank=True, null=True)
     module = models.ForeignKey(Module, on_delete=models.CASCADE, verbose_name="Módulo", blank=True, null=True)

@@ -50,3 +50,31 @@
     </div>
 
 {% endblock %}
+
+
+{% block base-head-js %}
+
+    <script>
+        let messageError = null
+        let messageInfo = null
+
+        {% if messages %}
+            {% for message in messages %}
+
+                {% if message.tags.lower == 'error' %}
+                    messageError = "{{ message }}"
+                {% endif %}
+                {% if message.tags.lower == 'info' %}
+                    messageInfo = "{{ message }}"
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        const objElevate = {
+            messageError,
+            messageInfo
+        }
+
+
+    </script>
+{% endblock %}

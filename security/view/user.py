@@ -5,6 +5,7 @@ from django.urls import reverse_lazy
 from django.views.generic import FormView
 from rest_framework import status
 
+from core.common.form.form_common import FormCommon
 from security.functions import addUserData
 
 
@@ -45,7 +46,7 @@ class UserUpdatePasswordView(FormView):
                 return JsonResponse(data, status=status.HTTP_200_OK)
 
             data['message'] = 'Error de validacion de formulario.'
-            data['errors'] = form.errors
+            data['errors'] = [FormCommon.get_errors_dict(form)]
             return JsonResponse(data, status=status.HTTP_400_BAD_REQUEST)
 
         return JsonResponse(data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

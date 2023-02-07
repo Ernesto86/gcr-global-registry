@@ -4,6 +4,7 @@ from django.db import models
 from django.forms import model_to_dict
 
 from core.common.form.ImageCommon import ImageCommon
+from core.common.image.file_name import custom_file_storage
 from core.constants import RegistrationStatus
 from core.models import ModelBase, ModelBaseAudited
 from core.util_functions import util_null_to_decimal
@@ -59,12 +60,6 @@ class Institutions(ModelBaseAudited):
         blank=True,
         null=True
     )
-    # certificate = models.ForeignKey(
-    #     'students.Certificates',
-    #     on_delete=models.CASCADE,
-    #     verbose_name='Nivel Académico de Certificado',
-    #     blank=True, null=True
-    # )
     representative_academic_level = models.ForeignKey(
         "system.AcademicLevel",
         verbose_name="Nivel Académico de Certificado",
@@ -85,6 +80,7 @@ class Institutions(ModelBaseAudited):
     web = models.CharField(max_length=200, verbose_name="Web", blank=True, null=True)
     file_constitution = models.FileField(
         upload_to='institutions/constitution/%Y/%m/%d',
+        storage=custom_file_storage,
         verbose_name="Archivo constitución",
         max_length=1024,
         blank=True,
@@ -92,6 +88,7 @@ class Institutions(ModelBaseAudited):
     )
     file_nomination = models.FileField(
         upload_to='institutions/nomination/%Y/%m/%d',
+        storage=custom_file_storage,
         verbose_name="Archivo Nominación",
         max_length=1024,
         blank=True,
@@ -99,12 +96,19 @@ class Institutions(ModelBaseAudited):
     )
     file_title_academic = models.FileField(
         upload_to='institutions/title_academic/%Y/%m/%d',
+        storage=custom_file_storage,
         verbose_name="Titulo académico",
         max_length=1024,
         blank=True,
         null=True
     )
-    logo = models.ImageField(upload_to='institutions/logo/%Y/%m/%d', max_length=1024, blank=True, null=True)
+    logo = models.ImageField(
+        upload_to='institutions/logo/%Y/%m/%d',
+        storage=custom_file_storage,
+        max_length=1024,
+        blank=True,
+        null=True
+    )
     discount = models.DecimalField(
         max_digits=12,
         decimal_places=2,
@@ -123,6 +127,7 @@ class Institutions(ModelBaseAudited):
     )
     signature = models.ImageField(
         upload_to='systemsettings/logo/%Y/%m/%d',
+        storage=custom_file_storage,
         max_length=1024,
         null=True,
         verbose_name="Firma"

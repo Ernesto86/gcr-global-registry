@@ -1,7 +1,9 @@
 'use strict';
 
 const FormCommon = {
-    CONSTANT: {},
+    CONSTANT: {
+
+    },
     fun: {
         getErrorList: (errors) => {
 

@@ -55,7 +55,6 @@ class PermissionMixin(object):
                 for permission in permissions:
                     if not group.modulegruppermissions_set.filter(permissions__codename=permission).exists():
                         messages.error(request, 'No tiene permiso para ingresar a este módulo')
-                        print("aaaa1")
                         return redirect('home')
 
                 modulegruppermission = group.modulegruppermissions_set.filter(
@@ -66,8 +65,6 @@ class PermissionMixin(object):
                 return super().get(request, *args, **kwargs)
         except Exception as ex:
             if request.user.is_authenticated:
-                print("aaaa2", str(ex))
                 return redirect('home')
-            else:
-                print("aaaa3")
-                return redirect('login')
+
+            return redirect('login')
